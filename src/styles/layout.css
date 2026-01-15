@@ -1,0 +1,120 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px 40px 24px;
+}
+
+.app-header__kicker {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.app-header__title {
+  font-size: 30px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.app-header__meta {
+  text-align: right;
+}
+
+.app-header__meta-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
+
+.app-header__meta-value {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.app-body {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr) 200px;
+  gap: 32px;
+  padding: 12px 40px 56px;
+}
+
+.app-content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 760px;
+  width: 100%;
+  justify-self: center;
+}
+
+.truth-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.truth-card--lead {
+  gap: 12px;
+}
+
+.truth-card__title {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.truth-card__subtitle {
+  font-size: 14px;
+  color: var(--text-soft);
+}
+
+.truth-card__summary {
+  font-size: 15px;
+  color: var(--text-muted);
+}
+
+.truth-card__section-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.truth-card__body {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.truth-table {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+}
+
+.truth-table__row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.truth-table__row--head {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
