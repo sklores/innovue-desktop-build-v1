@@ -8,7 +8,7 @@
   --text-primary: #2a2f38;
   --text-muted: #6f7682;
   --text-soft: #8d94a1;
-  --border: #e0e4ea;
+  --border: #e7eaf0;
   --accent: #d6dbe5;
 }
 
@@ -22,8 +22,9 @@ body {
   background: var(--bg);
   color: var(--text-primary);
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.7;
   display: block;
+  font-size: 15px;
 }
 
 h1,
