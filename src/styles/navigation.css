@@ -1,15 +1,7 @@
 .primary-nav {
   display: flex;
   flex-direction: column;
-  gap: 18px;
   color: var(--text-muted);
-}
-
-.primary-nav__label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-soft);
 }
 
 .primary-nav__list {

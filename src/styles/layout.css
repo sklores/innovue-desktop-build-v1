@@ -29,6 +29,8 @@
 .app-header__meta {
   text-align: right;
   padding-top: 6px;
+  display: grid;
+  gap: 10px;
 }
 
 .app-header__meta-label {

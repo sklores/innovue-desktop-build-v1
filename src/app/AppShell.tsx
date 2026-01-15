@@ -17,6 +17,11 @@ const timeOptions = [
   "Year",
 ];
 
+const reportingTabs = [
+  { id: "tab-a", label: "Tab A" },
+  { id: "tab-b", label: "Tab B" },
+];
+
 const salesOverviewMetrics: Record<string, { gross: string; net: string }> = {
   Mon: { gross: "$128,400", net: "$121,050" },
   Tue: { gross: "$134,900", net: "$126,340" },
@@ -199,17 +204,24 @@ const buildPath = (values: number[], width = 520, height = 180) => {
 };
 
 const AppShell = () => {
-  const [activePrimaryId, setActivePrimaryId] = useState(primaryTabs[0].id);
+  const primaryNavItems = useMemo(() => {
+    return [...primaryTabs, { id: "reporting", label: "Reporting" }];
+  }, []);
+
+  const [activePrimaryId, setActivePrimaryId] = useState(primaryNavItems[0].id);
   const [activeSecondaryId, setActiveSecondaryId] = useState(
-    secondaryTabsByPrimary[primaryTabs[0].id][0].id,
+    secondaryTabsByPrimary[primaryNavItems[0].id][0].id,
   );
   const [activeTime, setActiveTime] = useState(timeOptions[7]);
 
   const activePrimary = useMemo(() => {
-    return primaryTabs.find((tab) => tab.id === activePrimaryId) ?? primaryTabs[0];
-  }, [activePrimaryId]);
+    return primaryNavItems.find((tab) => tab.id === activePrimaryId) ?? primaryNavItems[0];
+  }, [activePrimaryId, primaryNavItems]);
 
   const secondaryTabs = useMemo(() => {
+    if (activePrimaryId === "reporting") {
+      return reportingTabs;
+    }
     return secondaryTabsByPrimary[activePrimaryId] ?? secondaryTabsByPrimary.sales;
   }, [activePrimaryId]);
 
@@ -242,18 +254,28 @@ const AppShell = () => {
     <div className="app-shell">
       <header className="app-header">
         <div>
-          <p className="app-header__kicker">InnoVue Desktop</p>
-          <h1 className="app-header__title">Truth Board</h1>
+          <p className="app-header__kicker">GCDC</p>
+          <h1 className="app-header__title">InnoVue Desktop</h1>
         </div>
         <div className="app-header__meta">
-          <p className="app-header__meta-label">Last updated</p>
-          <span className="app-header__meta-value">Just now</span>
+          <div>
+            <p className="app-header__meta-label">Last updated</p>
+            <span className="app-header__meta-value">Just now</span>
+          </div>
+          <div>
+            <p className="app-header__meta-label">Current time</p>
+            <span className="app-header__meta-value">09:41 AM</span>
+          </div>
+          <div>
+            <p className="app-header__meta-label">Weather</p>
+            <span className="app-header__meta-value">Sunny · 72°</span>
+          </div>
         </div>
       </header>
 
       <div className="app-body">
         <PrimaryNav
-          items={primaryTabs}
+          items={primaryNavItems}
           activeId={activePrimaryId}
           onChange={setActivePrimaryId}
         />
@@ -273,7 +295,7 @@ const AppShell = () => {
           <section className="truth-section">
             <div className="truth-section__header">
               <p className="truth-section__subtitle">{activeSecondary.label}</p>
-              <h3 className="truth-section__title">Placeholder section</h3>
+              <h3 className="truth-section__title">{activeSecondary.label}</h3>
             </div>
 
             {isSalesOverview || isSalesBreakdown || isSalesForecast ? (
