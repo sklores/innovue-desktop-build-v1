@@ -88,8 +88,14 @@
   padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   min-height: 320px;
+}
+
+.truth-section__header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .truth-section__subtitle {
@@ -102,10 +108,57 @@
 .truth-section__title {
   font-size: 20px;
   font-weight: 500;
-  margin-top: 6px;
 }
 
 .truth-section__body {
   font-size: 15px;
   color: var(--text-muted);
+}
+
+.truth-section__content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.time-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.time-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid transparent;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.time-pill--active {
+  color: var(--text-primary);
+  background: var(--surface-raised);
+  border-color: var(--border);
+  font-weight: 500;
+}
+
+.metrics {
+  display: grid;
+  gap: 18px;
+}
+
+.metric__label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
+
+.metric__value {
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-top: 6px;
 }
