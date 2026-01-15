@@ -38,9 +38,16 @@ const AppShell = () => {
 
         <main className="app-content">
           <section className="truth-card truth-card--lead">
-            <div>
-              <h2 className="truth-card__title">{activePrimary.label}</h2>
-              <p className="truth-card__subtitle">{activeSecondary.label}</p>
+            <div className="truth-card__header">
+              <div>
+                <h2 className="truth-card__title">{activePrimary.label}</h2>
+                <p className="truth-card__subtitle">{activeSecondary.label}</p>
+              </div>
+              <SecondaryNav
+                tabs={secondaryTabs}
+                activeId={activeSecondaryId}
+                onChange={setActiveSecondaryId}
+              />
             </div>
             <p className="truth-card__summary">Placeholder summary</p>
           </section>
@@ -71,15 +78,6 @@ const AppShell = () => {
             </div>
           </section>
         </main>
-
-        <SecondaryNav
-          label="Context"
-          tabs={secondaryTabs}
-          activeId={activeSecondaryId}
-          onChange={setActiveSecondaryId}
-          contextTitle="Context"
-          contextBody="Placeholder summary"
-        />
       </div>
     </div>
   );

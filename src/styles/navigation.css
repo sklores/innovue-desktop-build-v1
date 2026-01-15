@@ -42,26 +42,13 @@
 
 .secondary-nav {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  color: var(--text-muted);
-}
-
-.secondary-nav__label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-soft);
-}
-
-.secondary-nav__tabs {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .secondary-nav__tab {
-  width: fit-content;
   padding: 2px 0;
   border-radius: 0;
   color: var(--text-muted);
@@ -74,21 +61,4 @@
 .secondary-nav__tab--active {
   color: var(--text-primary);
   font-weight: 500;
-}
-
-.secondary-nav__context {
-  display: grid;
-  gap: 8px;
-}
-
-.secondary-nav__context-title {
-  font-size: 13px;
-  color: var(--text-primary);
-  font-weight: 500;
-}
-
-.secondary-nav__context-body {
-  font-size: 13px;
-  color: var(--text-muted);
-  line-height: 1.6;
 }
