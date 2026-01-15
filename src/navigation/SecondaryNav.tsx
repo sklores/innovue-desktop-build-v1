@@ -22,9 +22,7 @@ const SecondaryNav = ({
 }: SecondaryNavProps) => {
   return (
     <aside className="secondary-nav" aria-label="Context">
-      <div className="secondary-nav__header">
-        <p className="secondary-nav__label">{label}</p>
-      </div>
+      <p className="secondary-nav__label">{label}</p>
       <div className="secondary-nav__tabs" role="tablist" aria-label="Context views">
         {tabs.map((tab) => (
           <button
@@ -39,9 +37,9 @@ const SecondaryNav = ({
           </button>
         ))}
       </div>
-      <div className="secondary-nav__panel">
-        <p className="secondary-nav__panel-title">{contextTitle}</p>
-        <p className="secondary-nav__panel-body">{contextBody}</p>
+      <div className="secondary-nav__context">
+        <p className="secondary-nav__context-title">{contextTitle}</p>
+        <p className="secondary-nav__context-body">{contextBody}</p>
       </div>
     </aside>
   );

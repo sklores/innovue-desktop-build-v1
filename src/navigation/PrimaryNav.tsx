@@ -12,9 +12,7 @@ type PrimaryNavProps = {
 const PrimaryNav = ({ items, activeId, onChange }: PrimaryNavProps) => {
   return (
     <nav className="primary-nav" aria-label="Primary">
-      <div className="primary-nav__header">
-        <p className="primary-nav__label">Modules</p>
-      </div>
+      <p className="primary-nav__label">Primary</p>
       <ul className="primary-nav__list">
         {items.map((item) => (
           <li key={item.id}>

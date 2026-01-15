@@ -8,9 +8,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 28px 36px;
+  padding: 28px 40px;
   border-bottom: 1px solid var(--border);
-  background: var(--card-contrast);
+  background: var(--surface-strong);
 }
 
 .app-header__brand {
@@ -20,8 +20,8 @@
 }
 
 .app-header__logo {
-  width: 52px;
-  height: 52px;
+  width: 50px;
+  height: 50px;
   border-radius: 16px;
   background: var(--accent);
   color: var(--text-muted);
@@ -50,16 +50,16 @@
 }
 
 .app-header__time-value {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 500;
   color: var(--text-primary);
 }
 
 .app-body {
   display: grid;
-  grid-template-columns: 210px minmax(0, 1fr) 260px;
-  gap: 24px;
-  padding: 28px 36px 40px;
+  grid-template-columns: 180px minmax(0, 1fr) 220px;
+  gap: 32px;
+  padding: 32px 40px 48px;
 }
 
 .app-content {
@@ -67,102 +67,99 @@
   flex-direction: column;
   gap: 24px;
   width: 100%;
-  max-width: 880px;
-  justify-self: start;
+  max-width: 820px;
+  justify-self: center;
 }
 
-.content-card {
-  background: var(--card);
+.truth-card {
+  background: var(--surface-strong);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 18px;
   padding: 24px;
-}
-
-.content-card__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  gap: 16px;
-}
-
-.content-card__eyebrow {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-soft);
-}
-
-.content-card__title {
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.content-card__meta {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.content-card__grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.stat-card {
-  background: var(--card-contrast);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-}
-
-.stat-card__label {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-
-.stat-card__value {
-  font-size: 20px;
-  font-weight: 500;
-  margin-bottom: 4px;
-}
-
-.stat-card__caption {
-  font-size: 12px;
-  color: var(--text-soft);
-}
-
-.content-card__rows {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.content-row {
-  display: flex;
-  align-items: center;
+.truth-card--header {
+  flex-direction: row;
   justify-content: space-between;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: var(--card-contrast);
-  border: 1px solid var(--border);
-  gap: 16px;
+  align-items: flex-start;
+  gap: 24px;
 }
 
-.content-row__title {
-  font-size: 15px;
+.truth-card__title {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.truth-card__subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 420px;
+}
+
+.truth-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: right;
+}
+
+.truth-card__meta-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
+
+.truth-card__meta-value {
+  font-size: 13px;
   color: var(--text-primary);
 }
 
-.content-row__subtitle {
+.truth-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.truth-card__section-title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.truth-card__section-meta {
   font-size: 12px;
   color: var(--text-soft);
 }
 
-.content-row__value {
+.truth-card__body {
   font-size: 14px;
   color: var(--text-muted);
-  white-space: nowrap;
+}
+
+.truth-table {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+}
+
+.truth-table__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  font-size: 13px;
+  color: var(--text-muted);
+  gap: 12px;
+}
+
+.truth-table__row--head {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
 }

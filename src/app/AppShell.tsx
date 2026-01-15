@@ -7,37 +7,37 @@ const primaryTabs = [
   {
     id: "sales",
     label: "Sales",
-    header: "Sales Overview",
-    subheader: "Performance Snapshot",
-    contextLabel: "Sales context",
+    header: "Desktop Truth Board",
+    subtitle: "A calm, executive snapshot of revenue momentum and pipeline stability.",
+    region: "North America",
   },
   {
     id: "expenses",
     label: "Expenses",
-    header: "Expense Clarity",
-    subheader: "Monthly Spend",
-    contextLabel: "Expense context",
+    header: "Desktop Truth Board",
+    subtitle: "A steady view of cost posture, operational rhythm, and spend discipline.",
+    region: "North America",
   },
   {
     id: "financials",
     label: "Financials",
-    header: "Financial Health",
-    subheader: "Quarterly Standing",
-    contextLabel: "Financial context",
+    header: "Desktop Truth Board",
+    subtitle: "An editorial read on balance, liquidity, and quarter-to-date outcomes.",
+    region: "North America",
   },
   {
     id: "presence",
     label: "Presence",
-    header: "Market Presence",
-    subheader: "Visibility Signals",
-    contextLabel: "Presence context",
+    header: "Desktop Truth Board",
+    subtitle: "A grounded look at visibility signals, reach, and brand cadence.",
+    region: "North America",
   },
   {
     id: "reporting",
     label: "Reporting",
-    header: "Reporting Suite",
-    subheader: "Executive Briefings",
-    contextLabel: "Reporting context",
+    header: "Desktop Truth Board",
+    subtitle: "A composed digest of reporting rhythm and executive-ready highlights.",
+    region: "North America",
   },
 ];
 
@@ -45,30 +45,41 @@ const secondaryTabs = [
   {
     id: "overview",
     label: "Overview",
-    body: "A composed summary of the current trend line, highlighting stability and incremental lift.",
+    summary: "A high-level narrative emphasizing stability and measured progress.",
   },
   {
     id: "breakdown",
     label: "Breakdown",
-    body: "A quiet decomposition of primary drivers, offering clarity on the strongest contributors.",
+    summary: "A focused readout of what is working and where attention is needed.",
   },
   {
     id: "forecast",
     label: "Forecast",
-    body: "A forward-looking outlook that emphasizes measured growth and anticipated variance.",
+    summary: "A forward view grounded in current signals and cautious optimism.",
   },
 ];
 
 const AppShell = () => {
-  const [activePrimary, setActivePrimary] = useState(primaryTabs[0]);
-  const [activeSecondary, setActiveSecondary] = useState(secondaryTabs[0]);
+  const [activePrimaryId, setActivePrimaryId] = useState(primaryTabs[0].id);
+  const [activeSecondaryId, setActiveSecondaryId] = useState(secondaryTabs[0].id);
 
-  const contextCopy = useMemo(() => {
+  const activePrimary = useMemo(() => {
+    return primaryTabs.find((tab) => tab.id === activePrimaryId) ?? primaryTabs[0];
+  }, [activePrimaryId]);
+
+  const activeSecondary = useMemo(() => {
+    return secondaryTabs.find((tab) => tab.id === activeSecondaryId) ?? secondaryTabs[0];
+  }, [activeSecondaryId]);
+
+  const sectionCopy = useMemo(() => {
+    const lead = `${activePrimary.label} ${activeSecondary.label.toLowerCase()}`;
     return {
-      title: `${activePrimary.label} briefing`,
-      body: `Guidance and interpretation for ${activePrimary.label.toLowerCase()} signals across the week.`,
+      pipeline: `${lead} signals show a steady lift with limited volatility across the funnel.`,
+      watchlist: `${lead} watchlist remains stable with two accounts requiring soft follow-up.`,
+      regional: `${lead} outlook is balanced, with modest acceleration in core markets.`,
+      rhythm: `${lead} activity cadence is consistent with the last two reporting cycles.`,
     };
-  }, [activePrimary]);
+  }, [activePrimary.label, activeSecondary.label]);
 
   return (
     <div className="app-shell">
@@ -91,89 +102,90 @@ const AppShell = () => {
       <div className="app-body">
         <PrimaryNav
           items={primaryTabs}
-          activeId={activePrimary.id}
-          onChange={(id) => {
-            const next = primaryTabs.find((tab) => tab.id === id);
-            if (next) {
-              setActivePrimary(next);
-            }
-          }}
+          activeId={activePrimaryId}
+          onChange={setActivePrimaryId}
         />
 
         <main className="app-content">
-          <section className="content-card">
-            <div className="content-card__header">
-              <div>
-                <p className="content-card__eyebrow">{activePrimary.header}</p>
-                <h2 className="content-card__title">{activePrimary.subheader}</h2>
-              </div>
-              <span className="content-card__meta">Updated moments ago</span>
+          <section className="truth-card truth-card--header">
+            <div>
+              <h2 className="truth-card__title">{activePrimary.header}</h2>
+              <p className="truth-card__subtitle">{activePrimary.subtitle}</p>
             </div>
-            <div className="content-card__grid">
-              <div className="stat-card">
-                <p className="stat-card__label">Monthly insight</p>
-                <p className="stat-card__value">$1.24M</p>
-                <p className="stat-card__caption">Calm momentum</p>
+            <div className="truth-card__meta">
+              <div>
+                <p className="truth-card__meta-label">Last updated</p>
+                <p className="truth-card__meta-value">Moments ago</p>
               </div>
-              <div className="stat-card">
-                <p className="stat-card__label">Engagement</p>
-                <p className="stat-card__value">128</p>
-                <p className="stat-card__caption">Balanced activity</p>
-              </div>
-              <div className="stat-card">
-                <p className="stat-card__label">Signal health</p>
-                <p className="stat-card__value">Stable</p>
-                <p className="stat-card__caption">No anomalies detected</p>
+              <div>
+                <p className="truth-card__meta-label">Region focus</p>
+                <p className="truth-card__meta-value">{activePrimary.region}</p>
               </div>
             </div>
           </section>
 
-          <section className="content-card">
-            <div className="content-card__header">
-              <div>
-                <p className="content-card__eyebrow">{activeSecondary.label}</p>
-                <h2 className="content-card__title">Context Narrative</h2>
-              </div>
-              <span className="content-card__meta">Contextual summary</span>
+          <section className="truth-card">
+            <div className="truth-card__header">
+              <h3 className="truth-card__section-title">Pipeline health</h3>
+              <span className="truth-card__section-meta">Stable confidence</span>
             </div>
-            <div className="content-card__rows">
-              <div className="content-row">
-                <div>
-                  <p className="content-row__title">Editorial note</p>
-                  <p className="content-row__subtitle">{activeSecondary.body}</p>
-                </div>
-                <p className="content-row__value">Drafted</p>
+            <p className="truth-card__body">{sectionCopy.pipeline}</p>
+          </section>
+
+          <section className="truth-card">
+            <div className="truth-card__header">
+              <h3 className="truth-card__section-title">Key account watchlist</h3>
+              <span className="truth-card__section-meta">Quiet monitoring</span>
+            </div>
+            <p className="truth-card__body">{sectionCopy.watchlist}</p>
+          </section>
+
+          <section className="truth-card">
+            <div className="truth-card__header">
+              <h3 className="truth-card__section-title">Regional outlook</h3>
+              <span className="truth-card__section-meta">Current quarter</span>
+            </div>
+            <div className="truth-table">
+              <div className="truth-table__row truth-table__row--head">
+                <span>Region</span>
+                <span>Momentum</span>
+                <span>Note</span>
               </div>
-              <div className="content-row">
-                <div>
-                  <p className="content-row__title">Focus area</p>
-                  <p className="content-row__subtitle">Measured progress with room for refinement.</p>
-                </div>
-                <p className="content-row__value">Aligned</p>
+              <div className="truth-table__row">
+                <span>North</span>
+                <span>Steady</span>
+                <span>Core accounts stable</span>
               </div>
-              <div className="content-row">
-                <div>
-                  <p className="content-row__title">Next step</p>
-                  <p className="content-row__subtitle">Maintain cadence and monitor weekly shifts.</p>
-                </div>
-                <p className="content-row__value">Ongoing</p>
+              <div className="truth-table__row">
+                <span>Central</span>
+                <span>Improving</span>
+                <span>New opportunities emerging</span>
+              </div>
+              <div className="truth-table__row">
+                <span>South</span>
+                <span>Measured</span>
+                <span>Focus on retention</span>
               </div>
             </div>
+            <p className="truth-card__body">{sectionCopy.regional}</p>
+          </section>
+
+          <section className="truth-card">
+            <div className="truth-card__header">
+              <h3 className="truth-card__section-title">Activity rhythm</h3>
+              <span className="truth-card__section-meta">Weekly cadence</span>
+            </div>
+            <p className="truth-card__body">{sectionCopy.rhythm}</p>
           </section>
         </main>
 
         <SecondaryNav
-          label={activePrimary.contextLabel}
+          label={`${activePrimary.label} context`}
           tabs={secondaryTabs}
-          activeId={activeSecondary.id}
-          onChange={(id) => {
-            const next = secondaryTabs.find((tab) => tab.id === id);
-            if (next) {
-              setActiveSecondary(next);
-            }
-          }}
-          contextTitle={contextCopy.title}
-          contextBody={contextCopy.body}
+          activeId={activeSecondaryId}
+          onChange={setActiveSecondaryId}
+          contextTitle={`${activeSecondary.label} brief`}
+          contextBody={activeSecondary.summary}
         />
       </div>
     </div>

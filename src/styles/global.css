@@ -2,14 +2,14 @@
 
 :root {
   color-scheme: light;
-  --bg: #f2f3f6;
-  --card: #f7f7f9;
-  --card-contrast: #ffffff;
-  --text-primary: #2b2f38;
-  --text-muted: #6b7280;
-  --text-soft: #8b929c;
-  --border: #e1e4ea;
-  --accent: #d7dbe3;
+  --bg: #f1f2f4;
+  --surface: #f7f7f9;
+  --surface-strong: #ffffff;
+  --text-primary: #252a33;
+  --text-muted: #6c7280;
+  --text-soft: #8d95a3;
+  --border: #e2e5ea;
+  --accent: #d9dde6;
 }
 
 * {
@@ -22,7 +22,7 @@ body {
   background: var(--bg);
   color: var(--text-primary);
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 h1,
