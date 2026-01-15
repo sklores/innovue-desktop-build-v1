@@ -162,3 +162,28 @@
   color: var(--text-primary);
   margin-top: 6px;
 }
+
+.breakdown-table {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.breakdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.breakdown-row__label {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.breakdown-row__value {
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
+}
