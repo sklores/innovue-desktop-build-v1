@@ -1,20 +1,30 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import PrimaryNav from "../navigation/PrimaryNav";
 import SecondaryNav from "../navigation/SecondaryNav";
-import { primaryTabs, secondaryTabs } from "../navigation/navConfig";
+import { primaryTabs, secondaryTabsByPrimary } from "../navigation/navConfig";
 
 const AppShell = () => {
   const [activePrimaryId, setActivePrimaryId] = useState(primaryTabs[0].id);
-  const [activeSecondaryId, setActiveSecondaryId] = useState(secondaryTabs[0].id);
+  const [activeSecondaryId, setActiveSecondaryId] = useState(
+    secondaryTabsByPrimary[primaryTabs[0].id][0].id,
+  );
 
   const activePrimary = useMemo(() => {
     return primaryTabs.find((tab) => tab.id === activePrimaryId) ?? primaryTabs[0];
   }, [activePrimaryId]);
 
+  const secondaryTabs = useMemo(() => {
+    return secondaryTabsByPrimary[activePrimaryId] ?? secondaryTabsByPrimary.sales;
+  }, [activePrimaryId]);
+
   const activeSecondary = useMemo(() => {
     return secondaryTabs.find((tab) => tab.id === activeSecondaryId) ?? secondaryTabs[0];
-  }, [activeSecondaryId]);
+  }, [secondaryTabs, activeSecondaryId]);
+
+  useEffect(() => {
+    setActiveSecondaryId(secondaryTabs[0].id);
+  }, [secondaryTabs]);
 
   return (
     <div className="app-shell">
@@ -39,43 +49,21 @@ const AppShell = () => {
         <main className="app-content">
           <section className="truth-card truth-card--lead">
             <div className="truth-card__header">
-              <div>
-                <h2 className="truth-card__title">{activePrimary.label}</h2>
-                <p className="truth-card__subtitle">{activeSecondary.label}</p>
-              </div>
+              <h2 className="truth-card__title">{activePrimary.label}</h2>
               <SecondaryNav
                 tabs={secondaryTabs}
-                activeId={activeSecondaryId}
+                activeId={activeSecondary.id}
                 onChange={setActiveSecondaryId}
               />
             </div>
-            <p className="truth-card__summary">Placeholder summary</p>
           </section>
 
-          <section className="truth-card">
-            <h3 className="truth-card__section-title">Placeholder section</h3>
-            <p className="truth-card__body">Placeholder summary</p>
-          </section>
-
-          <section className="truth-card">
-            <h3 className="truth-card__section-title">Placeholder section</h3>
-            <div className="truth-table">
-              <div className="truth-table__row truth-table__row--head">
-                <span>Placeholder table</span>
-                <span>Placeholder table</span>
-                <span>Placeholder table</span>
-              </div>
-              <div className="truth-table__row">
-                <span>Placeholder</span>
-                <span>Placeholder</span>
-                <span>Placeholder</span>
-              </div>
-              <div className="truth-table__row">
-                <span>Placeholder</span>
-                <span>Placeholder</span>
-                <span>Placeholder</span>
-              </div>
+          <section className="truth-section">
+            <div className="truth-section__header">
+              <p className="truth-section__subtitle">{activeSecondary.label}</p>
+              <h3 className="truth-section__title">Placeholder section</h3>
             </div>
+            <p className="truth-section__body">Placeholder summary</p>
           </section>
         </main>
       </div>

@@ -6,8 +6,29 @@ export const primaryTabs = [
   { id: "settings", label: "Settings" },
 ];
 
-export const secondaryTabs = [
-  { id: "tab-1", label: "Tab 1" },
-  { id: "tab-2", label: "Tab 2" },
-  { id: "tab-3", label: "Tab 3" },
-];
+export const secondaryTabsByPrimary = {
+  sales: [
+    { id: "overview", label: "Overview" },
+    { id: "breakdown", label: "Breakdown" },
+    { id: "forecast", label: "Forecast" },
+  ],
+  expenses: [
+    { id: "overview", label: "Overview" },
+    { id: "categories", label: "Categories" },
+    { id: "vendors", label: "Vendors" },
+  ],
+  financials: [
+    { id: "profit-loss", label: "Profit & Loss" },
+    { id: "cashflow", label: "Cashflow" },
+    { id: "pro-forma", label: "Pro Forma" },
+  ],
+  presence: [
+    { id: "reviews", label: "Reviews" },
+    { id: "traffic", label: "Traffic" },
+    { id: "social", label: "Social" },
+  ],
+  settings: [
+    { id: "tab-a", label: "Tab A" },
+    { id: "tab-b", label: "Tab B" },
+  ],
+};
