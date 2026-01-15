@@ -1,0 +1,111 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 36px 40px 28px;
+  gap: 32px;
+}
+
+.app-header__kicker {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.app-header__title {
+  font-size: 34px;
+  font-weight: 500;
+  margin-top: 10px;
+  letter-spacing: -0.01em;
+}
+
+.app-header__meta {
+  text-align: right;
+  padding-top: 6px;
+}
+
+.app-header__meta-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
+
+.app-header__meta-value {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.app-body {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 32px;
+  padding: 12px 40px 60px;
+}
+
+.app-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 760px;
+  width: 100%;
+}
+
+.truth-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 20px 24px;
+}
+
+.truth-card--lead {
+  padding: 18px 22px;
+}
+
+.truth-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.truth-card__title {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.truth-section {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 320px;
+}
+
+.truth-section__subtitle {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
+
+.truth-section__title {
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+.truth-section__body {
+  font-size: 15px;
+  color: var(--text-muted);
+}
