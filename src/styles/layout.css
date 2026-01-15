@@ -187,3 +187,31 @@
   font-weight: 500;
   text-align: right;
 }
+
+.forecast-chart {
+  width: 100%;
+  padding: 12px 0;
+}
+
+.forecast-chart svg {
+  width: 100%;
+  height: auto;
+}
+
+.forecast-line {
+  fill: none;
+  stroke-width: 2.5;
+}
+
+.forecast-line--past {
+  stroke: #c7ccd6;
+}
+
+.forecast-line--today {
+  stroke: #8a93a4;
+}
+
+.forecast-line--projected {
+  stroke: #b3b9c6;
+  stroke-dasharray: 6 6;
+}
