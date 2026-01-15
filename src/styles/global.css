@@ -2,14 +2,14 @@
 
 :root {
   color-scheme: light;
-  --bg: #f3f4f6;
+  --bg: #f2f3f6;
   --card: #f7f7f9;
   --card-contrast: #ffffff;
   --text-primary: #2b2f38;
   --text-muted: #6b7280;
   --text-soft: #8b929c;
-  --border: #e3e5ea;
-  --accent: #d9dce2;
+  --border: #e1e4ea;
+  --accent: #d7dbe3;
 }
 
 * {
@@ -34,6 +34,14 @@ h6,
 p {
   margin: 0;
   font-weight: 400;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  padding: 0;
+  color: inherit;
 }
 
 a {

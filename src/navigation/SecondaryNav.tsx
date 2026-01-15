@@ -1,19 +1,47 @@
-const SecondaryNav = () => {
+type SecondaryTab = {
+  id: string;
+  label: string;
+};
+
+type SecondaryNavProps = {
+  label: string;
+  tabs: SecondaryTab[];
+  activeId: string;
+  onChange: (id: string) => void;
+  contextTitle: string;
+  contextBody: string;
+};
+
+const SecondaryNav = ({
+  label,
+  tabs,
+  activeId,
+  onChange,
+  contextTitle,
+  contextBody,
+}: SecondaryNavProps) => {
   return (
-    <aside className="secondary-nav" aria-label="Secondary">
+    <aside className="secondary-nav" aria-label="Context">
       <div className="secondary-nav__header">
-        <p className="secondary-nav__label">Sales views</p>
+        <p className="secondary-nav__label">{label}</p>
       </div>
-      <div className="secondary-nav__tabs">
-        <span className="secondary-nav__tab secondary-nav__tab--active">Overview</span>
-        <span className="secondary-nav__tab">Breakdown</span>
-        <span className="secondary-nav__tab">Forecast</span>
+      <div className="secondary-nav__tabs" role="tablist" aria-label="Context views">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            className={`secondary-nav__tab${
+              activeId === tab.id ? " secondary-nav__tab--active" : ""
+            }`}
+            onClick={() => onChange(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
       <div className="secondary-nav__panel">
-        <p className="secondary-nav__panel-title">Focus summary</p>
-        <p className="secondary-nav__panel-body">
-          Snapshot highlights the strongest revenue drivers and areas of watch for the week.
-        </p>
+        <p className="secondary-nav__panel-title">{contextTitle}</p>
+        <p className="secondary-nav__panel-body">{contextBody}</p>
       </div>
     </aside>
   );

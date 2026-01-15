@@ -1,15 +1,34 @@
-const PrimaryNav = () => {
+type PrimaryNavItem = {
+  id: string;
+  label: string;
+};
+
+type PrimaryNavProps = {
+  items: PrimaryNavItem[];
+  activeId: string;
+  onChange: (id: string) => void;
+};
+
+const PrimaryNav = ({ items, activeId, onChange }: PrimaryNavProps) => {
   return (
     <nav className="primary-nav" aria-label="Primary">
       <div className="primary-nav__header">
         <p className="primary-nav__label">Modules</p>
       </div>
       <ul className="primary-nav__list">
-        <li className="primary-nav__item primary-nav__item--active">Sales</li>
-        <li className="primary-nav__item">Expenses</li>
-        <li className="primary-nav__item">Financials</li>
-        <li className="primary-nav__item">Presence</li>
-        <li className="primary-nav__item">Reporting</li>
+        {items.map((item) => (
+          <li key={item.id}>
+            <button
+              className={`primary-nav__item${
+                activeId === item.id ? " primary-nav__item--active" : ""
+              }`}
+              type="button"
+              onClick={() => onChange(item.id)}
+            >
+              {item.label}
+            </button>
+          </li>
+        ))}
       </ul>
     </nav>
   );

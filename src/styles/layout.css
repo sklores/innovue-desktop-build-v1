@@ -57,15 +57,18 @@
 
 .app-body {
   display: grid;
-  grid-template-columns: 220px 240px 1fr;
-  gap: 20px;
-  padding: 24px 28px 32px;
+  grid-template-columns: 210px minmax(0, 1fr) 260px;
+  gap: 24px;
+  padding: 28px 36px 40px;
 }
 
 .app-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+  width: 100%;
+  max-width: 880px;
+  justify-self: start;
 }
 
 .content-card {

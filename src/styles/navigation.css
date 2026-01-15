@@ -27,21 +27,26 @@
 }
 
 .primary-nav__item {
+  width: 100%;
+  text-align: left;
   padding: 10px 14px;
   border-radius: 12px;
   color: var(--text-muted);
   font-size: 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
 }
 
 .primary-nav__item--active {
   background: var(--card);
   color: var(--text-primary);
   font-weight: 500;
-  border: 1px solid var(--border);
+  border-color: var(--border);
 }
 
 .secondary-nav {
-  background: var(--card-contrast);
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 20px 18px;
@@ -65,12 +70,15 @@
 }
 
 .secondary-nav__tab {
+  width: 100%;
+  text-align: left;
   padding: 10px 12px;
   border-radius: 12px;
   color: var(--text-muted);
-  background: var(--card);
+  background: var(--card-contrast);
   border: 1px solid transparent;
   font-size: 14px;
+  cursor: pointer;
 }
 
 .secondary-nav__tab--active {
@@ -81,7 +89,7 @@
 }
 
 .secondary-nav__panel {
-  background: var(--card);
+  background: var(--card-contrast);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 14px;
