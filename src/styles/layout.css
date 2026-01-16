@@ -529,64 +529,94 @@
   overflow: hidden;
 }
 
-.traffic-summary {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 14px 16px;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background: var(--surface);
+.traffic-accordion {
+  display: grid;
+  gap: 12px;
 }
 
-.traffic-summary__label {
+.traffic-accordion__item {
+  background: var(--surface);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.traffic-accordion__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto 20px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+}
+
+.traffic-accordion__label {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.traffic-accordion__metric {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.traffic-accordion__delta {
+  font-size: 12px;
+  color: var(--text-soft);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.traffic-accordion__chevron {
+  font-size: 14px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.traffic-accordion__panel {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.traffic-accordion__panel--open {
+  max-height: 200px;
+  opacity: 1;
+}
+
+.traffic-accordion__details {
+  display: grid;
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+
+.traffic-accordion__detail {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.traffic-accordion__detail-label {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-soft);
 }
 
-.traffic-summary__value {
-  font-size: 20px;
-  font-weight: 600;
+.traffic-accordion__detail-value {
+  font-size: 13px;
   color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
 }
 
-.traffic-list {
-  display: grid;
-  gap: 12px;
-}
-
-.traffic-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.traffic-row__label {
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
-.traffic-row__trend {
-  font-size: 16px;
+.traffic-accordion__narrative {
+  font-size: 13px;
   color: var(--text-muted);
-}
-
-.traffic-row__trend--up {
-  color: #5f8f72;
-}
-
-.traffic-row__trend--stable {
-  color: var(--text-soft);
-}
-
-.traffic-row__trend--down {
-  color: #b6675a;
+  margin: 0;
 }
 
 .forecast-chart {

@@ -478,6 +478,7 @@ const AppShell = () => {
   );
   const [openVendorId, setOpenVendorId] = useState<string | null>(null);
   const [openOrderGuideId, setOpenOrderGuideId] = useState<string | null>(null);
+  const [openTrafficId, setOpenTrafficId] = useState<string | null>(null);
 
   const activePrimary = useMemo(() => {
     return primaryNavItems.find((tab) => tab.id === activePrimaryId) ?? primaryNavItems[0];
@@ -562,6 +563,17 @@ const AppShell = () => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       handleOrderGuideToggle(id);
+    }
+  };
+
+  const handleTrafficToggle = (id: string) => {
+    setOpenTrafficId((prev) => (prev === id ? null : id));
+  };
+
+  const handleTrafficKeyDown = (event: KeyboardEvent<HTMLDivElement>, id: string) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleTrafficToggle(id);
     }
   };
 
@@ -1317,32 +1329,115 @@ const AppShell = () => {
               })()
             ) : isPresenceTraffic ? (
               (() => {
-                const overallStatus = "Up";
                 const sources = [
-                  { id: "google-search", label: "Google Search", trend: "Up", icon: "↑" },
-                  { id: "google-maps", label: "Google Maps", trend: "Stable", icon: "→" },
-                  { id: "yelp", label: "Yelp", trend: "Down", icon: "↓" },
-                  { id: "tripadvisor", label: "TripAdvisor", trend: "Up", icon: "↑" },
-                  { id: "delivery-apps", label: "Delivery apps", trend: "Stable", icon: "→" },
+                  {
+                    id: "google-search",
+                    label: "Google Search",
+                    metric: "1,420 views",
+                    delta: "+6% WoW",
+                    comparison: "1,420 → 1,338",
+                    topAction: "Website visits",
+                    narrative: "Discovery continues to build week over week.",
+                  },
+                  {
+                    id: "google-maps",
+                    label: "Google Maps",
+                    metric: "980 views",
+                    delta: "+2% WoW",
+                    comparison: "980 → 962",
+                    topAction: "Directions",
+                    narrative: "Local intent remains steady with slight growth.",
+                  },
+                  {
+                    id: "yelp",
+                    label: "Yelp",
+                    metric: "412 views",
+                    delta: "−3% WoW",
+                    comparison: "412 → 425",
+                    topAction: "Calls",
+                    narrative: "Softer demand this week but still engaged.",
+                  },
+                  {
+                    id: "tripadvisor",
+                    label: "TripAdvisor",
+                    metric: "368 views",
+                    delta: "+4% WoW",
+                    comparison: "368 → 353",
+                    topAction: "Menu views",
+                    narrative: "Travel discovery is trending upward.",
+                  },
+                  {
+                    id: "delivery-apps",
+                    label: "Delivery Apps",
+                    metric: "1,106 views",
+                    delta: "−1% WoW",
+                    comparison: "1,106 → 1,118",
+                    topAction: "Add to cart",
+                    narrative: "Digital ordering remains consistent overall.",
+                  },
                 ];
 
                 return (
                   <div className="truth-section__content">
-                    <div className="traffic-summary">
-                      <span className="traffic-summary__label">Overall traffic</span>
-                      <span className="traffic-summary__value">{overallStatus}</span>
-                    </div>
-                    <div className="traffic-list" role="list">
-                      {sources.map((source) => (
-                        <div key={source.id} className="traffic-row" role="listitem">
-                          <span className="traffic-row__label">{source.label}</span>
-                          <span
-                            className={`traffic-row__trend traffic-row__trend--${source.trend.toLowerCase()}`}
-                          >
-                            {source.icon}
-                          </span>
-                        </div>
-                      ))}
+                    <div className="traffic-accordion" role="list">
+                      {sources.map((source) => {
+                        const isOpen = openTrafficId === source.id;
+                        return (
+                          <div key={source.id} className="traffic-accordion__item">
+                            <div
+                              className="traffic-accordion__row"
+                              role="button"
+                              tabIndex={0}
+                              aria-expanded={isOpen}
+                              onClick={() => handleTrafficToggle(source.id)}
+                              onKeyDown={(event) =>
+                                handleTrafficKeyDown(event, source.id)
+                              }
+                            >
+                              <span className="traffic-accordion__label">
+                                {source.label}
+                              </span>
+                              <span className="traffic-accordion__metric">
+                                {source.metric}
+                              </span>
+                              <span className="traffic-accordion__delta">
+                                {source.delta}
+                              </span>
+                              <span className="traffic-accordion__chevron" aria-hidden="true">
+                                {isOpen ? "⌃" : "⌄"}
+                              </span>
+                            </div>
+                            <div
+                              className={`traffic-accordion__panel${
+                                isOpen ? " traffic-accordion__panel--open" : ""
+                              }`}
+                              aria-hidden={!isOpen}
+                            >
+                              <div className="traffic-accordion__details">
+                                <div className="traffic-accordion__detail">
+                                  <span className="traffic-accordion__detail-label">
+                                    Last 7 days vs prior 7 days
+                                  </span>
+                                  <span className="traffic-accordion__detail-value">
+                                    {source.comparison}
+                                  </span>
+                                </div>
+                                <div className="traffic-accordion__detail">
+                                  <span className="traffic-accordion__detail-label">
+                                    Top action
+                                  </span>
+                                  <span className="traffic-accordion__detail-value">
+                                    {source.topAction}
+                                  </span>
+                                </div>
+                                <p className="traffic-accordion__narrative">
+                                  {source.narrative}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 );
