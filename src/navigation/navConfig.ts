@@ -31,4 +31,8 @@ export const secondaryTabsByPrimary = {
     { id: "tab-a", label: "Tab A" },
     { id: "tab-b", label: "Tab B" },
   ],
+  reporting: [
+    { id: "email-reports", label: "Email Reports" },
+    { id: "notifications", label: "Notifications" },
+  ],
 };

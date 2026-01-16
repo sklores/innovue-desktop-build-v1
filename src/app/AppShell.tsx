@@ -20,11 +20,6 @@ const timeOptions = [
 
 const financialsTimeOptions = ["Week", "Month", "Quarter", "Year"];
 
-const reportingTabs = [
-  { id: "tab-a", label: "Tab A" },
-  { id: "tab-b", label: "Tab B" },
-];
-
 const salesOverviewMetrics: Record<string, { gross: string; net: string }> = {
   Mon: { gross: "$128,400", net: "$121,050" },
   Tue: { gross: "$134,900", net: "$126,340" },
@@ -559,9 +554,6 @@ const AppShell = () => {
   }, [activePrimaryId, primaryNavItems]);
 
   const secondaryTabs = useMemo(() => {
-    if (activePrimaryId === "reporting") {
-      return reportingTabs;
-    }
     return secondaryTabsByPrimary[activePrimaryId] ?? secondaryTabsByPrimary.sales;
   }, [activePrimaryId]);
 
@@ -602,6 +594,10 @@ const AppShell = () => {
   const isPresenceSocial =
     activePrimaryId === "presence" && activeSecondaryId === "social";
   const isReporting = activePrimaryId === "reporting";
+  const isReportingEmailReports =
+    activePrimaryId === "reporting" && activeSecondaryId === "email-reports";
+  const isReportingNotifications =
+    activePrimaryId === "reporting" && activeSecondaryId === "notifications";
 
   const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
@@ -1665,7 +1661,7 @@ const AppShell = () => {
                   </div>
                 );
               })()
-            ) : isReporting ? (
+            ) : isReportingEmailReports ? (
               <div className="truth-section__content">
                 <div className="reporting-section">
                   <div className="reporting-section__header">
@@ -1722,6 +1718,9 @@ const AppShell = () => {
                     ))}
                   </div>
                 </div>
+              </div>
+            ) : isReportingNotifications ? (
+              <div className="truth-section__content">
                 <div className="reporting-section">
                   <div className="reporting-section__header">
                     <h4 className="reporting-section__title">Notifications</h4>
