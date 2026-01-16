@@ -1,5 +1,10 @@
 import AppShell from "./app/AppShell";
+import "./styles/global.css";
+import "./styles/layout.css";
+import "./styles/navigation.css";
 
-export default function App() {
+const App = () => {
   return <AppShell />;
-}
+};
+
+export default App;
