@@ -1780,40 +1780,42 @@ const AppShell = () => {
                       Core business details used across reporting and profiles.
                     </p>
                   </div>
-                  <div className="settings-form">
-                    <label className="settings-field">
-                      <span className="settings-field__label">Business name</span>
-                      <input
-                        className="settings-input"
-                        type="text"
-                        placeholder="GCDC Hospitality"
-                      />
-                    </label>
-                    <label className="settings-field">
-                      <span className="settings-field__label">Business address</span>
-                      <textarea
-                        className="settings-input settings-input--textarea"
-                        placeholder="123 Market Street&#10;Washington, DC 20001"
-                        rows={3}
-                      />
-                    </label>
-                    <label className="settings-field">
-                      <span className="settings-field__label">Website URL</span>
-                      <input
-                        className="settings-input"
-                        type="url"
-                        placeholder="https://gcdc.co"
-                      />
-                    </label>
-                    <div className="settings-grid">
+                  <div className="settings-card">
+                    <div className="settings-form">
                       <label className="settings-field">
-                        <span className="settings-field__label">ZIP code</span>
+                        <span className="settings-field__label">Business name</span>
                         <input
                           className="settings-input"
                           type="text"
-                          placeholder="20001"
+                          placeholder="Business name"
                         />
                       </label>
+                      <label className="settings-field">
+                        <span className="settings-field__label">Address</span>
+                        <input
+                          className="settings-input"
+                          type="text"
+                          placeholder="Street address"
+                        />
+                      </label>
+                      <div className="settings-grid">
+                        <label className="settings-field">
+                          <span className="settings-field__label">Zip code</span>
+                          <input
+                            className="settings-input"
+                            type="text"
+                            placeholder="Zip code"
+                          />
+                        </label>
+                        <label className="settings-field">
+                          <span className="settings-field__label">Website URL</span>
+                          <input
+                            className="settings-input"
+                            type="text"
+                            placeholder="https://example.com"
+                          />
+                        </label>
+                      </div>
                       <label className="settings-field">
                         <span className="settings-field__label">Time zone</span>
                         <select className="settings-input">
@@ -1827,24 +1829,185 @@ const AppShell = () => {
                   </div>
                 </div>
               </div>
-            ) : isSettingsOperations ||
-              isSettingsFinancialAssumptions ||
-              isSettingsAlerts ||
-              isSettingsDisplay ? (
+            ) : isSettingsOperations ? (
               <div className="truth-section__content">
                 <div className="settings-section">
                   <div className="settings-section__header">
-                    <h4 className="settings-section__title">
-                      {activeSecondary.label}
-                    </h4>
+                    <h4 className="settings-section__title">Operations</h4>
                     <p className="settings-section__subtitle">
-                      Configuration options for this area will appear here.
+                      Day-to-day defaults used by ordering and operations.
                     </p>
                   </div>
-                  <div className="settings-placeholder">
-                    <p className="settings-placeholder__text">
-                      This section will support additional settings in a future release.
+                  <div className="settings-card">
+                    <div className="settings-form">
+                      <label className="settings-field">
+                        <span className="settings-field__label">
+                          Default delivery days
+                        </span>
+                        <input
+                          className="settings-input"
+                          type="text"
+                          placeholder="e.g. Mon / Wed / Fri"
+                        />
+                      </label>
+                      <label className="settings-field">
+                        <span className="settings-field__label">
+                          Default delivery minimum
+                        </span>
+                        <input
+                          className="settings-input"
+                          type="text"
+                          placeholder="$0.00"
+                        />
+                      </label>
+                      <label className="settings-field">
+                        <span className="settings-field__label">Cash deposit day(s)</span>
+                        <input
+                          className="settings-input"
+                          type="text"
+                          placeholder="e.g. Tue / Thu"
+                        />
+                      </label>
+                      <div className="settings-toggle-row">
+                        <span className="settings-field__label">Tax handling</span>
+                        <label className="toggle">
+                          <input type="checkbox" />
+                          <span className="toggle__track" />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : isSettingsFinancialAssumptions ? (
+              <div className="truth-section__content">
+                <div className="settings-section">
+                  <div className="settings-section__header">
+                    <h4 className="settings-section__title">Financial Assumptions</h4>
+                    <p className="settings-section__subtitle">
+                      Default assumptions applied to forecasts and summaries.
                     </p>
+                  </div>
+                  <div className="settings-card">
+                    <div className="settings-form">
+                      <label className="settings-field">
+                        <span className="settings-field__label">Sales tax %</span>
+                        <input
+                          className="settings-input"
+                          type="text"
+                          placeholder="e.g. 8%"
+                        />
+                      </label>
+                      <label className="settings-field">
+                        <span className="settings-field__label">Tip %</span>
+                        <input
+                          className="settings-input"
+                          type="text"
+                          placeholder="e.g. 18%"
+                        />
+                      </label>
+                      <label className="settings-field">
+                        <span className="settings-field__label">Payroll burden %</span>
+                        <input
+                          className="settings-input"
+                          type="text"
+                          placeholder="e.g. 12%"
+                        />
+                      </label>
+                      <label className="settings-field">
+                        <span className="settings-field__label">Default labor %</span>
+                        <input
+                          className="settings-input"
+                          type="text"
+                          placeholder="e.g. 30%"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : isSettingsAlerts ? (
+              <div className="truth-section__content">
+                <div className="settings-section">
+                  <div className="settings-section__header">
+                    <h4 className="settings-section__title">Alerts</h4>
+                    <p className="settings-section__subtitle">
+                      Alert toggles and sensitivity levels for key signals.
+                    </p>
+                  </div>
+                  <div className="settings-card">
+                    <div className="settings-list" role="list">
+                      {notificationPreferences.map((notification) => (
+                        <div
+                          key={notification.id}
+                          className="settings-row"
+                          role="listitem"
+                        >
+                          <span className="settings-row__label">
+                            {notification.label}
+                          </span>
+                          <label className="toggle">
+                            <input
+                              type="checkbox"
+                              checked={notification.enabled}
+                              onChange={() => handleNotificationToggle(notification.id)}
+                            />
+                            <span className="toggle__track" />
+                          </label>
+                          <select
+                            className="settings-input settings-input--compact"
+                            value={notification.sensitivity}
+                            onChange={(event) =>
+                              handleNotificationChange(
+                                notification.id,
+                                event.target.value,
+                              )
+                            }
+                          >
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                          </select>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : isSettingsDisplay ? (
+              <div className="truth-section__content">
+                <div className="settings-section">
+                  <div className="settings-section__header">
+                    <h4 className="settings-section__title">Display</h4>
+                    <p className="settings-section__subtitle">
+                      Display and formatting preferences for the desktop view.
+                    </p>
+                  </div>
+                  <div className="settings-card">
+                    <div className="settings-form">
+                      <label className="settings-field">
+                        <span className="settings-field__label">Currency format</span>
+                        <select className="settings-input">
+                          <option>USD ($)</option>
+                          <option>EUR (€)</option>
+                          <option>GBP (£)</option>
+                        </select>
+                      </label>
+                      <label className="settings-field">
+                        <span className="settings-field__label">Week start day</span>
+                        <select className="settings-input">
+                          <option>Mon</option>
+                          <option>Sun</option>
+                        </select>
+                      </label>
+                      <div className="settings-toggle-row">
+                        <span className="settings-field__label">Light / dark mode</span>
+                        <label className="toggle">
+                          <input type="checkbox" />
+                          <span className="toggle__track" />
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -816,6 +816,13 @@
   color: var(--text-muted);
 }
 
+.settings-card {
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 16px;
+}
+
 .settings-form {
   display: grid;
   gap: 14px;
@@ -849,22 +856,38 @@
   font-family: inherit;
 }
 
+.settings-input--compact {
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
 .settings-input--textarea {
   resize: vertical;
   min-height: 84px;
 }
 
-.settings-placeholder {
-  border-radius: 16px;
-  border: 1px dashed var(--border);
-  padding: 18px;
-  background: var(--surface);
+.settings-list {
+  display: grid;
+  gap: 12px;
 }
 
-.settings-placeholder__text {
+.settings-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(140px, 0.6fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.settings-row__label {
   font-size: 14px;
-  color: var(--text-muted);
-  margin: 0;
+  color: var(--text-primary);
+}
+
+.settings-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
 
 .forecast-chart {
