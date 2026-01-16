@@ -525,6 +525,8 @@ const AppShell = () => {
     activePrimaryId === "presence" && activeSecondaryId === "reviews";
   const isPresenceTraffic =
     activePrimaryId === "presence" && activeSecondaryId === "traffic";
+  const isPresenceSocial =
+    activePrimaryId === "presence" && activeSecondaryId === "social";
 
   const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
@@ -1438,6 +1440,114 @@ const AppShell = () => {
                           </div>
                         );
                       })}
+                    </div>
+                  </div>
+                );
+              })()
+            ) : isPresenceSocial ? (
+              (() => {
+                const feedItems = [
+                  {
+                    id: "social-1",
+                    platform: "Instagram",
+                    type: "post",
+                    timestamp: "Today · 9:40 AM",
+                    postType: "Reel",
+                    caption:
+                      "Morning service highlight with the seasonal breakfast board and a quick chef walkthrough of the prep line.",
+                    likes: 482,
+                    comments: 36,
+                    views: 4200,
+                  },
+                  {
+                    id: "social-2",
+                    platform: "TikTok",
+                    type: "highlight",
+                    timestamp: "Today · 8:10 AM",
+                    message: "Reel performing above average for the week.",
+                  },
+                  {
+                    id: "social-3",
+                    platform: "Facebook",
+                    type: "post",
+                    timestamp: "Yesterday · 6:12 PM",
+                    postType: "Photo",
+                    caption:
+                      "Golden hour on the patio. Thank you for another full-house evening and the warm reviews.",
+                    likes: 214,
+                    comments: 18,
+                    views: 0,
+                  },
+                  {
+                    id: "social-4",
+                    platform: "Google Business Profile",
+                    type: "signal",
+                    timestamp: "Yesterday · 10:05 AM",
+                    message: "Engagement down vs last month.",
+                  },
+                  {
+                    id: "social-5",
+                    platform: "X",
+                    type: "post",
+                    timestamp: "Sep 12 · 3:20 PM",
+                    postType: "Text",
+                    caption:
+                      "Chef’s tasting menu returns this weekend. Limited bar seats available for walk-ins.",
+                    likes: 96,
+                    comments: 12,
+                    views: 820,
+                  },
+                  {
+                    id: "social-6",
+                    platform: "TikTok",
+                    type: "post",
+                    timestamp: "Sep 11 · 5:04 PM",
+                    postType: "Video",
+                    caption:
+                      "Behind-the-scenes of the pastry team plating tonight’s dessert trio.",
+                    likes: 318,
+                    comments: 22,
+                    views: 3100,
+                  },
+                  {
+                    id: "social-7",
+                    platform: "Instagram",
+                    type: "signal",
+                    timestamp: "Sep 10 · 9:00 AM",
+                    message: "New platform activity detected.",
+                  },
+                ];
+
+                return (
+                  <div className="truth-section__content">
+                    <div className="social-feed" role="list">
+                      {feedItems.map((item) => (
+                        <article key={item.id} className="social-card" role="listitem">
+                          <div className="social-card__header">
+                            <span className="social-card__platform">
+                              {item.platform}
+                            </span>
+                            <span className="social-card__timestamp">
+                              {item.timestamp}
+                            </span>
+                          </div>
+                          {item.type === "post" ? (
+                            <>
+                              <span className="social-card__type">
+                                {item.postType}
+                              </span>
+                              <p className="social-card__caption">{item.caption}</p>
+                              <div className="social-card__engagement">
+                                <span>Likes {item.likes}</span>
+                                <span>Comments {item.comments}</span>
+                                {item.views ? <span>Views {item.views}</span> : null}
+                              </div>
+                            </>
+                          ) : (
+                            <p className="social-card__message">{item.message}</p>
+                          )}
+                        </article>
+                      ))}
                     </div>
                   </div>
                 );
