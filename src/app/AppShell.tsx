@@ -48,6 +48,172 @@ const expensesOverviewTotals: Record<string, string> = {
   Year: "$14,402,800",
 };
 
+const expensesCategoryMetrics: Record<string, Record<string, string>> = {
+  Mon: {
+    Labor: "$18,900",
+    COGS: "$11,400",
+    "Fixed costs": "$6,200",
+    Utilities: "$2,300",
+    Chemicals: "$1,100",
+    Linen: "$480",
+  },
+  Tue: {
+    Labor: "$19,700",
+    COGS: "$12,100",
+    "Fixed costs": "$6,300",
+    Utilities: "$2,260",
+    Chemicals: "$1,140",
+    Linen: "$490",
+  },
+  Wed: {
+    Labor: "$20,200",
+    COGS: "$12,700",
+    "Fixed costs": "$6,400",
+    Utilities: "$2,280",
+    Chemicals: "$1,160",
+    Linen: "$520",
+  },
+  Thu: {
+    Labor: "$19,900",
+    COGS: "$12,300",
+    "Fixed costs": "$6,350",
+    Utilities: "$2,240",
+    Chemicals: "$1,120",
+    Linen: "$510",
+  },
+  Fri: {
+    Labor: "$21,600",
+    COGS: "$13,500",
+    "Fixed costs": "$6,600",
+    Utilities: "$2,460",
+    Chemicals: "$1,180",
+    Linen: "$520",
+  },
+  Sat: {
+    Labor: "$14,200",
+    COGS: "$9,100",
+    "Fixed costs": "$5,100",
+    Utilities: "$1,760",
+    Chemicals: "$840",
+    Linen: "$360",
+  },
+  Sun: {
+    Labor: "$13,400",
+    COGS: "$8,600",
+    "Fixed costs": "$4,900",
+    Utilities: "$1,640",
+    Chemicals: "$810",
+    Linen: "$330",
+  },
+  Week: {
+    Labor: "$128,900",
+    COGS: "$79,700",
+    "Fixed costs": "$41,800",
+    Utilities: "$13,940",
+    Chemicals: "$6,350",
+    Linen: "$2,760",
+  },
+  Month: {
+    Labor: "$528,400",
+    COGS: "$326,300",
+    "Fixed costs": "$171,200",
+    Utilities: "$56,900",
+    Chemicals: "$26,100",
+    Linen: "$11,300",
+  },
+  Year: {
+    Labor: "$6,410,000",
+    COGS: "$3,946,000",
+    "Fixed costs": "$2,080,000",
+    Utilities: "$676,000",
+    Chemicals: "$312,000",
+    Linen: "$136,000",
+  },
+};
+
+const expensesCategoryPercentages: Record<string, Record<string, string>> = {
+  Mon: {
+    Labor: "45%",
+    COGS: "27%",
+    "Fixed costs": "15%",
+    Utilities: "5%",
+    Chemicals: "3%",
+    Linen: "1%",
+  },
+  Tue: {
+    Labor: "44%",
+    COGS: "27%",
+    "Fixed costs": "14%",
+    Utilities: "5%",
+    Chemicals: "3%",
+    Linen: "1%",
+  },
+  Wed: {
+    Labor: "44%",
+    COGS: "28%",
+    "Fixed costs": "14%",
+    Utilities: "5%",
+    Chemicals: "3%",
+    Linen: "1%",
+  },
+  Thu: {
+    Labor: "44%",
+    COGS: "27%",
+    "Fixed costs": "14%",
+    Utilities: "5%",
+    Chemicals: "3%",
+    Linen: "1%",
+  },
+  Fri: {
+    Labor: "43%",
+    COGS: "27%",
+    "Fixed costs": "13%",
+    Utilities: "5%",
+    Chemicals: "2%",
+    Linen: "1%",
+  },
+  Sat: {
+    Labor: "45%",
+    COGS: "29%",
+    "Fixed costs": "16%",
+    Utilities: "6%",
+    Chemicals: "3%",
+    Linen: "1%",
+  },
+  Sun: {
+    Labor: "46%",
+    COGS: "30%",
+    "Fixed costs": "15%",
+    Utilities: "6%",
+    Chemicals: "3%",
+    Linen: "1%",
+  },
+  Week: {
+    Labor: "45%",
+    COGS: "28%",
+    "Fixed costs": "14%",
+    Utilities: "5%",
+    Chemicals: "2%",
+    Linen: "1%",
+  },
+  Month: {
+    Labor: "45%",
+    COGS: "28%",
+    "Fixed costs": "14%",
+    Utilities: "5%",
+    Chemicals: "2%",
+    Linen: "1%",
+  },
+  Year: {
+    Labor: "44%",
+    COGS: "28%",
+    "Fixed costs": "14%",
+    Utilities: "5%",
+    Chemicals: "2%",
+    Linen: "1%",
+  },
+};
+
 const salesBreakdownMetrics: Record<string, Record<string, string>> = {
   Mon: {
     "In-store": "$48,200",
@@ -263,6 +429,15 @@ const breakdownRows = [
   "Covers",
 ];
 
+const expensesCategoryRows = [
+  "Labor",
+  "COGS",
+  "Fixed costs",
+  "Utilities",
+  "Chemicals",
+  "Linen",
+];
+
 const buildPath = (values: number[], width = 520, height = 180) => {
   if (values.length === 0) {
     return "";
@@ -327,6 +502,8 @@ const AppShell = () => {
     activePrimaryId === "sales" && activeSecondaryId === "forecast";
   const isExpensesOverview =
     activePrimaryId === "expenses" && activeSecondaryId === "overview";
+  const isExpensesCategories =
+    activePrimaryId === "expenses" && activeSecondaryId === "categories";
 
   const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
@@ -337,6 +514,10 @@ const AppShell = () => {
     salesForecastSeries[activeTime] ?? salesForecastSeries.Week;
   const activeExpensesTotal =
     expensesOverviewTotals[activeTime] ?? expensesOverviewTotals.Week;
+  const activeExpensesCategories =
+    expensesCategoryMetrics[activeTime] ?? expensesCategoryMetrics.Week;
+  const activeExpensesPercents =
+    expensesCategoryPercentages[activeTime] ?? expensesCategoryPercentages.Week;
 
   return (
     <div className="app-shell">
@@ -386,7 +567,11 @@ const AppShell = () => {
               <h3 className="truth-section__title">{activeSecondary.label}</h3>
             </div>
 
-            {isSalesOverview || isSalesBreakdown || isSalesForecast || isExpensesOverview ? (
+            {isSalesOverview ||
+            isSalesBreakdown ||
+            isSalesForecast ||
+            isExpensesOverview ||
+            isExpensesCategories ? (
               <div className="truth-section__content">
                 <div className="time-selector" role="tablist" aria-label="Time range">
                   {timeOptions.map((option) => (
@@ -470,6 +655,35 @@ const AppShell = () => {
                       <p className="metric__label">Total Expenses</p>
                       <p className="metric__value">{activeExpensesTotal}</p>
                     </div>
+                  </div>
+                ) : null}
+
+                {isExpensesCategories ? (
+                  <div className="breakdown-table" role="table">
+                    <div className="breakdown-row breakdown-row--header" role="row">
+                      <span className="breakdown-row__label" role="columnheader">
+                        Category
+                      </span>
+                      <span className="breakdown-row__value" role="columnheader">
+                        Amount
+                      </span>
+                      <span className="breakdown-row__percent" role="columnheader">
+                        % of Total
+                      </span>
+                    </div>
+                    {expensesCategoryRows.map((label) => (
+                      <div key={label} className="breakdown-row" role="row">
+                        <span className="breakdown-row__label" role="cell">
+                          {label}
+                        </span>
+                        <span className="breakdown-row__value" role="cell">
+                          {activeExpensesCategories[label]}
+                        </span>
+                        <span className="breakdown-row__percent" role="cell">
+                          {activeExpensesPercents[label]}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 ) : null}
               </div>
