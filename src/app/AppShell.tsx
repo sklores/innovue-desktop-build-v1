@@ -131,6 +131,69 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
   },
 };
 
+const salesBreakdownPercentages: Record<string, Record<string, string>> = {
+  Mon: {
+    "In-store": "38%",
+    Takeout: "25%",
+    Delivery: "22%",
+    "3rd-party tips": "3%",
+  },
+  Tue: {
+    "In-store": "39%",
+    Takeout: "25%",
+    Delivery: "22%",
+    "3rd-party tips": "3%",
+  },
+  Wed: {
+    "In-store": "40%",
+    Takeout: "26%",
+    Delivery: "22%",
+    "3rd-party tips": "3%",
+  },
+  Thu: {
+    "In-store": "39%",
+    Takeout: "26%",
+    Delivery: "23%",
+    "3rd-party tips": "3%",
+  },
+  Fri: {
+    "In-store": "40%",
+    Takeout: "25%",
+    Delivery: "22%",
+    "3rd-party tips": "3%",
+  },
+  Sat: {
+    "In-store": "42%",
+    Takeout: "29%",
+    Delivery: "26%",
+    "3rd-party tips": "3%",
+  },
+  Sun: {
+    "In-store": "41%",
+    Takeout: "29%",
+    Delivery: "26%",
+    "3rd-party tips": "2%",
+  },
+  Week: {
+    "In-store": "40%",
+    Takeout: "26%",
+    Delivery: "23%",
+    "3rd-party tips": "3%",
+  },
+  Month: {
+    "In-store": "40%",
+    Takeout: "27%",
+    Delivery: "23%",
+    "3rd-party tips": "3%",
+  },
+  Year: {
+    "In-store": "41%",
+    Takeout: "29%",
+    Delivery: "24%",
+    "3rd-party tips": "3%",
+  },
+};
+
 const salesForecastSeries: Record<
   string,
   {
@@ -268,6 +331,8 @@ const AppShell = () => {
   const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
     salesBreakdownMetrics[activeTime] ?? salesBreakdownMetrics.Week;
+  const activeBreakdownPercent =
+    salesBreakdownPercentages[activeTime] ?? salesBreakdownPercentages.Week;
   const activeForecast =
     salesForecastSeries[activeTime] ?? salesForecastSeries.Week;
   const activeExpensesTotal =
@@ -353,6 +418,17 @@ const AppShell = () => {
 
                 {isSalesBreakdown ? (
                   <div className="breakdown-table" role="table">
+                    <div className="breakdown-row breakdown-row--header" role="row">
+                      <span className="breakdown-row__label" role="columnheader">
+                        Category
+                      </span>
+                      <span className="breakdown-row__value" role="columnheader">
+                        Amount
+                      </span>
+                      <span className="breakdown-row__percent" role="columnheader">
+                        % of Total
+                      </span>
+                    </div>
                     {breakdownRows.map((label) => (
                       <div key={label} className="breakdown-row" role="row">
                         <span className="breakdown-row__label" role="cell">
@@ -360,6 +436,9 @@ const AppShell = () => {
                         </span>
                         <span className="breakdown-row__value" role="cell">
                           {activeBreakdown[label]}
+                        </span>
+                        <span className="breakdown-row__percent" role="cell">
+                          {activeBreakdownPercent[label] ?? "—"}
                         </span>
                       </div>
                     ))}

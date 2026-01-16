@@ -175,14 +175,14 @@
 .breakdown-table {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .breakdown-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.7fr);
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
 }
 
 .breakdown-row__label {
@@ -195,6 +195,22 @@
   color: var(--text-primary);
   font-weight: 500;
   text-align: right;
+}
+
+.breakdown-row__percent {
+  font-size: 14px;
+  color: var(--text-soft);
+  text-align: right;
+}
+
+.breakdown-row--header .breakdown-row__label,
+.breakdown-row--header .breakdown-row__value,
+.breakdown-row--header .breakdown-row__percent {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  font-weight: 500;
 }
 
 .forecast-chart {
