@@ -18,6 +18,8 @@ const timeOptions = [
   "Year",
 ];
 
+const financialsTimeOptions = ["Week", "Month", "Quarter", "Year"];
+
 const reportingTabs = [
   { id: "tab-a", label: "Tab A" },
   { id: "tab-b", label: "Tab B" },
@@ -471,6 +473,9 @@ const AppShell = () => {
     secondaryTabsByPrimary[primaryNavItems[0].id][0].id,
   );
   const [activeTime, setActiveTime] = useState(timeOptions[7]);
+  const [financialsTime, setFinancialsTime] = useState(
+    financialsTimeOptions[1],
+  );
   const [openVendorId, setOpenVendorId] = useState<string | null>(null);
   const [openOrderGuideId, setOpenOrderGuideId] = useState<string | null>(null);
 
@@ -509,6 +514,8 @@ const AppShell = () => {
     activePrimaryId === "expenses" && activeSecondaryId === "categories";
   const isExpensesVendors =
     activePrimaryId === "expenses" && activeSecondaryId === "vendors";
+  const isFinancialsProfitLoss =
+    activePrimaryId === "financials" && activeSecondaryId === "profit-loss";
 
   const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
@@ -911,6 +918,120 @@ const AppShell = () => {
                           </div>
                         );
                       })}
+                    </div>
+                  </div>
+                );
+              })()
+            ) : isFinancialsProfitLoss ? (
+              (() => {
+                const parseCurrency = (value: string) => {
+                  const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
+                  return Number.isNaN(numeric) ? 0 : numeric;
+                };
+
+                const formatCurrency = (value: number) =>
+                  `$${Math.round(value).toLocaleString()}`;
+
+                const getSalesValue = (period: string) => {
+                  if (period === "Quarter") {
+                    const monthSales = parseCurrency(
+                      salesOverviewMetrics.Month.gross,
+                    );
+                    return monthSales * 3;
+                  }
+                  return parseCurrency(
+                    salesOverviewMetrics[period]?.gross ??
+                      salesOverviewMetrics.Month.gross,
+                  );
+                };
+
+                const getExpenseValue = (period: string) => {
+                  if (period === "Quarter") {
+                    const monthExpenses = parseCurrency(expensesOverviewTotals.Month);
+                    return monthExpenses * 3;
+                  }
+                  return parseCurrency(
+                    expensesOverviewTotals[period] ?? expensesOverviewTotals.Month,
+                  );
+                };
+
+                const salesValue = getSalesValue(financialsTime);
+                const expensesValue = getExpenseValue(financialsTime);
+                const profitValue = salesValue - expensesValue;
+                const expensePercent =
+                  salesValue > 0
+                    ? Math.round((expensesValue / salesValue) * 100)
+                    : 0;
+                const profitPercent =
+                  salesValue > 0
+                    ? Math.round((profitValue / salesValue) * 100)
+                    : 0;
+
+                return (
+                  <div className="truth-section__content">
+                    <div
+                      className="time-selector"
+                      role="tablist"
+                      aria-label="Time range"
+                    >
+                      {financialsTimeOptions.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          className={`time-pill${
+                            financialsTime === option ? " time-pill--active" : ""
+                          }`}
+                          onClick={() => setFinancialsTime(option)}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="breakdown-table" role="table">
+                      <div className="breakdown-row breakdown-row--header" role="row">
+                        <span className="breakdown-row__label" role="columnheader">
+                          Line item
+                        </span>
+                        <span className="breakdown-row__value" role="columnheader">
+                          Amount
+                        </span>
+                        <span className="breakdown-row__percent" role="columnheader">
+                          % of Sales
+                        </span>
+                      </div>
+                      <div className="breakdown-row" role="row">
+                        <span className="breakdown-row__label" role="cell">
+                          Sales
+                        </span>
+                        <span className="breakdown-row__value" role="cell">
+                          {formatCurrency(salesValue)}
+                        </span>
+                        <span className="breakdown-row__percent" role="cell">
+                          100%
+                        </span>
+                      </div>
+                      <div className="breakdown-row" role="row">
+                        <span className="breakdown-row__label" role="cell">
+                          Expenses
+                        </span>
+                        <span className="breakdown-row__value" role="cell">
+                          {formatCurrency(expensesValue)}
+                        </span>
+                        <span className="breakdown-row__percent" role="cell">
+                          {expensePercent}%
+                        </span>
+                      </div>
+                      <div className="breakdown-row" role="row">
+                        <span className="breakdown-row__label" role="cell">
+                          Profit
+                        </span>
+                        <span className="breakdown-row__value" role="cell">
+                          {formatCurrency(profitValue)}
+                        </span>
+                        <span className="breakdown-row__percent" role="cell">
+                          {profitPercent}%
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );
