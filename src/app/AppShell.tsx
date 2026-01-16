@@ -529,10 +529,13 @@ const AppShell = () => {
   const activeExpensesPercents =
     expensesCategoryPercentages[activeTime] ?? expensesCategoryPercentages.Week;
   const sortedVendors = useMemo(() => {
+    if (!isExpensesVendors) {
+      return [];
+    }
     return [...vendorRows].sort(
       (a, b) => parseCurrency(b.accountsPayable) - parseCurrency(a.accountsPayable),
     );
-  }, []);
+  }, [isExpensesVendors]);
 
   const handleVendorToggle = (id: string) => {
     setOpenVendorId((prev) => (prev === id ? null : id));
