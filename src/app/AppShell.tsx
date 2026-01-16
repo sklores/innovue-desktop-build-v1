@@ -35,6 +35,19 @@ const salesOverviewMetrics: Record<string, { gross: string; net: string }> = {
   Year: { gross: "$41,882,000", net: "$39,304,500" },
 };
 
+const expensesOverviewTotals: Record<string, string> = {
+  Mon: "$42,380",
+  Tue: "$44,910",
+  Wed: "$46,220",
+  Thu: "$45,670",
+  Fri: "$49,830",
+  Sat: "$31,540",
+  Sun: "$28,960",
+  Week: "$289,510",
+  Month: "$1,184,200",
+  Year: "$14,402,800",
+};
+
 const salesBreakdownMetrics: Record<string, Record<string, string>> = {
   Mon: {
     "In-store": "$48,200",
@@ -249,12 +262,16 @@ const AppShell = () => {
     activePrimaryId === "sales" && activeSecondaryId === "breakdown";
   const isSalesForecast =
     activePrimaryId === "sales" && activeSecondaryId === "forecast";
+  const isExpensesOverview =
+    activePrimaryId === "expenses" && activeSecondaryId === "overview";
 
   const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
     salesBreakdownMetrics[activeTime] ?? salesBreakdownMetrics.Week;
   const activeForecast =
     salesForecastSeries[activeTime] ?? salesForecastSeries.Week;
+  const activeExpensesTotal =
+    expensesOverviewTotals[activeTime] ?? expensesOverviewTotals.Week;
 
   return (
     <div className="app-shell">
@@ -304,7 +321,7 @@ const AppShell = () => {
               <h3 className="truth-section__title">{activeSecondary.label}</h3>
             </div>
 
-            {isSalesOverview || isSalesBreakdown || isSalesForecast ? (
+            {isSalesOverview || isSalesBreakdown || isSalesForecast || isExpensesOverview ? (
               <div className="truth-section__content">
                 <div className="time-selector" role="tablist" aria-label="Time range">
                   {timeOptions.map((option) => (
@@ -365,6 +382,15 @@ const AppShell = () => {
                         d={buildPath(activeForecast.projected)}
                       />
                     </svg>
+                  </div>
+                ) : null}
+
+                {isExpensesOverview ? (
+                  <div className="metrics">
+                    <div className="metric">
+                      <p className="metric__label">Total Expenses</p>
+                      <p className="metric__value">{activeExpensesTotal}</p>
+                    </div>
                   </div>
                 ) : null}
               </div>
