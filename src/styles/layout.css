@@ -359,6 +359,114 @@
   background: rgba(145, 195, 160, 0.28);
 }
 
+.proforma-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.proforma-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.proforma-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.proforma-table {
+  display: grid;
+  gap: 12px;
+}
+
+.proforma-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.proforma-row--header {
+  border: none;
+  background: transparent;
+  padding: 0 4px;
+}
+
+.proforma-row--header .proforma-cell {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  font-weight: 500;
+}
+
+.proforma-cell {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.proforma-cell--label {
+  font-weight: 500;
+}
+
+.proforma-row--positive {
+  background: rgba(145, 195, 160, 0.12);
+}
+
+.proforma-row--neutral {
+  background: rgba(240, 213, 135, 0.18);
+}
+
+.proforma-row--negative {
+  background: rgba(231, 119, 102, 0.12);
+}
+
+.proforma-bars {
+  display: grid;
+  gap: 10px;
+}
+
+.proforma-bar-row {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.proforma-bar-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
+
+.proforma-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.proforma-bar--high {
+  width: 100%;
+  background: rgba(145, 195, 160, 0.7);
+}
+
+.proforma-bar--medium {
+  width: 60%;
+  background: rgba(240, 213, 135, 0.7);
+}
+
+.proforma-bar--low {
+  width: 18%;
+  background: rgba(231, 119, 102, 0.7);
+}
+
 .forecast-chart {
   width: 100%;
   padding: 12px 0;

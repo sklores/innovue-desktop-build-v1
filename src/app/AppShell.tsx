@@ -516,6 +516,8 @@ const AppShell = () => {
     activePrimaryId === "expenses" && activeSecondaryId === "vendors";
   const isFinancialsCashflow =
     activePrimaryId === "financials" && activeSecondaryId === "cashflow";
+  const isFinancialsProForma =
+    activePrimaryId === "financials" && activeSecondaryId === "pro-forma";
   const isFinancialsProfitLoss =
     activePrimaryId === "financials" && activeSecondaryId === "profit-loss";
 
@@ -1013,6 +1015,93 @@ const AppShell = () => {
                           </div>
                         );
                       })}
+                    </div>
+                  </div>
+                );
+              })()
+            ) : isFinancialsProForma ? (
+              (() => {
+                const scenarios = [
+                  {
+                    id: "high",
+                    label: "High",
+                    monthly: "$12,642",
+                    yearly: "$151,708",
+                    margin: "15%",
+                    tone: "proforma-row--positive",
+                    bar: "proforma-bar--high",
+                  },
+                  {
+                    id: "medium",
+                    label: "Medium",
+                    monthly: "$5,084",
+                    yearly: "$61,010",
+                    margin: "8%",
+                    tone: "proforma-row--neutral",
+                    bar: "proforma-bar--medium",
+                  },
+                  {
+                    id: "low",
+                    label: "Low",
+                    monthly: "$45",
+                    yearly: "$544",
+                    margin: "0%",
+                    tone: "proforma-row--negative",
+                    bar: "proforma-bar--low",
+                  },
+                ];
+
+                return (
+                  <div className="truth-section__content">
+                    <div className="proforma-header">
+                      <h4 className="proforma-title">Pro Forma</h4>
+                      <p className="proforma-subtitle">
+                        Scenario-based profitability snapshot
+                      </p>
+                    </div>
+                    <div className="proforma-table" role="table">
+                      <div className="proforma-row proforma-row--header" role="row">
+                        <span className="proforma-cell" role="columnheader">
+                          Scenario
+                        </span>
+                        <span className="proforma-cell" role="columnheader">
+                          Monthly Profit
+                        </span>
+                        <span className="proforma-cell" role="columnheader">
+                          Yearly Profit
+                        </span>
+                        <span className="proforma-cell" role="columnheader">
+                          Profit Margin
+                        </span>
+                      </div>
+                      {scenarios.map((scenario) => (
+                        <div
+                          key={scenario.id}
+                          className={`proforma-row ${scenario.tone}`}
+                          role="row"
+                        >
+                          <span className="proforma-cell proforma-cell--label" role="cell">
+                            {scenario.label}
+                          </span>
+                          <span className="proforma-cell" role="cell">
+                            {scenario.monthly}
+                          </span>
+                          <span className="proforma-cell" role="cell">
+                            {scenario.yearly}
+                          </span>
+                          <span className="proforma-cell" role="cell">
+                            {scenario.margin}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="proforma-bars" role="presentation">
+                      {scenarios.map((scenario) => (
+                        <div key={scenario.id} className="proforma-bar-row">
+                          <span className="proforma-bar-label">{scenario.label}</span>
+                          <span className={`proforma-bar ${scenario.bar}`} />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 );
