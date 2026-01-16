@@ -1191,7 +1191,6 @@ const AppShell = () => {
                 return (
                   <div className="truth-section__content">
                     <div className="proforma-header">
-                      <h4 className="proforma-title">Pro Forma</h4>
                       <p className="proforma-subtitle">
                         Scenario-based profitability snapshot
                       </p>
@@ -1675,7 +1674,6 @@ const AppShell = () => {
               <div className="truth-section__content">
                 <div className="reporting-section">
                   <div className="reporting-section__header">
-                    <h4 className="reporting-section__title">Email Reports</h4>
                     <p className="reporting-section__subtitle">
                       Configure delivery preferences for scheduled reporting.
                     </p>
@@ -1733,7 +1731,6 @@ const AppShell = () => {
               <div className="truth-section__content">
                 <div className="reporting-section">
                   <div className="reporting-section__header">
-                    <h4 className="reporting-section__title">Notifications</h4>
                     <p className="reporting-section__subtitle">
                       Set alert sensitivity for key operating signals.
                     </p>
@@ -1774,7 +1771,6 @@ const AppShell = () => {
               <div className="truth-section__content">
                 <div className="settings-section">
                   <div className="settings-section__header">
-                    <h4 className="settings-section__title">Business</h4>
                     <p className="settings-section__subtitle">
                       Core business details used across reporting and profiles.
                     </p>
@@ -1832,7 +1828,6 @@ const AppShell = () => {
               <div className="truth-section__content">
                 <div className="settings-section">
                   <div className="settings-section__header">
-                    <h4 className="settings-section__title">Operations</h4>
                     <p className="settings-section__subtitle">
                       Day-to-day defaults used by ordering and operations.
                     </p>
@@ -1882,7 +1877,6 @@ const AppShell = () => {
               <div className="truth-section__content">
                 <div className="settings-section">
                   <div className="settings-section__header">
-                    <h4 className="settings-section__title">Financial Assumptions</h4>
                     <p className="settings-section__subtitle">
                       Default assumptions applied to forecasts and summaries.
                     </p>
@@ -1929,7 +1923,6 @@ const AppShell = () => {
               <div className="truth-section__content">
                 <div className="settings-section">
                   <div className="settings-section__header">
-                    <h4 className="settings-section__title">Alerts</h4>
                     <p className="settings-section__subtitle">
                       Alert toggles and sensitivity levels for key signals.
                     </p>
@@ -1977,7 +1970,6 @@ const AppShell = () => {
               <div className="truth-section__content">
                 <div className="settings-section">
                   <div className="settings-section__header">
-                    <h4 className="settings-section__title">Display</h4>
                     <p className="settings-section__subtitle">
                       Display and formatting preferences for the desktop view.
                     </p>
