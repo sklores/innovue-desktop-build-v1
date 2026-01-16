@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import type { KeyboardEvent } from "react";
 
 import PrimaryNav from "../navigation/PrimaryNav";
 import SecondaryNav from "../navigation/SecondaryNav";
@@ -438,6 +439,11 @@ const expensesCategoryRows = [
   "Linen",
 ];
 
+const parseCurrency = (value: string) => {
+  const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
+  return Number.isNaN(numeric) ? 0 : numeric;
+};
+
 const buildPath = (values: number[], width = 520, height = 180) => {
   if (values.length === 0) {
     return "";
@@ -470,6 +476,8 @@ const AppShell = () => {
     secondaryTabsByPrimary[primaryNavItems[0].id][0].id,
   );
   const [activeTime, setActiveTime] = useState(timeOptions[7]);
+  const [openVendorId, setOpenVendorId] = useState<string | null>(null);
+  const [openOrderGuideId, setOpenOrderGuideId] = useState<string | null>(null);
 
   const activePrimary = useMemo(() => {
     return primaryNavItems.find((tab) => tab.id === activePrimaryId) ?? primaryNavItems[0];
@@ -504,6 +512,8 @@ const AppShell = () => {
     activePrimaryId === "expenses" && activeSecondaryId === "overview";
   const isExpensesCategories =
     activePrimaryId === "expenses" && activeSecondaryId === "categories";
+  const isExpensesVendors =
+    activePrimaryId === "expenses" && activeSecondaryId === "vendors";
 
   const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
@@ -518,6 +528,44 @@ const AppShell = () => {
     expensesCategoryMetrics[activeTime] ?? expensesCategoryMetrics.Week;
   const activeExpensesPercents =
     expensesCategoryPercentages[activeTime] ?? expensesCategoryPercentages.Week;
+  const sortedVendors = useMemo(() => {
+    return [...vendorRows].sort(
+      (a, b) => parseCurrency(b.accountsPayable) - parseCurrency(a.accountsPayable),
+    );
+  }, []);
+
+  const handleVendorToggle = (id: string) => {
+    setOpenVendorId((prev) => (prev === id ? null : id));
+    setOpenOrderGuideId(null);
+  };
+
+  const handleVendorKeyDown = (event: KeyboardEvent<HTMLDivElement>, id: string) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleVendorToggle(id);
+    }
+  };
+
+  const handleOrderGuideToggle = (id: string) => {
+    setOpenOrderGuideId((prev) => (prev === id ? null : id));
+  };
+
+  const handleOrderGuideKeyDown = (
+    event: KeyboardEvent<HTMLDivElement>,
+    id: string,
+  ) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleOrderGuideToggle(id);
+    }
+  };
+
+  const isTimeBasedView =
+    isSalesOverview ||
+    isSalesBreakdown ||
+    isSalesForecast ||
+    isExpensesOverview ||
+    isExpensesCategories;
 
   return (
     <div className="app-shell">
@@ -567,11 +615,7 @@ const AppShell = () => {
               <h3 className="truth-section__title">{activeSecondary.label}</h3>
             </div>
 
-            {isSalesOverview ||
-            isSalesBreakdown ||
-            isSalesForecast ||
-            isExpensesOverview ||
-            isExpensesCategories ? (
+            {isTimeBasedView ? (
               <div className="truth-section__content">
                 <div className="time-selector" role="tablist" aria-label="Time range">
                   {timeOptions.map((option) => (
@@ -686,6 +730,185 @@ const AppShell = () => {
                     ))}
                   </div>
                 ) : null}
+              </div>
+            ) : isExpensesVendors ? (
+              <div className="truth-section__content">
+                <div className="breakdown-table" role="list">
+                  {sortedVendors.map((vendor) => {
+                    const isOpen = openVendorId === vendor.id;
+                    const isOrderGuideOpen = openOrderGuideId === vendor.id;
+                    return (
+                      <div key={vendor.id} role="listitem">
+                        <div
+                          className="breakdown-row"
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={isOpen}
+                          onClick={() => handleVendorToggle(vendor.id)}
+                          onKeyDown={(event) => handleVendorKeyDown(event, vendor.id)}
+                          style={{
+                            cursor: "pointer",
+                            gridTemplateColumns: "minmax(0, 1.6fr) minmax(0, 0.8fr)",
+                          }}
+                        >
+                          <span className="breakdown-row__label">{vendor.name}</span>
+                          <span className="breakdown-row__value">
+                            {vendor.accountsPayable}
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            maxHeight: isOpen ? "420px" : "0px",
+                            opacity: isOpen ? 1 : 0,
+                            overflow: "hidden",
+                            transition: "max-height 0.25s ease, opacity 0.2s ease",
+                            paddingTop: isOpen ? "12px" : "0px",
+                            paddingBottom: isOpen ? "16px" : "0px",
+                          }}
+                          aria-hidden={!isOpen}
+                        >
+                          <div style={{ display: "grid", gap: "16px" }}>
+                            <div style={{ display: "grid", gap: "6px" }}>
+                              <span className="metric__label">Identity / Contact</span>
+                              <span
+                                style={{
+                                  fontSize: "16px",
+                                  color: "var(--text-primary)",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {vendor.name}
+                              </span>
+                              <span className="breakdown-row__label">
+                                {vendor.email}
+                              </span>
+                              <span className="breakdown-row__label">
+                                {vendor.phone}
+                              </span>
+                            </div>
+                            <div style={{ display: "grid", gap: "8px" }}>
+                              <span className="metric__label">Payment</span>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  gap: "16px",
+                                }}
+                              >
+                                <span className="breakdown-row__label">
+                                  Accounts payable
+                                </span>
+                                <span className="breakdown-row__value">
+                                  {vendor.accountsPayable}
+                                </span>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  gap: "16px",
+                                }}
+                              >
+                                <span className="breakdown-row__label">
+                                  Payment terms
+                                </span>
+                                <span className="breakdown-row__value">
+                                  {vendor.paymentTerms}
+                                </span>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  gap: "16px",
+                                }}
+                              >
+                                <span className="breakdown-row__label">
+                                  Account number
+                                </span>
+                                <span className="breakdown-row__value">
+                                  {vendor.accountNumber}
+                                </span>
+                              </div>
+                            </div>
+                            <div style={{ display: "grid", gap: "8px" }}>
+                              <span className="metric__label">Operations</span>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  gap: "16px",
+                                }}
+                              >
+                                <span className="breakdown-row__label">
+                                  Delivery days
+                                </span>
+                                <span className="breakdown-row__value">
+                                  {vendor.deliveryDays}
+                                </span>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  gap: "16px",
+                                }}
+                              >
+                                <span className="breakdown-row__label">
+                                  Delivery minimum
+                                </span>
+                                <span className="breakdown-row__value">
+                                  {vendor.deliveryMinimum}
+                                </span>
+                              </div>
+                            </div>
+                            <div style={{ display: "grid", gap: "8px" }}>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                aria-expanded={isOrderGuideOpen}
+                                onClick={() => handleOrderGuideToggle(vendor.id)}
+                                onKeyDown={(event) =>
+                                  handleOrderGuideKeyDown(event, vendor.id)
+                                }
+                                style={{
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <span className="metric__label">Order guide</span>
+                              </div>
+                              <div
+                                style={{
+                                  maxHeight: isOrderGuideOpen ? "160px" : "0px",
+                                  opacity: isOrderGuideOpen ? 1 : 0,
+                                  overflow: "hidden",
+                                  transition: "max-height 0.2s ease, opacity 0.2s ease",
+                                }}
+                                aria-hidden={!isOrderGuideOpen}
+                              >
+                                <ul
+                                  style={{
+                                    listStyle: "none",
+                                    padding: 0,
+                                    margin: "8px 0 0 0",
+                                    display: "grid",
+                                    gap: "6px",
+                                  }}
+                                >
+                                  {vendor.orderGuide.map((item) => (
+                                    <li key={item} className="breakdown-row__label">
+                                      {item}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ) : (
               <p className="truth-section__body">Placeholder summary</p>
