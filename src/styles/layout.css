@@ -288,6 +288,77 @@
   gap: 6px;
 }
 
+.cashflow-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cashflow-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.cashflow-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cashflow-day {
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 120px;
+  border: 1px solid rgba(236, 239, 244, 0.8);
+  background: var(--surface);
+}
+
+.cashflow-day--muted {
+  opacity: 0.55;
+}
+
+.cashflow-day__date {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
+
+.cashflow-day__net {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cashflow-day__detail {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.cashflow-day--neg-strong {
+  background: rgba(231, 119, 102, 0.22);
+}
+
+.cashflow-day--neg {
+  background: rgba(231, 119, 102, 0.14);
+}
+
+.cashflow-day--neutral {
+  background: rgba(214, 219, 229, 0.3);
+}
+
+.cashflow-day--pos {
+  background: rgba(145, 195, 160, 0.18);
+}
+
+.cashflow-day--pos-strong {
+  background: rgba(145, 195, 160, 0.28);
+}
+
 .forecast-chart {
   width: 100%;
   padding: 12px 0;

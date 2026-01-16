@@ -514,6 +514,8 @@ const AppShell = () => {
     activePrimaryId === "expenses" && activeSecondaryId === "categories";
   const isExpensesVendors =
     activePrimaryId === "expenses" && activeSecondaryId === "vendors";
+  const isFinancialsCashflow =
+    activePrimaryId === "financials" && activeSecondaryId === "cashflow";
   const isFinancialsProfitLoss =
     activePrimaryId === "financials" && activeSecondaryId === "profit-loss";
 
@@ -915,6 +917,99 @@ const AppShell = () => {
                                 </div>
                               </div>
                             </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()
+            ) : isFinancialsCashflow ? (
+              (() => {
+                const cashflowMonth = "September 2024";
+                const cashflowDays = [
+                  { day: 26, current: false, sales: 14200, expenses: 15680 },
+                  { day: 27, current: false, sales: 16800, expenses: 15100 },
+                  { day: 28, current: false, sales: 19200, expenses: 18350 },
+                  { day: 29, current: false, sales: 15800, expenses: 17020 },
+                  { day: 30, current: false, sales: 17600, expenses: 16240 },
+                  { day: 31, current: false, sales: 18450, expenses: 17480 },
+                  { day: 1, current: true, sales: 18200, expenses: 15600 },
+                  { day: 2, current: true, sales: 16600, expenses: 14200 },
+                  { day: 3, current: true, sales: 19200, expenses: 17100 },
+                  { day: 4, current: true, sales: 17800, expenses: 16550 },
+                  { day: 5, current: true, sales: 20400, expenses: 18800 },
+                  { day: 6, current: true, sales: 21400, expenses: 19350 },
+                  { day: 7, current: true, sales: 15600, expenses: 14900 },
+                  { day: 8, current: true, sales: 16400, expenses: 17100 },
+                  { day: 9, current: true, sales: 18900, expenses: 16250 },
+                  { day: 10, current: true, sales: 20300, expenses: 18880 },
+                  { day: 11, current: true, sales: 17600, expenses: 15400 },
+                  { day: 12, current: true, sales: 19300, expenses: 16850 },
+                  { day: 13, current: true, sales: 22100, expenses: 20100 },
+                  { day: 14, current: true, sales: 14800, expenses: 14050 },
+                  { day: 15, current: true, sales: 18200, expenses: 17650 },
+                  { day: 16, current: true, sales: 19600, expenses: 18200 },
+                  { day: 17, current: true, sales: 20500, expenses: 19100 },
+                  { day: 18, current: true, sales: 18700, expenses: 17000 },
+                  { day: 19, current: true, sales: 21000, expenses: 18950 },
+                  { day: 20, current: true, sales: 23000, expenses: 21100 },
+                  { day: 21, current: true, sales: 15200, expenses: 14800 },
+                  { day: 22, current: true, sales: 16800, expenses: 15900 },
+                  { day: 23, current: true, sales: 18900, expenses: 19600 },
+                  { day: 24, current: true, sales: 20100, expenses: 18400 },
+                  { day: 25, current: true, sales: 19400, expenses: 17350 },
+                  { day: 26, current: true, sales: 20900, expenses: 20150 },
+                  { day: 27, current: true, sales: 22200, expenses: 20600 },
+                  { day: 28, current: true, sales: 16400, expenses: 15500 },
+                  { day: 29, current: true, sales: 17500, expenses: 16800 },
+                  { day: 30, current: true, sales: 18700, expenses: 19450 },
+                  { day: 1, current: false, sales: 19800, expenses: 18200 },
+                  { day: 2, current: false, sales: 17200, expenses: 16350 },
+                  { day: 3, current: false, sales: 18900, expenses: 17700 },
+                  { day: 4, current: false, sales: 20100, expenses: 19050 },
+                  { day: 5, current: false, sales: 18200, expenses: 16800 },
+                ];
+
+                const formatCompact = (value: number) =>
+                  `$${(value / 1000).toFixed(1)}k`;
+
+                const getShadeClass = (net: number) => {
+                  if (net <= -2000) return "cashflow-day--neg-strong";
+                  if (net <= -500) return "cashflow-day--neg";
+                  if (net < 500) return "cashflow-day--neutral";
+                  if (net < 2000) return "cashflow-day--pos";
+                  return "cashflow-day--pos-strong";
+                };
+
+                return (
+                  <div className="truth-section__content">
+                    <div className="cashflow-header">
+                      <span className="metric__label">Month view</span>
+                      <h4 className="cashflow-title">{cashflowMonth}</h4>
+                    </div>
+                    <div className="cashflow-calendar" role="grid">
+                      {cashflowDays.map((entry, index) => {
+                        const net = entry.sales - entry.expenses;
+                        const netLabel = `${net >= 0 ? "+" : "-"} ${formatCompact(
+                          Math.abs(net),
+                        )}`;
+                        return (
+                          <div
+                            key={`${entry.day}-${index}`}
+                            className={`cashflow-day ${getShadeClass(net)}${
+                              entry.current ? "" : " cashflow-day--muted"
+                            }`}
+                            role="gridcell"
+                          >
+                            <span className="cashflow-day__date">{entry.day}</span>
+                            <span className="cashflow-day__net">{netLabel}</span>
+                            <span className="cashflow-day__detail">
+                              Sales: {formatCompact(entry.sales)}
+                            </span>
+                            <span className="cashflow-day__detail">
+                              Exp: {formatCompact(entry.expenses)}
+                            </span>
                           </div>
                         );
                       })}
