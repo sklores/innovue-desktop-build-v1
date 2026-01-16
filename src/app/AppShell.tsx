@@ -479,6 +479,80 @@ const AppShell = () => {
   const [openVendorId, setOpenVendorId] = useState<string | null>(null);
   const [openOrderGuideId, setOpenOrderGuideId] = useState<string | null>(null);
   const [openTrafficId, setOpenTrafficId] = useState<string | null>(null);
+  const [reportPreferences, setReportPreferences] = useState([
+    {
+      id: "daily-sales-summary",
+      label: "Daily Sales Summary",
+      enabled: true,
+      frequency: "Daily",
+      recipient: "Owner",
+      email: "",
+    },
+    {
+      id: "weekly-financial-snapshot",
+      label: "Weekly Financial Snapshot",
+      enabled: true,
+      frequency: "Weekly",
+      recipient: "Managers",
+      email: "",
+    },
+    {
+      id: "monthly-pl",
+      label: "Monthly P&L",
+      enabled: false,
+      frequency: "Monthly",
+      recipient: "Owner",
+      email: "",
+    },
+    {
+      id: "weekly-reviews-digest",
+      label: "Weekly Reviews Digest",
+      enabled: true,
+      frequency: "Weekly",
+      recipient: "Managers",
+      email: "",
+    },
+    {
+      id: "weekly-traffic-summary",
+      label: "Weekly Traffic Summary",
+      enabled: false,
+      frequency: "Weekly",
+      recipient: "Custom email",
+      email: "ops@gcdc.co",
+    },
+  ]);
+  const [notificationPreferences, setNotificationPreferences] = useState([
+    {
+      id: "sales-low",
+      label: "Sales unusually low for the day",
+      enabled: true,
+      sensitivity: "Medium",
+    },
+    {
+      id: "expenses-spike",
+      label: "Expenses spike vs typical",
+      enabled: true,
+      sensitivity: "High",
+    },
+    {
+      id: "negative-review",
+      label: "New negative review",
+      enabled: true,
+      sensitivity: "Low",
+    },
+    {
+      id: "no-social-posts",
+      label: "No social posts in X days",
+      enabled: false,
+      sensitivity: "Medium",
+    },
+    {
+      id: "negative-cashflow",
+      label: "Negative cashflow day",
+      enabled: false,
+      sensitivity: "Medium",
+    },
+  ]);
 
   const activePrimary = useMemo(() => {
     return primaryNavItems.find((tab) => tab.id === activePrimaryId) ?? primaryNavItems[0];
@@ -527,6 +601,7 @@ const AppShell = () => {
     activePrimaryId === "presence" && activeSecondaryId === "traffic";
   const isPresenceSocial =
     activePrimaryId === "presence" && activeSecondaryId === "social";
+  const isReporting = activePrimaryId === "reporting";
 
   const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
@@ -577,6 +652,44 @@ const AppShell = () => {
       event.preventDefault();
       handleTrafficToggle(id);
     }
+  };
+
+  const handleReportToggle = (id: string) => {
+    setReportPreferences((prev) =>
+      prev.map((report) =>
+        report.id === id ? { ...report, enabled: !report.enabled } : report,
+      ),
+    );
+  };
+
+  const handleReportChange = (
+    id: string,
+    field: "frequency" | "recipient" | "email",
+    value: string,
+  ) => {
+    setReportPreferences((prev) =>
+      prev.map((report) =>
+        report.id === id ? { ...report, [field]: value } : report,
+      ),
+    );
+  };
+
+  const handleNotificationToggle = (id: string) => {
+    setNotificationPreferences((prev) =>
+      prev.map((notification) =>
+        notification.id === id
+          ? { ...notification, enabled: !notification.enabled }
+          : notification,
+      ),
+    );
+  };
+
+  const handleNotificationChange = (id: string, value: string) => {
+    setNotificationPreferences((prev) =>
+      prev.map((notification) =>
+        notification.id === id ? { ...notification, sensitivity: value } : notification,
+      ),
+    );
   };
 
   const isTimeBasedView =
@@ -1552,6 +1665,102 @@ const AppShell = () => {
                   </div>
                 );
               })()
+            ) : isReporting ? (
+              <div className="truth-section__content">
+                <div className="reporting-section">
+                  <div className="reporting-section__header">
+                    <h4 className="reporting-section__title">Email Reports</h4>
+                    <p className="reporting-section__subtitle">
+                      Configure delivery preferences for scheduled reporting.
+                    </p>
+                  </div>
+                  <div className="reporting-list" role="list">
+                    {reportPreferences.map((report) => (
+                      <div key={report.id} className="reporting-row" role="listitem">
+                        <div className="reporting-row__label">{report.label}</div>
+                        <label className="toggle">
+                          <input
+                            type="checkbox"
+                            checked={report.enabled}
+                            onChange={() => handleReportToggle(report.id)}
+                          />
+                          <span className="toggle__track" />
+                        </label>
+                        <select
+                          className="reporting-select"
+                          value={report.frequency}
+                          onChange={(event) =>
+                            handleReportChange(report.id, "frequency", event.target.value)
+                          }
+                        >
+                          <option value="Daily">Daily</option>
+                          <option value="Weekly">Weekly</option>
+                          <option value="Monthly">Monthly</option>
+                        </select>
+                        <select
+                          className="reporting-select"
+                          value={report.recipient}
+                          onChange={(event) =>
+                            handleReportChange(report.id, "recipient", event.target.value)
+                          }
+                        >
+                          <option value="Owner">Owner</option>
+                          <option value="Managers">Managers</option>
+                          <option value="Custom email">Custom email</option>
+                        </select>
+                        <input
+                          className="reporting-input"
+                          type="text"
+                          placeholder="custom@email.com"
+                          value={report.email}
+                          onChange={(event) =>
+                            handleReportChange(report.id, "email", event.target.value)
+                          }
+                          disabled={report.recipient !== "Custom email"}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="reporting-section">
+                  <div className="reporting-section__header">
+                    <h4 className="reporting-section__title">Notifications</h4>
+                    <p className="reporting-section__subtitle">
+                      Set alert sensitivity for key operating signals.
+                    </p>
+                  </div>
+                  <div className="reporting-list" role="list">
+                    {notificationPreferences.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className="reporting-row reporting-row--compact"
+                        role="listitem"
+                      >
+                        <div className="reporting-row__label">{notification.label}</div>
+                        <label className="toggle">
+                          <input
+                            type="checkbox"
+                            checked={notification.enabled}
+                            onChange={() => handleNotificationToggle(notification.id)}
+                          />
+                          <span className="toggle__track" />
+                        </label>
+                        <select
+                          className="reporting-select"
+                          value={notification.sensitivity}
+                          onChange={(event) =>
+                            handleNotificationChange(notification.id, event.target.value)
+                          }
+                        >
+                          <option value="Low">Low</option>
+                          <option value="Medium">Medium</option>
+                          <option value="High">High</option>
+                        </select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             ) : (
               <p className="truth-section__body">Placeholder summary</p>
             )}
