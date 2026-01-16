@@ -1,5 +1,5 @@
 :root {
-  --content-max-width: 860px;
+  --content-max-width: 1120px;
 }
 
 .app-shell {
@@ -81,6 +81,7 @@
   border: 1px solid var(--border);
   border-radius: 22px;
   padding: 20px 24px;
+  width: 100%;
 }
 
 .truth-card--lead {
@@ -107,6 +108,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
 }
 
 .truth-section__header {
