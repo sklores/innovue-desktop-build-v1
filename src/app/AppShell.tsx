@@ -529,7 +529,7 @@ const AppShell = () => {
   const activeExpensesPercents =
     expensesCategoryPercentages[activeTime] ?? expensesCategoryPercentages.Week;
   const sortedVendors = useMemo(() => {
-    if (!isExpensesVendors) {
+    if (!isExpensesVendors || vendorRows.length === 0) {
       return [];
     }
     return [...vendorRows].sort(
