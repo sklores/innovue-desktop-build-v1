@@ -522,6 +522,8 @@ const AppShell = () => {
     activePrimaryId === "financials" && activeSecondaryId === "profit-loss";
   const isPresenceReviews =
     activePrimaryId === "presence" && activeSecondaryId === "reviews";
+  const isPresenceTraffic =
+    activePrimaryId === "presence" && activeSecondaryId === "traffic";
 
   const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
@@ -1308,6 +1310,38 @@ const AppShell = () => {
                           </div>
                           <p className="review-card__text">{review.text}</p>
                         </article>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()
+            ) : isPresenceTraffic ? (
+              (() => {
+                const overallStatus = "Up";
+                const sources = [
+                  { id: "google-search", label: "Google Search", trend: "Up", icon: "↑" },
+                  { id: "google-maps", label: "Google Maps", trend: "Stable", icon: "→" },
+                  { id: "yelp", label: "Yelp", trend: "Down", icon: "↓" },
+                  { id: "tripadvisor", label: "TripAdvisor", trend: "Up", icon: "↑" },
+                  { id: "delivery-apps", label: "Delivery apps", trend: "Stable", icon: "→" },
+                ];
+
+                return (
+                  <div className="truth-section__content">
+                    <div className="traffic-summary">
+                      <span className="traffic-summary__label">Overall traffic</span>
+                      <span className="traffic-summary__value">{overallStatus}</span>
+                    </div>
+                    <div className="traffic-list" role="list">
+                      {sources.map((source) => (
+                        <div key={source.id} className="traffic-row" role="listitem">
+                          <span className="traffic-row__label">{source.label}</span>
+                          <span
+                            className={`traffic-row__trend traffic-row__trend--${source.trend.toLowerCase()}`}
+                          >
+                            {source.icon}
+                          </span>
+                        </div>
                       ))}
                     </div>
                   </div>

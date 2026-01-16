@@ -529,6 +529,66 @@
   overflow: hidden;
 }
 
+.traffic-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.traffic-summary__label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
+
+.traffic-summary__value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.traffic-list {
+  display: grid;
+  gap: 12px;
+}
+
+.traffic-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.traffic-row__label {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.traffic-row__trend {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.traffic-row__trend--up {
+  color: #5f8f72;
+}
+
+.traffic-row__trend--stable {
+  color: var(--text-soft);
+}
+
+.traffic-row__trend--down {
+  color: #b6675a;
+}
+
 .forecast-chart {
   width: 100%;
   padding: 12px 0;
