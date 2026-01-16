@@ -1,3 +1,7 @@
+:root {
+  --content-max-width: 860px;
+}
+
 .app-shell {
   display: flex;
   flex-direction: column;
@@ -63,7 +67,7 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  max-width: 760px;
+  max-width: var(--content-max-width, 860px);
   width: 100%;
 }
 
@@ -98,9 +102,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  min-height: 560px;
-  height: 560px;
-  overflow: hidden;
+  min-height: 320px;
 }
 
 .truth-section__header {
@@ -130,10 +132,6 @@
   display: flex;
   flex-direction: column;
   gap: 28px;
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
 }
 
 .time-selector {
