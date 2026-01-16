@@ -205,7 +205,13 @@ const buildPath = (values: number[], width = 520, height = 180) => {
 
 const AppShell = () => {
   const primaryNavItems = useMemo(() => {
-    return [...primaryTabs, { id: "reporting", label: "Reporting" }];
+    const settingsTab = primaryTabs.find((tab) => tab.id === "settings");
+    const baseTabs = primaryTabs.filter((tab) => tab.id !== "settings");
+    return [
+      ...baseTabs,
+      { id: "reporting", label: "Reporting" },
+      settingsTab ?? { id: "settings", label: "Settings" },
+    ];
   }, []);
 
   const [activePrimaryId, setActivePrimaryId] = useState(primaryNavItems[0].id);
@@ -258,18 +264,18 @@ const AppShell = () => {
           <h1 className="app-header__title">InnoVue Desktop</h1>
         </div>
         <div className="app-header__meta">
-          <div>
-            <p className="app-header__meta-label">Last updated</p>
+          <span className="app-header__meta-item">
+            <span className="app-header__meta-label">Last updated</span>
             <span className="app-header__meta-value">Just now</span>
-          </div>
-          <div>
-            <p className="app-header__meta-label">Current time</p>
+          </span>
+          <span className="app-header__meta-item">
+            <span className="app-header__meta-label">Current time</span>
             <span className="app-header__meta-value">09:41 AM</span>
-          </div>
-          <div>
-            <p className="app-header__meta-label">Weather</p>
+          </span>
+          <span className="app-header__meta-item">
+            <span className="app-header__meta-label">Weather</span>
             <span className="app-header__meta-value">Sunny · 72°</span>
-          </div>
+          </span>
         </div>
       </header>
 
