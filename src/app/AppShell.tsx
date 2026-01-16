@@ -750,7 +750,6 @@ const AppShell = () => {
 
           <section className="truth-section">
             <div className="truth-section__header">
-              <p className="truth-section__subtitle">{activeSecondary.label}</p>
               <h3 className="truth-section__title">{activeSecondary.label}</h3>
             </div>
 
