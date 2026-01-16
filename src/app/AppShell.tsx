@@ -736,7 +736,7 @@ const AppShell = () => {
           onChange={setActivePrimaryId}
         />
 
-        <main className="app-content">
+        <main className="app-content content-shell">
           <section className="truth-card truth-card--lead">
             <div className="truth-card__header">
               <h2 className="truth-card__title">{activePrimary.label}</h2>
@@ -749,10 +749,6 @@ const AppShell = () => {
           </section>
 
           <section className="truth-section">
-            <div className="truth-section__header">
-              <h3 className="truth-section__title">{activeSecondary.label}</h3>
-            </div>
-
             {isTimeBasedView ? (
               <div className="truth-section__content">
                 <div className="time-selector" role="tablist" aria-label="Time range">
