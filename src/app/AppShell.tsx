@@ -598,6 +598,17 @@ const AppShell = () => {
     activePrimaryId === "reporting" && activeSecondaryId === "email-reports";
   const isReportingNotifications =
     activePrimaryId === "reporting" && activeSecondaryId === "notifications";
+  const isSettingsBusiness =
+    activePrimaryId === "settings" && activeSecondaryId === "business";
+  const isSettingsOperations =
+    activePrimaryId === "settings" && activeSecondaryId === "operations";
+  const isSettingsFinancialAssumptions =
+    activePrimaryId === "settings" &&
+    activeSecondaryId === "financial-assumptions";
+  const isSettingsAlerts =
+    activePrimaryId === "settings" && activeSecondaryId === "alerts";
+  const isSettingsDisplay =
+    activePrimaryId === "settings" && activeSecondaryId === "display";
 
   const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
@@ -1757,6 +1768,83 @@ const AppShell = () => {
                         </select>
                       </div>
                     ))}
+                  </div>
+                </div>
+              </div>
+            ) : isSettingsBusiness ? (
+              <div className="truth-section__content">
+                <div className="settings-section">
+                  <div className="settings-section__header">
+                    <h4 className="settings-section__title">Business</h4>
+                    <p className="settings-section__subtitle">
+                      Core business details used across reporting and profiles.
+                    </p>
+                  </div>
+                  <div className="settings-form">
+                    <label className="settings-field">
+                      <span className="settings-field__label">Business name</span>
+                      <input
+                        className="settings-input"
+                        type="text"
+                        placeholder="GCDC Hospitality"
+                      />
+                    </label>
+                    <label className="settings-field">
+                      <span className="settings-field__label">Business address</span>
+                      <textarea
+                        className="settings-input settings-input--textarea"
+                        placeholder="123 Market Street&#10;Washington, DC 20001"
+                        rows={3}
+                      />
+                    </label>
+                    <label className="settings-field">
+                      <span className="settings-field__label">Website URL</span>
+                      <input
+                        className="settings-input"
+                        type="url"
+                        placeholder="https://gcdc.co"
+                      />
+                    </label>
+                    <div className="settings-grid">
+                      <label className="settings-field">
+                        <span className="settings-field__label">ZIP code</span>
+                        <input
+                          className="settings-input"
+                          type="text"
+                          placeholder="20001"
+                        />
+                      </label>
+                      <label className="settings-field">
+                        <span className="settings-field__label">Time zone</span>
+                        <select className="settings-input">
+                          <option>Eastern (ET)</option>
+                          <option>Central (CT)</option>
+                          <option>Mountain (MT)</option>
+                          <option>Pacific (PT)</option>
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : isSettingsOperations ||
+              isSettingsFinancialAssumptions ||
+              isSettingsAlerts ||
+              isSettingsDisplay ? (
+              <div className="truth-section__content">
+                <div className="settings-section">
+                  <div className="settings-section__header">
+                    <h4 className="settings-section__title">
+                      {activeSecondary.label}
+                    </h4>
+                    <p className="settings-section__subtitle">
+                      Configuration options for this area will appear here.
+                    </p>
+                  </div>
+                  <div className="settings-placeholder">
+                    <p className="settings-placeholder__text">
+                      This section will support additional settings in a future release.
+                    </p>
                   </div>
                 </div>
               </div>

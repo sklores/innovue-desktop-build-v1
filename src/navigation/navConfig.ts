@@ -28,8 +28,11 @@ export const secondaryTabsByPrimary = {
     { id: "social", label: "Social" },
   ],
   settings: [
-    { id: "tab-a", label: "Tab A" },
-    { id: "tab-b", label: "Tab B" },
+    { id: "business", label: "Business" },
+    { id: "operations", label: "Operations" },
+    { id: "financial-assumptions", label: "Financial Assumptions" },
+    { id: "alerts", label: "Alerts" },
+    { id: "display", label: "Display" },
   ],
   reporting: [
     { id: "email-reports", label: "Email Reports" },
