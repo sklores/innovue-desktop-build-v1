@@ -439,11 +439,6 @@ const expensesCategoryRows = [
   "Linen",
 ];
 
-const parseCurrency = (value: string) => {
-  const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
-  return Number.isNaN(numeric) ? 0 : numeric;
-};
-
 const buildPath = (values: number[], width = 520, height = 180) => {
   if (values.length === 0) {
     return "";
@@ -528,14 +523,6 @@ const AppShell = () => {
     expensesCategoryMetrics[activeTime] ?? expensesCategoryMetrics.Week;
   const activeExpensesPercents =
     expensesCategoryPercentages[activeTime] ?? expensesCategoryPercentages.Week;
-  const sortedVendors = useMemo(() => {
-    if (!isExpensesVendors || vendorRows.length === 0) {
-      return [];
-    }
-    return [...vendorRows].sort(
-      (a, b) => parseCurrency(b.accountsPayable) - parseCurrency(a.accountsPayable),
-    );
-  }, [isExpensesVendors]);
 
   const handleVendorToggle = (id: string) => {
     setOpenVendorId((prev) => (prev === id ? null : id));
@@ -735,128 +722,199 @@ const AppShell = () => {
                 ) : null}
               </div>
             ) : isExpensesVendors ? (
-              <div className="truth-section__content">
-                <div className="breakdown-table vendor-list" role="list">
-                  {sortedVendors.map((vendor) => {
-                    const isOpen = openVendorId === vendor.id;
-                    const isOrderGuideOpen = openOrderGuideId === vendor.id;
-                    return (
-                      <div key={vendor.id} role="listitem">
-                        <div
-                          className={`breakdown-row vendor-row${
-                            isOpen ? " vendor-row--open" : ""
-                          }`}
-                          role="button"
-                          tabIndex={0}
-                          aria-expanded={isOpen}
-                          onClick={() => handleVendorToggle(vendor.id)}
-                          onKeyDown={(event) => handleVendorKeyDown(event, vendor.id)}
-                        >
-                          <span className="breakdown-row__label">{vendor.name}</span>
-                          <span className="breakdown-row__value">
-                            {vendor.accountsPayable}
-                          </span>
-                        </div>
-                        <div
-                          className={`vendor-details${
-                            isOpen ? " vendor-details--open" : ""
-                          }`}
-                          aria-hidden={!isOpen}
-                        >
-                          <div className="vendor-details__grid">
-                            <div className="vendor-section vendor-section--tight">
-                              <span className="metric__label">Identity / Contact</span>
-                              <span className="vendor-title">{vendor.name}</span>
-                              <span className="breakdown-row__label">
-                                {vendor.email}
+              (() => {
+                const vendorRows = [
+                  {
+                    id: "northern-provisions",
+                    name: "Northern Provisions",
+                    accountsPayable: "$48,900",
+                    email: "orders@northernprovisions.com",
+                    phone: "(202) 555-0132",
+                    paymentTerms: "Net 14",
+                    accountNumber: "•••• 4821",
+                    deliveryDays: "Mon / Wed / Fri",
+                    deliveryMinimum: "$250",
+                    orderGuide: ["Seasonal produce", "Protein cuts", "Dry goods"],
+                  },
+                  {
+                    id: "harbor-supply",
+                    name: "Harbor Supply Co.",
+                    accountsPayable: "$37,450",
+                    email: "billing@harborsupply.co",
+                    phone: "(202) 555-0194",
+                    paymentTerms: "Net 21",
+                    accountNumber: "•••• 7754",
+                    deliveryDays: "Tue / Thu",
+                    deliveryMinimum: "$300",
+                    orderGuide: ["Packaging", "Paper products", "Cleaning supplies"],
+                  },
+                  {
+                    id: "capital-farms",
+                    name: "Capital Farms",
+                    accountsPayable: "$29,120",
+                    email: "support@capitalfarms.com",
+                    phone: "(202) 555-0178",
+                    paymentTerms: "Net 30",
+                    accountNumber: "•••• 2146",
+                    deliveryDays: "Mon / Thu",
+                    deliveryMinimum: "$200",
+                    orderGuide: ["Dairy", "Eggs", "Specialty greens"],
+                  },
+                  {
+                    id: "district-utilities",
+                    name: "District Utilities",
+                    accountsPayable: "$18,760",
+                    email: "account@districtutilities.com",
+                    phone: "(202) 555-0109",
+                    paymentTerms: "Net 15",
+                    accountNumber: "•••• 0913",
+                    deliveryDays: "Monthly",
+                    deliveryMinimum: "$0",
+                    orderGuide: ["Electric", "Water", "Gas"],
+                  },
+                ];
+
+                const parseCurrency = (value: string) => {
+                  const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
+                  return Number.isNaN(numeric) ? 0 : numeric;
+                };
+
+                const sortedVendors =
+                  vendorRows.length === 0
+                    ? []
+                    : [...vendorRows].sort(
+                        (a, b) =>
+                          parseCurrency(b.accountsPayable) -
+                          parseCurrency(a.accountsPayable),
+                      );
+
+                return (
+                  <div className="truth-section__content">
+                    <div className="breakdown-table vendor-list" role="list">
+                      {sortedVendors.map((vendor) => {
+                        const isOpen = openVendorId === vendor.id;
+                        const isOrderGuideOpen = openOrderGuideId === vendor.id;
+                        return (
+                          <div key={vendor.id} role="listitem">
+                            <div
+                              className={`breakdown-row vendor-row${
+                                isOpen ? " vendor-row--open" : ""
+                              }`}
+                              role="button"
+                              tabIndex={0}
+                              aria-expanded={isOpen}
+                              onClick={() => handleVendorToggle(vendor.id)}
+                              onKeyDown={(event) =>
+                                handleVendorKeyDown(event, vendor.id)
+                              }
+                            >
+                              <span className="breakdown-row__label">{vendor.name}</span>
+                              <span className="breakdown-row__value">
+                                {vendor.accountsPayable}
                               </span>
-                              <span className="breakdown-row__label">
-                                {vendor.phone}
-                              </span>
                             </div>
-                            <div className="vendor-section">
-                              <span className="metric__label">Payment</span>
-                              <div className="vendor-row__detail">
-                                <span className="breakdown-row__label">
-                                  Accounts payable
-                                </span>
-                                <span className="breakdown-row__value">
-                                  {vendor.accountsPayable}
-                                </span>
-                              </div>
-                              <div className="vendor-row__detail">
-                                <span className="breakdown-row__label">
-                                  Payment terms
-                                </span>
-                                <span className="breakdown-row__value">
-                                  {vendor.paymentTerms}
-                                </span>
-                              </div>
-                              <div className="vendor-row__detail">
-                                <span className="breakdown-row__label">
-                                  Account number
-                                </span>
-                                <span className="breakdown-row__value">
-                                  {vendor.accountNumber}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="vendor-section">
-                              <span className="metric__label">Operations</span>
-                              <div className="vendor-row__detail">
-                                <span className="breakdown-row__label">
-                                  Delivery days
-                                </span>
-                                <span className="breakdown-row__value">
-                                  {vendor.deliveryDays}
-                                </span>
-                              </div>
-                              <div className="vendor-row__detail">
-                                <span className="breakdown-row__label">
-                                  Delivery minimum
-                                </span>
-                                <span className="breakdown-row__value">
-                                  {vendor.deliveryMinimum}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="vendor-section">
-                              <div
-                                role="button"
-                                tabIndex={0}
-                                aria-expanded={isOrderGuideOpen}
-                                onClick={() => handleOrderGuideToggle(vendor.id)}
-                                onKeyDown={(event) =>
-                                  handleOrderGuideKeyDown(event, vendor.id)
-                                }
-                                className="vendor-order-toggle"
-                              >
-                                <span className="metric__label">Order guide</span>
-                              </div>
-                              <div
-                                className={`vendor-order-details${
-                                  isOrderGuideOpen ? " vendor-order-details--open" : ""
-                                }`}
-                                aria-hidden={!isOrderGuideOpen}
-                              >
-                                <ul
-                                  className="vendor-order-list"
-                                >
-                                  {vendor.orderGuide.map((item) => (
-                                    <li key={item} className="breakdown-row__label">
-                                      {item}
-                                    </li>
-                                  ))}
-                                </ul>
+                            <div
+                              className={`vendor-details${
+                                isOpen ? " vendor-details--open" : ""
+                              }`}
+                              aria-hidden={!isOpen}
+                            >
+                              <div className="vendor-details__grid">
+                                <div className="vendor-section vendor-section--tight">
+                                  <span className="metric__label">Identity / Contact</span>
+                                  <span className="vendor-title">{vendor.name}</span>
+                                  <span className="breakdown-row__label">
+                                    {vendor.email}
+                                  </span>
+                                  <span className="breakdown-row__label">
+                                    {vendor.phone}
+                                  </span>
+                                </div>
+                                <div className="vendor-section">
+                                  <span className="metric__label">Payment</span>
+                                  <div className="vendor-row__detail">
+                                    <span className="breakdown-row__label">
+                                      Accounts payable
+                                    </span>
+                                    <span className="breakdown-row__value">
+                                      {vendor.accountsPayable}
+                                    </span>
+                                  </div>
+                                  <div className="vendor-row__detail">
+                                    <span className="breakdown-row__label">
+                                      Payment terms
+                                    </span>
+                                    <span className="breakdown-row__value">
+                                      {vendor.paymentTerms}
+                                    </span>
+                                  </div>
+                                  <div className="vendor-row__detail">
+                                    <span className="breakdown-row__label">
+                                      Account number
+                                    </span>
+                                    <span className="breakdown-row__value">
+                                      {vendor.accountNumber}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="vendor-section">
+                                  <span className="metric__label">Operations</span>
+                                  <div className="vendor-row__detail">
+                                    <span className="breakdown-row__label">
+                                      Delivery days
+                                    </span>
+                                    <span className="breakdown-row__value">
+                                      {vendor.deliveryDays}
+                                    </span>
+                                  </div>
+                                  <div className="vendor-row__detail">
+                                    <span className="breakdown-row__label">
+                                      Delivery minimum
+                                    </span>
+                                    <span className="breakdown-row__value">
+                                      {vendor.deliveryMinimum}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="vendor-section">
+                                  <div
+                                    role="button"
+                                    tabIndex={0}
+                                    aria-expanded={isOrderGuideOpen}
+                                    onClick={() => handleOrderGuideToggle(vendor.id)}
+                                    onKeyDown={(event) =>
+                                      handleOrderGuideKeyDown(event, vendor.id)
+                                    }
+                                    className="vendor-order-toggle"
+                                  >
+                                    <span className="metric__label">Order guide</span>
+                                  </div>
+                                  <div
+                                    className={`vendor-order-details${
+                                      isOrderGuideOpen
+                                        ? " vendor-order-details--open"
+                                        : ""
+                                    }`}
+                                    aria-hidden={!isOrderGuideOpen}
+                                  >
+                                    <ul className="vendor-order-list">
+                                      {vendor.orderGuide.map((item) => (
+                                        <li key={item} className="breakdown-row__label">
+                                          {item}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()
             ) : (
               <p className="truth-section__body">Placeholder summary</p>
             )}
