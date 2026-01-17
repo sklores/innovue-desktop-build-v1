@@ -474,6 +474,7 @@ const AppShell = () => {
   const [openVendorId, setOpenVendorId] = useState<string | null>(null);
   const [openOrderGuideId, setOpenOrderGuideId] = useState<string | null>(null);
   const [openTrafficId, setOpenTrafficId] = useState<string | null>(null);
+  const [cashflowView, setCashflowView] = useState<"Month" | "Week">("Month");
   const [proFormaSalesAdjustment, setProFormaSalesAdjustment] = useState(0);
   const [proFormaCogsPercent, setProFormaCogsPercent] = useState(34);
   const [proFormaLaborPercent, setProFormaLaborPercent] = useState(30);
@@ -1319,6 +1320,15 @@ const AppShell = () => {
                   { day: 4, current: false, sales: 20100, expenses: 19050 },
                   { day: 5, current: false, sales: 18200, expenses: 16800 },
                 ];
+                const cashflowWeek = [
+                  { label: "Mon · 08", sales: 16400, expenses: 17100 },
+                  { label: "Tue · 09", sales: 18900, expenses: 16250 },
+                  { label: "Wed · 10", sales: 20300, expenses: 18880 },
+                  { label: "Thu · 11", sales: 17600, expenses: 15400 },
+                  { label: "Fri · 12", sales: 19300, expenses: 16850 },
+                  { label: "Sat · 13", sales: 22100, expenses: 20100 },
+                  { label: "Sun · 14", sales: 14800, expenses: 14050 },
+                ];
 
                 const formatCompact = (value: number) =>
                   `$${(value / 1000).toFixed(1)}k`;
@@ -1334,24 +1344,53 @@ const AppShell = () => {
                 return (
                   <div className="truth-section__content">
                     <div className="cashflow-header">
-                      <span className="metric__label">Month view</span>
+                      <span className="metric__label">Cashflow view</span>
                       <h4 className="cashflow-title">{cashflowMonth}</h4>
+                      <div
+                        className="time-selector"
+                        role="tablist"
+                        aria-label="Cashflow view"
+                      >
+                        {["Month", "Week"].map((option) => (
+                          <button
+                            key={option}
+                            type="button"
+                            className={`time-pill${
+                              cashflowView === option ? " time-pill--active" : ""
+                            }`}
+                            onClick={() =>
+                              setCashflowView(option as "Month" | "Week")
+                            }
+                          >
+                            {option}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                     <div className="cashflow-calendar" role="grid">
-                      {cashflowDays.map((entry, index) => {
+                      {(cashflowView === "Month"
+                        ? cashflowDays
+                        : cashflowWeek
+                      ).map((entry, index) => {
                         const net = entry.sales - entry.expenses;
                         const netLabel = `${net >= 0 ? "+" : "-"} ${formatCompact(
                           Math.abs(net),
                         )}`;
+                        const isMuted =
+                          cashflowView === "Month" &&
+                          "current" in entry &&
+                          !entry.current;
                         return (
                           <div
-                            key={`${entry.day}-${index}`}
+                            key={`${"day" in entry ? entry.day : entry.label}-${index}`}
                             className={`cashflow-day ${getShadeClass(net)}${
-                              entry.current ? "" : " cashflow-day--muted"
+                              isMuted ? " cashflow-day--muted" : ""
                             }`}
                             role="gridcell"
                           >
-                            <span className="cashflow-day__date">{entry.day}</span>
+                            <span className="cashflow-day__date">
+                              {"day" in entry ? entry.day : entry.label}
+                            </span>
                             <span className="cashflow-day__net">{netLabel}</span>
                             <span className="cashflow-day__detail">
                               Sales: {formatCompact(entry.sales)}
