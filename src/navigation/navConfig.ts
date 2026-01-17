@@ -18,6 +18,7 @@ export const secondaryTabsByPrimary = {
     { id: "vendors", label: "Vendors" },
     { id: "invoices", label: "Invoices" },
     { id: "budgets", label: "Budgets" },
+    { id: "invoices", label: "Invoices" },
   ],
   financials: [
     { id: "profit-loss", label: "Profit & Loss" },
