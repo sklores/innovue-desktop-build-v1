@@ -19,6 +19,7 @@ const timeOptions = [
 ];
 
 const financialsTimeOptions = ["Week", "Month", "Quarter", "Year"];
+const budgetsTimeOptions = ["Week", "Month", "Quarter", "Year"];
 
 const salesOverviewMetrics: Record<string, { gross: string; net: string }> = {
   Mon: { gross: "$128,400", net: "$121,050" },
@@ -1174,7 +1175,8 @@ const AppShell = () => {
                       role="tablist"
                       aria-label="Time range"
                     >
-                      {timeOptions.map((option) => (
+                      {(isExpensesBudgets ? budgetsTimeOptions : timeOptions).map(
+                        (option) => (
                         <button
                           key={option}
                           type="button"
@@ -1185,7 +1187,8 @@ const AppShell = () => {
                         >
                           {option}
                         </button>
-                      ))}
+                        ),
+                      )}
                     </div>
 
                 {isSalesOverview ? (
@@ -1488,62 +1491,6 @@ const AppShell = () => {
                     const formatCurrency = (value: number) =>
                       `$${Math.round(value).toLocaleString()}`;
                     const budgetsByTime: Record<string, Record<string, number>> = {
-                      Mon: {
-                        Labor: 7400,
-                        COGS: 4800,
-                        "Fixed costs": 2600,
-                        Utilities: 980,
-                        Chemicals: 460,
-                        Linen: 320,
-                      },
-                      Tue: {
-                        Labor: 7600,
-                        COGS: 4900,
-                        "Fixed costs": 2600,
-                        Utilities: 980,
-                        Chemicals: 460,
-                        Linen: 320,
-                      },
-                      Wed: {
-                        Labor: 7800,
-                        COGS: 5000,
-                        "Fixed costs": 2700,
-                        Utilities: 1000,
-                        Chemicals: 470,
-                        Linen: 330,
-                      },
-                      Thu: {
-                        Labor: 7700,
-                        COGS: 5000,
-                        "Fixed costs": 2700,
-                        Utilities: 990,
-                        Chemicals: 470,
-                        Linen: 330,
-                      },
-                      Fri: {
-                        Labor: 8200,
-                        COGS: 5400,
-                        "Fixed costs": 2800,
-                        Utilities: 1040,
-                        Chemicals: 490,
-                        Linen: 340,
-                      },
-                      Sat: {
-                        Labor: 6200,
-                        COGS: 4200,
-                        "Fixed costs": 2400,
-                        Utilities: 860,
-                        Chemicals: 420,
-                        Linen: 300,
-                      },
-                      Sun: {
-                        Labor: 6000,
-                        COGS: 4100,
-                        "Fixed costs": 2400,
-                        Utilities: 840,
-                        Chemicals: 410,
-                        Linen: 300,
-                      },
                       Week: {
                         Labor: 52000,
                         COGS: 33000,
@@ -1560,6 +1507,14 @@ const AppShell = () => {
                         Chemicals: 12800,
                         Linen: 8800,
                       },
+                      Quarter: {
+                        Labor: 642000,
+                        COGS: 402000,
+                        "Fixed costs": 216000,
+                        Utilities: 88200,
+                        Chemicals: 38400,
+                        Linen: 26400,
+                      },
                       Year: {
                         Labor: 2580000,
                         COGS: 1620000,
@@ -1567,6 +1522,40 @@ const AppShell = () => {
                         Utilities: 352800,
                         Chemicals: 153600,
                         Linen: 105600,
+                      },
+                    };
+                    const actualsByTime: Record<string, Record<string, number>> = {
+                      Week: {
+                        Labor: 49800,
+                        COGS: 35200,
+                        "Fixed costs": 18000,
+                        Utilities: 7200,
+                        Chemicals: 3600,
+                        Linen: 2100,
+                      },
+                      Month: {
+                        Labor: 219000,
+                        COGS: 126000,
+                        "Fixed costs": 72000,
+                        Utilities: 30100,
+                        Chemicals: 12400,
+                        Linen: 9200,
+                      },
+                      Quarter: {
+                        Labor: 635000,
+                        COGS: 418000,
+                        "Fixed costs": 216000,
+                        Utilities: 87000,
+                        Chemicals: 40200,
+                        Linen: 24800,
+                      },
+                      Year: {
+                        Labor: 2520000,
+                        COGS: 1685000,
+                        "Fixed costs": 864000,
+                        Utilities: 360000,
+                        Chemicals: 150000,
+                        Linen: 98000,
                       },
                     };
                     const budgets =
@@ -1616,9 +1605,10 @@ const AppShell = () => {
                     };
                     const totals = budgetRows.reduce(
                       (acc, row) => {
-                        const actual = parseCurrency(
-                          activeExpensesCategories[row.key],
-                        );
+                        const actual =
+                          actualsByTime[activeTime]?.[row.key] ??
+                          actualsByTime.Week[row.key] ??
+                          0;
                         const budget = budgets[row.key] ?? 0;
                         return {
                           budget: acc.budget + budget,
@@ -1634,6 +1624,25 @@ const AppShell = () => {
                       }
                       const sign = value > 0 ? "+" : "−";
                       return `${sign}${formatCurrency(Math.abs(value))}`;
+                    };
+                    const getVarianceClass = (value: number) => {
+                      if (value > 0) return "budget-variance--over";
+                      if (value < 0) return "budget-variance--under";
+                      return "budget-variance--even";
+                    };
+                    const getActualClass = (value: number) => {
+                      if (value > 0) return "budget-actual--over";
+                      if (value < 0) return "budget-actual--under";
+                      return "budget-actual--even";
+                    };
+                    const getSpendPercent = (actual: number, budget: number) => {
+                      if (budget === 0) return 0;
+                      return Math.round((actual / budget) * 100);
+                    };
+                    const getSpendClass = (percent: number) => {
+                      if (percent > 100) return "budget-spend--over";
+                      if (percent < 100) return "budget-spend--under";
+                      return "budget-spend--even";
                     };
 
                     return (
@@ -1651,19 +1660,23 @@ const AppShell = () => {
                           <span className="breakdown-row__percent" role="columnheader">
                             Variance
                           </span>
+                          <span className="breakdown-row__percent" role="columnheader">
+                            Spend
+                          </span>
                         </div>
                         {budgetRows.map((row) => {
-                          const actual = parseCurrency(
-                            activeExpensesCategories[row.key],
-                          );
+                          const actual =
+                            actualsByTime[activeTime]?.[row.key] ??
+                            actualsByTime.Week[row.key] ??
+                            0;
                           const budget = budgets[row.key] ?? 0;
                           const variance = actual - budget;
                           const isOpen = openBudgetCategoryId === row.key;
                           const detailRows = budgetDetails[row.key] ?? [];
-                          const varianceClass =
-                            variance > 0
-                              ? "budget-variance--over"
-                              : "budget-variance--under";
+                          const spendPercent = getSpendPercent(actual, budget);
+                          const varianceClass = getVarianceClass(variance);
+                          const actualClass = getActualClass(variance);
+                          const spendClass = getSpendClass(spendPercent);
                           return (
                             <div key={row.key} className="expense-accordion__item">
                               <div
@@ -1681,14 +1694,23 @@ const AppShell = () => {
                                 <span className="breakdown-row__value" role="cell">
                                   {formatCurrency(budget)}
                                 </span>
-                                <span className="breakdown-row__value" role="cell">
-                                  {activeExpensesCategories[row.key]}
+                                <span
+                                  className={`breakdown-row__value ${actualClass}`}
+                                  role="cell"
+                                >
+                                  {formatCurrency(actual)}
                                 </span>
                                 <span
                                   className={`breakdown-row__percent ${varianceClass}`}
                                   role="cell"
                                 >
                                   {formatVariance(variance)}
+                                </span>
+                                <span
+                                  className={`breakdown-row__percent ${spendClass}`}
+                                  role="cell"
+                                >
+                                  {spendPercent}%
                                 </span>
                               </div>
                               <div
@@ -1731,18 +1753,29 @@ const AppShell = () => {
                           <span className="breakdown-row__value" role="cell">
                             {formatCurrency(totals.budget)}
                           </span>
-                          <span className="breakdown-row__value" role="cell">
+                          <span
+                            className={`breakdown-row__value ${getActualClass(
+                              totalVariance,
+                            )}`}
+                            role="cell"
+                          >
                             {formatCurrency(totals.actual)}
                           </span>
                           <span
-                            className={`breakdown-row__percent ${
-                              totalVariance > 0
-                                ? "budget-variance--over"
-                                : "budget-variance--under"
-                            }`}
+                            className={`breakdown-row__percent ${getVarianceClass(
+                              totalVariance,
+                            )}`}
                             role="cell"
                           >
                             {formatVariance(totalVariance)}
+                          </span>
+                          <span
+                            className={`breakdown-row__percent ${getSpendClass(
+                              getSpendPercent(totals.actual, totals.budget),
+                            )}`}
+                            role="cell"
+                          >
+                            {getSpendPercent(totals.actual, totals.budget)}%
                           </span>
                         </div>
                       </div>

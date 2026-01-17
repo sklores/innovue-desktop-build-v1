@@ -228,7 +228,7 @@
 }
 
 .budget-row {
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.7fr);
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.7fr) minmax(0, 0.6fr);
 }
 
 .budget-accordion__row {
@@ -245,6 +245,34 @@
 
 .budget-variance--under {
   color: #4b7a60;
+}
+
+.budget-variance--even {
+  color: var(--text-soft);
+}
+
+.budget-actual--under {
+  color: #4b7a60;
+}
+
+.budget-actual--over {
+  color: #c65d4e;
+}
+
+.budget-actual--even {
+  color: var(--text-soft);
+}
+
+.budget-spend--under {
+  color: #4b7a60;
+}
+
+.budget-spend--over {
+  color: #c65d4e;
+}
+
+.budget-spend--even {
+  color: var(--text-soft);
 }
 
 .expense-accordion__row {
