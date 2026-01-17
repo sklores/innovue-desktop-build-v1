@@ -63,17 +63,17 @@
   padding: 12px 40px 60px;
 }
 
-.content-shell {
+.app-content {
   width: 100%;
-  max-width: var(--content-max-width, 860px);
-  margin: 0 auto;
 }
 
-.app-content {
+.app-content-inner {
   display: flex;
   flex-direction: column;
   gap: 32px;
   width: 100%;
+  max-width: var(--content-max-width, 1120px);
+  margin: 0 auto;
 }
 
 .truth-card {
@@ -82,6 +82,7 @@
   border-radius: 22px;
   padding: 20px 24px;
   width: 100%;
+  max-width: none;
 }
 
 .truth-card--lead {
@@ -109,6 +110,7 @@
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  max-width: none;
 }
 
 .truth-section__header {

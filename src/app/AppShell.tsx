@@ -736,21 +736,22 @@ const AppShell = () => {
           onChange={setActivePrimaryId}
         />
 
-        <main className="app-content content-shell">
-          <section className="truth-card truth-card--lead">
-            <div className="truth-card__header">
-              <h2 className="truth-card__title">{activePrimary.label}</h2>
-              <SecondaryNav
-                tabs={secondaryTabs}
-                activeId={activeSecondary.id}
-                onChange={setActiveSecondaryId}
-              />
-            </div>
-          </section>
+        <main className="app-content">
+          <div className="app-content-inner">
+            <section className="truth-card truth-card--lead">
+              <div className="truth-card__header">
+                <h2 className="truth-card__title">{activePrimary.label}</h2>
+                <SecondaryNav
+                  tabs={secondaryTabs}
+                  activeId={activeSecondary.id}
+                  onChange={setActiveSecondaryId}
+                />
+              </div>
+            </section>
 
-          <section className="truth-section">
-            {isTimeBasedView ? (
-              <div className="truth-section__content">
+            <section className="truth-section">
+              {isTimeBasedView ? (
+                <div className="truth-section__content">
                 <div className="time-selector" role="tablist" aria-label="Time range">
                   {timeOptions.map((option) => (
                     <button
@@ -1998,10 +1999,11 @@ const AppShell = () => {
                   </div>
                 </div>
               </div>
-            ) : (
-              <p className="truth-section__body">Placeholder summary</p>
-            )}
-          </section>
+              ) : (
+                <p className="truth-section__body">Placeholder summary</p>
+              )}
+            </section>
+          </div>
         </main>
       </div>
     </div>
