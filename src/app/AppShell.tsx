@@ -601,6 +601,11 @@ const AppShell = () => {
     null,
   );
   const [cashflowView, setCashflowView] = useState<"Month" | "Week">("Month");
+  const [cashflowDetail, setCashflowDetail] = useState<{
+    label: string;
+    sales: number;
+    expenses: number;
+  } | null>(null);
   const [proFormaSalesAdjustment, setProFormaSalesAdjustment] = useState(0);
   const [proFormaCogsPercent, setProFormaCogsPercent] = useState(34);
   const [proFormaLaborPercent, setProFormaLaborPercent] = useState(30);
@@ -807,6 +812,18 @@ const AppShell = () => {
       event.preventDefault();
       handleTrafficToggle(id);
     }
+  };
+
+  const handleCashflowDetailOpen = (entry: {
+    label: string;
+    sales: number;
+    expenses: number;
+  }) => {
+    setCashflowDetail(entry);
+  };
+
+  const handleCashflowDetailClose = () => {
+    setCashflowDetail(null);
   };
 
   const handleReportToggle = (id: string) => {
@@ -1665,6 +1682,8 @@ const AppShell = () => {
 
                 const formatCompact = (value: number) =>
                   `$${(value / 1000).toFixed(1)}k`;
+                const formatCurrency = (value: number) =>
+                  `$${Math.round(value).toLocaleString()}`;
 
                 const getShadeClass = (net: number) => {
                   if (net <= -2000) return "cashflow-day--neg-strong";
@@ -1713,6 +1732,22 @@ const AppShell = () => {
                           cashflowView === "Month" &&
                           "current" in entry &&
                           !entry.current;
+                        const dayLabel =
+                          cashflowView === "Month"
+                            ? (() => {
+                                const weekdays = [
+                                  "Mon",
+                                  "Tue",
+                                  "Wed",
+                                  "Thu",
+                                  "Fri",
+                                  "Sat",
+                                  "Sun",
+                                ];
+                                const weekday = weekdays[index % weekdays.length];
+                                return `${weekday}, Sep ${entry.day}`;
+                              })()
+                            : ` ${"label" in entry ? entry.label.replace(" · ", ", Sep ") : ""}`;
                         return (
                           <div
                             key={`${"day" in entry ? entry.day : entry.label}-${index}`}
@@ -1720,6 +1755,24 @@ const AppShell = () => {
                               isMuted ? " cashflow-day--muted" : ""
                             }`}
                             role="gridcell"
+                            tabIndex={0}
+                            onClick={() =>
+                              handleCashflowDetailOpen({
+                                label: dayLabel.trim(),
+                                sales: entry.sales,
+                                expenses: entry.expenses,
+                              })
+                            }
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                handleCashflowDetailOpen({
+                                  label: dayLabel.trim(),
+                                  sales: entry.sales,
+                                  expenses: entry.expenses,
+                                });
+                              }
+                            }}
                           >
                             <span className="cashflow-day__date">
                               {"day" in entry ? entry.day : entry.label}
@@ -1735,6 +1788,116 @@ const AppShell = () => {
                         );
                       })}
                     </div>
+                    {cashflowDetail ? (
+                      <div
+                        className="modal-overlay"
+                        role="presentation"
+                        onClick={handleCashflowDetailClose}
+                      >
+                        <div
+                          className="modal-sheet"
+                          role="dialog"
+                          aria-modal="true"
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          <div className="modal-header">
+                            <div>
+                              <p className="modal-title">{cashflowDetail.label}</p>
+                              <p className="modal-subtitle">Cashflow detail</p>
+                            </div>
+                            <div className="modal-header__meta">
+                              <span className="modal-net">
+                                {formatCurrency(
+                                  cashflowDetail.sales - cashflowDetail.expenses,
+                                )}
+                              </span>
+                              <button
+                                type="button"
+                                className="modal-close"
+                                onClick={handleCashflowDetailClose}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          </div>
+                          {(() => {
+                            const salesItems = [
+                              { label: "Credit card sales", share: 0.55 },
+                              { label: "Cash sales", share: 0.18 },
+                              { label: "3rd-party delivery sales", share: 0.17 },
+                              { label: "Sales tax collected", share: 0.06 },
+                              { label: "Tips collected", share: 0.04 },
+                            ];
+                            const expenseItems = [
+                              { label: "Northern Provisions", share: 0.4 },
+                              { label: "Harbor Supply Co.", share: 0.25 },
+                              { label: "Capital Farms", share: 0.2 },
+                              { label: "District Utilities", share: 0.15 },
+                            ];
+                            const totalSales = cashflowDetail.sales;
+                            const totalExpenses = cashflowDetail.expenses;
+                            const netTotal = totalSales - totalExpenses;
+
+                            return (
+                              <div className="modal-body">
+                                <div className="modal-section">
+                                  <p className="metric__label">Sales In</p>
+                                  <div className="modal-list">
+                                    {salesItems.map((item) => (
+                                      <div key={item.label} className="modal-row">
+                                        <span className="modal-row__label">
+                                          {item.label}
+                                        </span>
+                                        <span className="modal-row__value">
+                                          {formatCurrency(totalSales * item.share)}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="modal-section">
+                                  <p className="metric__label">Expenses Out</p>
+                                  <div className="modal-list">
+                                    {expenseItems.map((item) => (
+                                      <div key={item.label} className="modal-row">
+                                        <span className="modal-row__label">
+                                          {item.label}
+                                        </span>
+                                        <span className="modal-row__value">
+                                          {formatCurrency(totalExpenses * item.share)}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="modal-summary">
+                                  <div className="modal-row">
+                                    <span className="modal-row__label">Total Sales In</span>
+                                    <span className="modal-row__value">
+                                      {formatCurrency(totalSales)}
+                                    </span>
+                                  </div>
+                                  <div className="modal-row">
+                                    <span className="modal-row__label">
+                                      Total Expenses Out
+                                    </span>
+                                    <span className="modal-row__value">
+                                      {formatCurrency(totalExpenses)}
+                                    </span>
+                                  </div>
+                                  <div className="modal-row modal-row--strong">
+                                    <span className="modal-row__label">Net Profit</span>
+                                    <span className="modal-row__value">
+                                      {formatCurrency(netTotal)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 );
               })()
