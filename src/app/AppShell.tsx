@@ -20,6 +20,7 @@ const timeOptions = [
 
 const financialsTimeOptions = ["Week", "Month", "Quarter", "Year"];
 const budgetsTimeOptions = ["Week", "Month", "Quarter", "Year"];
+const trendsTimeOptions = ["Week", "Month", "Quarter", "Year"];
 
 const salesOverviewMetrics: Record<string, { gross: string; net: string }> = {
   Mon: { gross: "$128,400", net: "$121,050" },
@@ -319,6 +320,45 @@ const salesForecastBase: Record<string, number> = {
   Year: 40850000,
 };
 
+const salesTrendsChanges: Record<string, Record<string, number>> = {
+  Week: {
+    "Total Sales": 4.2,
+    "In-store": 3.1,
+    Takeout: -1.8,
+    "Delivery (3rd-party sales)": 2.6,
+    Tips: 0,
+    "Check average": 1.4,
+    Covers: -0.6,
+  },
+  Month: {
+    "Total Sales": 6.3,
+    "In-store": 5.2,
+    Takeout: 2.8,
+    "Delivery (3rd-party sales)": -1.2,
+    Tips: 0.4,
+    "Check average": 1.1,
+    Covers: 3.6,
+  },
+  Quarter: {
+    "Total Sales": 3.8,
+    "In-store": 4.5,
+    Takeout: 1.9,
+    "Delivery (3rd-party sales)": 0,
+    Tips: -0.7,
+    "Check average": 2.2,
+    Covers: 1.4,
+  },
+  Year: {
+    "Total Sales": 7.5,
+    "In-store": 6.2,
+    Takeout: 4.1,
+    "Delivery (3rd-party sales)": 3.4,
+    Tips: 0.9,
+    "Check average": 2.8,
+    Covers: 4.6,
+  },
+};
+
 const salesProductMix: Record<string, { name: string; units: number }[]> = {
   Mon: [
     { name: "Signature Burger", units: 84 },
@@ -453,6 +493,16 @@ const breakdownRows = [
   "Covers",
 ];
 
+const trendsRows = [
+  "Total Sales",
+  "In-store",
+  "Takeout",
+  "Delivery (3rd-party sales)",
+  "Tips",
+  "Check average",
+  "Covers",
+];
+
 const expensesCategoryRows = [
   "Labor",
   "COGS",
@@ -478,6 +528,7 @@ const AppShell = () => {
     secondaryTabsByPrimary[primaryNavItems[0].id][0].id,
   );
   const [activeTime, setActiveTime] = useState(timeOptions[7]);
+  const [trendsTime, setTrendsTime] = useState(trendsTimeOptions[0]);
   const [financialsTime, setFinancialsTime] = useState(
     financialsTimeOptions[1],
   );
@@ -604,6 +655,8 @@ const AppShell = () => {
     activePrimaryId === "sales" && activeSecondaryId === "breakdown";
   const isSalesForecast =
     activePrimaryId === "sales" && activeSecondaryId === "forecast";
+  const isSalesTrends =
+    activePrimaryId === "sales" && activeSecondaryId === "trends";
   const isSalesProduct =
     activePrimaryId === "sales" && activeSecondaryId === "product";
   const isExpensesOverview =
@@ -774,7 +827,6 @@ const AppShell = () => {
 
   const isTimeBasedView =
     isSalesBreakdown ||
-    isSalesForecast ||
     isSalesProduct ||
     isExpensesOverview ||
     isExpensesCategories ||
@@ -1298,6 +1350,91 @@ const AppShell = () => {
                           Forecasts are directional estimates based on historical
                           performance and external signals.
                         </p>
+                      </div>
+                    );
+                  })()
+                ) : null}
+
+                {isSalesTrends ? (
+                  (() => {
+                    const comparisonByTime: Record<string, string> = {
+                      Week: "Change vs last week",
+                      Month: "Change vs same month last year",
+                      Quarter: "Change vs same quarter last year",
+                      Year: "YTD vs last year to date",
+                    };
+                    const trendValues =
+                      salesTrendsChanges[trendsTime] ?? salesTrendsChanges.Week;
+                    const formatValue = (value: number) =>
+                      `${value > 0 ? "+" : value < 0 ? "−" : ""}${Math.abs(
+                        value,
+                      ).toFixed(1)}%`;
+                    const trendClass = (value: number) => {
+                      if (value > 0) return "trend-value--up";
+                      if (value < 0) return "trend-value--down";
+                      return "trend-value--flat";
+                    };
+                    const trendArrow = (value: number) => {
+                      if (value > 0) return "↑";
+                      if (value < 0) return "↓";
+                      return "→";
+                    };
+
+                    return (
+                      <div className="forecast-panel">
+                        <div className="time-selector" role="tablist">
+                          {trendsTimeOptions.map((option) => (
+                            <button
+                              key={option}
+                              type="button"
+                              className={`time-pill${
+                                trendsTime === option ? " time-pill--active" : ""
+                              }`}
+                              onClick={() => setTrendsTime(option)}
+                            >
+                              {option}
+                            </button>
+                          ))}
+                        </div>
+                        <p className="trend-note">
+                          {comparisonByTime[trendsTime]}
+                        </p>
+                        <div className="breakdown-table" role="table">
+                          <div className="breakdown-row breakdown-row--header" role="row">
+                            <span className="breakdown-row__label" role="columnheader">
+                              Category
+                            </span>
+                            <span className="breakdown-row__value" role="columnheader">
+                              Change
+                            </span>
+                            <span className="breakdown-row__percent" role="columnheader">
+                              Direction
+                            </span>
+                          </div>
+                          {trendsRows.map((label) => {
+                            const value = trendValues[label] ?? 0;
+                            const valueClass = trendClass(value);
+                            return (
+                              <div key={label} className="breakdown-row" role="row">
+                                <span className="breakdown-row__label" role="cell">
+                                  {label}
+                                </span>
+                                <span
+                                  className={`breakdown-row__value trend-value ${valueClass}`}
+                                  role="cell"
+                                >
+                                  {formatValue(value)}
+                                </span>
+                                <span
+                                  className={`breakdown-row__percent trend-value ${valueClass}`}
+                                  role="cell"
+                                >
+                                  {trendArrow(value)}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     );
                   })()
@@ -3128,7 +3265,7 @@ const AppShell = () => {
                   </div>
                 </div>
               </div>
-              ) : (
+              ) : activePrimaryId === "sales" ? null : (
                 <p className="truth-section__body">Placeholder summary</p>
               )}
             </section>
