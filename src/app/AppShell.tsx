@@ -733,6 +733,8 @@ const AppShell = () => {
     activePrimaryId === "presence" && activeSecondaryId === "traffic";
   const isPresenceSocial =
     activePrimaryId === "presence" && activeSecondaryId === "social";
+  const isPresenceSeo =
+    activePrimaryId === "presence" && activeSecondaryId === "seo";
   const isReporting = activePrimaryId === "reporting";
   const isReportingEmailReports =
     activePrimaryId === "reporting" && activeSecondaryId === "email-reports";
@@ -2436,6 +2438,101 @@ const AppShell = () => {
                         </article>
                       );
                       })}
+                    </div>
+                  </div>
+                );
+              })()
+            ) : isPresenceSeo ? (
+              (() => {
+                const visibilityStats = [
+                  { label: "Indexed pages", value: "128" },
+                  { label: "Local search visibility", value: "Up" },
+                  { label: "Estimated monthly impressions", value: "48,200" },
+                  { label: "Estimated monthly clicks", value: "3,740" },
+                ];
+                const topQueries = [
+                  { query: "seasonal tasting menu", impressions: "9,200" },
+                  { query: "restaurant near union market", impressions: "8,150" },
+                  { query: "brunch in northeast dc", impressions: "6,980" },
+                  { query: "private dining dc", impressions: "5,440" },
+                  { query: "local dinner reservations", impressions: "4,860" },
+                ];
+                const topPages = [
+                  { page: "Home", traffic: "1,820" },
+                  { page: "Menu", traffic: "1,410" },
+                  { page: "Hours & Location", traffic: "1,060" },
+                  { page: "Private Dining", traffic: "780" },
+                  { page: "Reservations", traffic: "640" },
+                ];
+                const healthChecks = [
+                  { label: "Title tags present", status: "pass" },
+                  { label: "Meta descriptions present", status: "pass" },
+                  { label: "Local business schema detected", status: "unknown" },
+                  { label: "Sitemap detected", status: "pass" },
+                  { label: "Mobile-friendly", status: "issue" },
+                ];
+                const statusColor: Record<string, string> = {
+                  pass: "#4b7a60",
+                  unknown: "#9aa3af",
+                  issue: "#c98a56",
+                };
+
+                return (
+                  <div className="truth-section__content">
+                    <div className="vendor-section">
+                      <p className="metric__label">Visibility Summary</p>
+                      <div className="reporting-list seo-list">
+                        {visibilityStats.map((stat) => (
+                          <div key={stat.label} className="reporting-row reporting-row--simple">
+                            <div className="reporting-row__label">{stat.label}</div>
+                            <div className="reporting-row__value">{stat.value}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="vendor-section">
+                      <p className="metric__label">Top Queries</p>
+                      <div className="reporting-list seo-list">
+                        {topQueries.map((item) => (
+                          <div key={item.query} className="reporting-row reporting-row--simple">
+                            <div className="reporting-row__label">{item.query}</div>
+                            <div className="reporting-row__value">
+                              {item.impressions}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="vendor-section">
+                      <p className="metric__label">Top Landing Pages</p>
+                      <div className="reporting-list seo-list">
+                        {topPages.map((item) => (
+                          <div key={item.page} className="reporting-row reporting-row--simple">
+                            <div className="reporting-row__label">{item.page}</div>
+                            <div className="reporting-row__value">{item.traffic}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="vendor-section">
+                      <p className="metric__label">SEO Health Checks</p>
+                      <div className="reporting-list seo-list">
+                        {healthChecks.map((item) => (
+                          <div key={item.label} className="reporting-row reporting-row--simple">
+                            <div className="reporting-row__label">{item.label}</div>
+                            <div
+                              className="reporting-row__value"
+                              style={{ color: statusColor[item.status] }}
+                            >
+                              {item.status === "pass"
+                                ? "✔"
+                                : item.status === "issue"
+                                  ? "⚠"
+                                  : "—"}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 );

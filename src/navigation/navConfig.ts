@@ -28,6 +28,7 @@ export const secondaryTabsByPrimary = {
     { id: "reviews", label: "Reviews" },
     { id: "traffic", label: "Traffic" },
     { id: "social", label: "Social" },
+    { id: "seo", label: "SEO" },
   ],
   settings: [
     { id: "business", label: "Business" },

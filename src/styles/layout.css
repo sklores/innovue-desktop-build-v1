@@ -1017,9 +1017,20 @@
   grid-template-columns: minmax(0, 1fr) auto minmax(140px, 0.6fr);
 }
 
+.reporting-row--simple {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.4fr);
+}
+
 .reporting-row__label {
   font-size: 14px;
   color: var(--text-primary);
+}
+
+.reporting-row__value {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
 }
 
 .reporting-select,
