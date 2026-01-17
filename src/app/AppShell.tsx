@@ -4,6 +4,7 @@ import type { KeyboardEvent } from "react";
 import PrimaryNav from "../navigation/PrimaryNav";
 import SecondaryNav from "../navigation/SecondaryNav";
 import { primaryTabs, secondaryTabsByPrimary } from "../navigation/navConfig";
+import SalesTrends from "../components/sales/SalesTrends";
 
 const timeOptions = [
   "Mon",
@@ -606,6 +607,8 @@ const AppShell = () => {
     activePrimaryId === "sales" && activeSecondaryId === "forecast";
   const isSalesProduct =
     activePrimaryId === "sales" && activeSecondaryId === "product";
+  const isSalesTrends =
+    activePrimaryId === "sales" && activeSecondaryId === "trends";
   const isExpensesOverview =
     activePrimaryId === "expenses" && activeSecondaryId === "overview";
   const isExpensesCategories =
@@ -823,9 +826,14 @@ const AppShell = () => {
               </div>
             </section>
 
-            {isFinancialsProForma ? (
-              <>
-                <section className="truth-section">
+            {(() => {
+              if (isSalesTrends) {
+                return <SalesTrends />;
+              }
+
+              return isFinancialsProForma ? (
+                <>
+                  <section className="truth-section">
                   {(() => {
                     const formatCurrency = (value: number) =>
                       `$${Math.round(value).toLocaleString()}`;
@@ -3132,7 +3140,8 @@ const AppShell = () => {
                 <p className="truth-section__body">Placeholder summary</p>
               )}
             </section>
-          )}
+              );
+            })()}
           </div>
         </main>
       </div>

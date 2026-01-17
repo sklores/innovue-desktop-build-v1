@@ -142,6 +142,86 @@
   gap: 28px;
 }
 
+.sales-trends {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sales-trends__header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sales-trends__title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.sales-trends__helper {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
+
+.sales-trends__table {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sales-trends__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-soft);
+  gap: 16px;
+}
+
+.sales-trends__row--header {
+  padding-bottom: 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  border-bottom: 1px solid var(--border);
+}
+
+.sales-trends__cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sales-trends__value {
+  font-weight: 500;
+  justify-content: flex-end;
+  min-width: 100px;
+}
+
+.sales-trends__value--up {
+  color: #4b7a60;
+}
+
+.sales-trends__value--down {
+  color: #c75b53;
+}
+
+.sales-trends__value--flat {
+  color: #9aa3af;
+}
+
+.sales-trends__arrow {
+  font-size: 14px;
+}
+
 .time-selector {
   display: flex;
   flex-wrap: wrap;
