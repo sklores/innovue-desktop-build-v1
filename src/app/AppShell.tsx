@@ -306,64 +306,17 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
   },
 };
 
-const salesForecastSeries: Record<
-  string,
-  {
-    today: number[];
-    past: number[];
-    projected: number[];
-  }
-> = {
-  Mon: {
-    today: [24, 32, 28, 36, 42, 38, 44],
-    past: [18, 26, 24, 30, 36, 33, 37],
-    projected: [24, 32, 30, 35, 40, 42, 45],
-  },
-  Tue: {
-    today: [26, 34, 30, 38, 44, 40, 46],
-    past: [20, 28, 26, 32, 38, 35, 39],
-    projected: [26, 34, 32, 37, 42, 44, 47],
-  },
-  Wed: {
-    today: [28, 36, 32, 40, 46, 42, 48],
-    past: [22, 30, 28, 34, 40, 37, 41],
-    projected: [28, 36, 34, 39, 44, 46, 49],
-  },
-  Thu: {
-    today: [27, 35, 31, 39, 45, 41, 47],
-    past: [21, 29, 27, 33, 39, 36, 40],
-    projected: [27, 35, 33, 38, 43, 45, 48],
-  },
-  Fri: {
-    today: [30, 40, 36, 45, 52, 48, 54],
-    past: [24, 34, 31, 39, 45, 42, 47],
-    projected: [30, 40, 38, 44, 50, 52, 56],
-  },
-  Sat: {
-    today: [20, 28, 26, 32, 36, 34, 38],
-    past: [16, 22, 21, 26, 30, 28, 32],
-    projected: [20, 28, 27, 31, 35, 37, 39],
-  },
-  Sun: {
-    today: [18, 24, 22, 28, 32, 30, 34],
-    past: [14, 20, 19, 24, 28, 26, 30],
-    projected: [18, 24, 23, 27, 31, 33, 35],
-  },
-  Week: {
-    today: [24, 30, 28, 36, 42, 40, 46],
-    past: [20, 26, 24, 31, 36, 34, 38],
-    projected: [24, 30, 29, 35, 40, 42, 45],
-  },
-  Month: {
-    today: [22, 26, 24, 28, 32, 30, 34],
-    past: [18, 22, 20, 24, 28, 26, 30],
-    projected: [22, 26, 25, 29, 33, 35, 37],
-  },
-  Year: {
-    today: [18, 22, 20, 24, 28, 26, 30],
-    past: [14, 18, 16, 20, 24, 22, 26],
-    projected: [18, 22, 21, 25, 29, 31, 33],
-  },
+const salesForecastBase: Record<string, number> = {
+  Mon: 124000,
+  Tue: 132500,
+  Wed: 138800,
+  Thu: 134200,
+  Fri: 152400,
+  Sat: 98000,
+  Sun: 90500,
+  Week: 870000,
+  Month: 3360000,
+  Year: 40850000,
 };
 
 const salesProductMix: Record<string, { name: string; units: number }[]> = {
@@ -509,22 +462,6 @@ const expensesCategoryRows = [
   "Linen",
 ];
 
-const buildPath = (values: number[], width = 520, height = 180) => {
-  if (values.length === 0) {
-    return "";
-  }
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min || 1;
-  const step = width / (values.length - 1);
-  const points = values.map((value, index) => {
-    const x = index * step;
-    const y = height - ((value - min) / range) * height;
-    return `${x},${y}`;
-  });
-  return `M ${points[0]} ${points.slice(1).map((point) => `L ${point}`).join(" ")}`;
-};
-
 const AppShell = () => {
   const primaryNavItems = useMemo(() => {
     const settingsTab = primaryTabs.find((tab) => tab.id === "settings");
@@ -553,6 +490,11 @@ const AppShell = () => {
   const [openBudgetCategoryId, setOpenBudgetCategoryId] = useState<string | null>(
     null,
   );
+  const [forecastGrowth, setForecastGrowth] = useState(4);
+  const [forecastWeather, setForecastWeather] = useState(2);
+  const [forecastEvents, setForecastEvents] = useState(3);
+  const [forecastPricing, setForecastPricing] = useState(1);
+  const [forecastMomentum, setForecastMomentum] = useState(2);
   const [cashflowView, setCashflowView] = useState<"Month" | "Week">("Month");
   const [cashflowDetail, setCashflowDetail] = useState<{
     label: string;
@@ -707,8 +649,6 @@ const AppShell = () => {
 
   const activeBreakdown =
     salesBreakdownMetrics[activeTime] ?? salesBreakdownMetrics.Week;
-  const activeForecast =
-    salesForecastSeries[activeTime] ?? salesForecastSeries.Week;
   const activeProductMix = salesProductMix[activeTime] ?? salesProductMix.Week;
   const activeExpensesTotal =
     expensesOverviewTotals[activeTime] ?? expensesOverviewTotals.Week;
@@ -1206,22 +1146,161 @@ const AppShell = () => {
                 ) : null}
 
                 {isSalesForecast ? (
-                  <div className="forecast-chart" role="img" aria-label="Sales forecast">
-                    <svg viewBox="0 0 520 180" aria-hidden="true">
-                      <path
-                        className="forecast-line forecast-line--past"
-                        d={buildPath(activeForecast.past)}
-                      />
-                      <path
-                        className="forecast-line forecast-line--today"
-                        d={buildPath(activeForecast.today)}
-                      />
-                      <path
-                        className="forecast-line forecast-line--projected"
-                        d={buildPath(activeForecast.projected)}
-                      />
-                    </svg>
-                  </div>
+                  (() => {
+                    const baseValue =
+                      salesForecastBase[activeTime] ?? salesForecastBase.Week;
+                    const totalImpact =
+                      (forecastGrowth +
+                        forecastWeather +
+                        forecastEvents +
+                        forecastPricing +
+                        forecastMomentum) /
+                      100;
+                    const projected = Math.round(baseValue * (1 + totalImpact));
+                    const formatCurrency = (value: number) =>
+                      `$${value.toLocaleString()}`;
+                    const signalDirection = (value: number) => {
+                      if (value > 1) return "signal--positive";
+                      if (value < -1) return "signal--negative";
+                      return "signal--neutral";
+                    };
+                    const signals = [
+                      {
+                        label: "Historical sales (WoW / YoY)",
+                        value: forecastGrowth,
+                      },
+                      { label: "Weather", value: forecastWeather },
+                      { label: "Local events", value: forecastEvents },
+                      { label: "Holidays", value: 0 },
+                      { label: "Price increases", value: forecastPricing },
+                      { label: "Recent trend momentum", value: forecastMomentum },
+                    ];
+
+                    return (
+                      <div className="forecast-panel">
+                        <div className="forecast-primary">
+                          <p className="metric__label">Projected Sales</p>
+                          <p className="forecast-primary__value">
+                            {formatCurrency(projected)}
+                          </p>
+                        </div>
+                        <div className="forecast-signals">
+                          {signals.map((signal) => (
+                            <div key={signal.label} className="forecast-signal">
+                              <span className="forecast-signal__label">
+                                {signal.label}
+                              </span>
+                              <span
+                                className={`forecast-signal__status ${signalDirection(
+                                  signal.value,
+                                )}`}
+                              >
+                                {signal.value > 1
+                                  ? "Positive"
+                                  : signal.value < -1
+                                    ? "Negative"
+                                    : "Neutral"}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="forecast-controls">
+                          <label className="forecast-control">
+                            <span className="forecast-control__label">
+                              Historical growth factor
+                            </span>
+                            <input
+                              type="range"
+                              min="-8"
+                              max="12"
+                              step="1"
+                              value={forecastGrowth}
+                              onChange={(event) =>
+                                setForecastGrowth(Number(event.target.value))
+                              }
+                            />
+                            <span className="forecast-control__value">
+                              {forecastGrowth}%
+                            </span>
+                          </label>
+                          <label className="forecast-control">
+                            <span className="forecast-control__label">
+                              Weather impact
+                            </span>
+                            <input
+                              type="range"
+                              min="-6"
+                              max="8"
+                              step="1"
+                              value={forecastWeather}
+                              onChange={(event) =>
+                                setForecastWeather(Number(event.target.value))
+                              }
+                            />
+                            <span className="forecast-control__value">
+                              {forecastWeather}%
+                            </span>
+                          </label>
+                          <label className="forecast-control">
+                            <span className="forecast-control__label">Event impact</span>
+                            <input
+                              type="range"
+                              min="-5"
+                              max="10"
+                              step="1"
+                              value={forecastEvents}
+                              onChange={(event) =>
+                                setForecastEvents(Number(event.target.value))
+                              }
+                            />
+                            <span className="forecast-control__value">
+                              {forecastEvents}%
+                            </span>
+                          </label>
+                          <label className="forecast-control">
+                            <span className="forecast-control__label">
+                              Price increase impact
+                            </span>
+                            <input
+                              type="range"
+                              min="-4"
+                              max="6"
+                              step="1"
+                              value={forecastPricing}
+                              onChange={(event) =>
+                                setForecastPricing(Number(event.target.value))
+                              }
+                            />
+                            <span className="forecast-control__value">
+                              {forecastPricing}%
+                            </span>
+                          </label>
+                          <label className="forecast-control">
+                            <span className="forecast-control__label">
+                              Momentum bias
+                            </span>
+                            <input
+                              type="range"
+                              min="-6"
+                              max="8"
+                              step="1"
+                              value={forecastMomentum}
+                              onChange={(event) =>
+                                setForecastMomentum(Number(event.target.value))
+                              }
+                            />
+                            <span className="forecast-control__value">
+                              {forecastMomentum}%
+                            </span>
+                          </label>
+                        </div>
+                        <p className="forecast-disclaimer">
+                          Forecasts are directional estimates based on historical
+                          performance and external signals.
+                        </p>
+                      </div>
+                    );
+                  })()
                 ) : null}
 
                 {isSalesProduct ? (
