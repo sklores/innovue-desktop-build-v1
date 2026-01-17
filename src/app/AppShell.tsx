@@ -725,6 +725,8 @@ const AppShell = () => {
     activePrimaryId === "financials" && activeSecondaryId === "cashflow";
   const isFinancialsProForma =
     activePrimaryId === "financials" && activeSecondaryId === "pro-forma";
+  const isFinancialsKpis =
+    activePrimaryId === "financials" && activeSecondaryId === "kpis";
   const isFinancialsProfitLoss =
     activePrimaryId === "financials" && activeSecondaryId === "profit-loss";
   const isPresenceReviews =
@@ -1960,6 +1962,55 @@ const AppShell = () => {
                         })}
                       </div>
                     )}
+                  </div>
+                );
+              })()
+            ) : isFinancialsKpis ? (
+              (() => {
+                const kpis = [
+                  {
+                    name: "Prime Cost %",
+                    value: "58%",
+                    note: "COGS + Labor ÷ Sales",
+                  },
+                  {
+                    name: "Sales per Labor Hour",
+                    value: "$165",
+                    note: "Sales ÷ Labor hours",
+                  },
+                  {
+                    name: "Worked vs Scheduled Hours",
+                    value: "312 / 328",
+                    note: "Hours this week",
+                  },
+                  {
+                    name: "Sales per Sq Ft",
+                    value: "$48",
+                    note: "Monthly average",
+                  },
+                  {
+                    name: "Avg Check",
+                    value: "$34.20",
+                    note: "Net sales ÷ covers",
+                  },
+                  {
+                    name: "Net Margin",
+                    value: "12.4%",
+                    note: "Net profit ÷ sales",
+                  },
+                ];
+
+                return (
+                  <div className="truth-section__content">
+                    <div className="kpi-grid">
+                      {kpis.map((kpi) => (
+                        <div key={kpi.name} className="kpi-card">
+                          <p className="kpi-card__label">{kpi.name}</p>
+                          <p className="kpi-card__value">{kpi.value}</p>
+                          <p className="kpi-card__note">{kpi.note}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 );
               })()

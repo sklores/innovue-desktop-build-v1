@@ -430,6 +430,42 @@
   background: rgba(145, 195, 160, 0.28);
 }
 
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.kpi-card__label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+.kpi-card__value {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.kpi-card__note {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
 .cashflow-detail {
   background: rgba(12, 20, 33, 0.04);
   border: 1px solid var(--border);
