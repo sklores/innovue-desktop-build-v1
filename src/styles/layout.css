@@ -1389,24 +1389,3 @@
   color: var(--text-soft);
   max-width: 560px;
 }
-
-.trend-note {
-  font-size: 13px;
-  color: var(--text-soft);
-}
-
-.trend-value {
-  font-weight: 500;
-}
-
-.trend-value--up {
-  color: #4b7a60;
-}
-
-.trend-value--down {
-  color: #c65d4e;
-}
-
-.trend-value--flat {
-  color: var(--text-soft);
-}
