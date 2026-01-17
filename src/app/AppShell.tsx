@@ -719,6 +719,8 @@ const AppShell = () => {
     activePrimaryId === "expenses" && activeSecondaryId === "categories";
   const isExpensesVendors =
     activePrimaryId === "expenses" && activeSecondaryId === "vendors";
+  const isExpensesBudgets =
+    activePrimaryId === "expenses" && activeSecondaryId === "budgets";
   const isFinancialsCashflow =
     activePrimaryId === "financials" && activeSecondaryId === "cashflow";
   const isFinancialsProForma =
@@ -870,7 +872,8 @@ const AppShell = () => {
     isSalesForecast ||
     isSalesProduct ||
     isExpensesOverview ||
-    isExpensesCategories;
+    isExpensesCategories ||
+    isExpensesBudgets;
 
   return (
     <div className="app-shell">
@@ -1422,6 +1425,71 @@ const AppShell = () => {
                                   })}
                                 </div>
                               </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()
+                ) : null}
+
+                {isExpensesBudgets ? (
+                  (() => {
+                    const parseCurrency = (value: string) => {
+                      const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
+                      return Number.isNaN(numeric) ? 0 : numeric;
+                    };
+                    const formatCurrency = (value: number) =>
+                      `$${Math.round(value).toLocaleString()}`;
+                    const budgets: Record<string, number> = {
+                      Labor: 52000,
+                      COGS: 33000,
+                      "Fixed costs": 18000,
+                      Utilities: 7200,
+                      Chemicals: 3200,
+                      Linen: 2200,
+                    };
+
+                    return (
+                      <div className="breakdown-table" role="table">
+                        <div className="breakdown-row breakdown-row--header" role="row">
+                          <span className="breakdown-row__label" role="columnheader">
+                            Category
+                          </span>
+                          <span className="breakdown-row__value" role="columnheader">
+                            Budget
+                          </span>
+                          <span className="breakdown-row__value" role="columnheader">
+                            Actual
+                          </span>
+                          <span className="breakdown-row__percent" role="columnheader">
+                            Variance
+                          </span>
+                        </div>
+                        {expensesCategoryRows.map((label) => {
+                          const actual = parseCurrency(activeExpensesCategories[label]);
+                          const budget = budgets[label] ?? 0;
+                          const variance = actual - budget;
+                          const varianceTone = variance > 0 ? "#c65d4e" : "#4b7a60";
+                          return (
+                            <div key={label} className="breakdown-row" role="row">
+                              <span className="breakdown-row__label" role="cell">
+                                {label}
+                              </span>
+                              <span className="breakdown-row__value" role="cell">
+                                {formatCurrency(budget)}
+                              </span>
+                              <span className="breakdown-row__value" role="cell">
+                                {activeExpensesCategories[label]}
+                              </span>
+                              <span
+                                className="breakdown-row__percent"
+                                role="cell"
+                                style={{ color: varianceTone }}
+                              >
+                                {variance > 0 ? "+" : ""}
+                                {formatCurrency(variance)}
+                              </span>
                             </div>
                           );
                         })}
