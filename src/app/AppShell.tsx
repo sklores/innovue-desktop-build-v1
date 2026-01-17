@@ -1129,65 +1129,22 @@ const AppShell = () => {
             ) : isFinancialsKpis ? (
               <section className="truth-section">
                 <div className="truth-section__content">
-                  <div className="truth-section__header">
-                    <p className="truth-section__title">KPIs</p>
-                  </div>
-                  <div className="breakdown-table" role="table">
-                    <div className="breakdown-row breakdown-row--header" role="row">
-                      <span className="breakdown-row__label" role="columnheader">
-                        Metric
-                      </span>
-                      <span className="breakdown-row__value" role="columnheader">
-                        Value
-                      </span>
-                      <span className="breakdown-row__percent" role="columnheader">
-                        Context
-                      </span>
-                    </div>
-                    <div className="breakdown-row" role="row">
-                      <span className="breakdown-row__label" role="cell">
-                        Prime Cost
-                      </span>
-                      <span className="breakdown-row__value" role="cell">
-                        --%
-                      </span>
-                      <span className="breakdown-row__percent" role="cell">
-                        % of sales
-                      </span>
-                    </div>
-                    <div className="breakdown-row" role="row">
-                      <span className="breakdown-row__label" role="cell">
-                        Sales per Labor Hour
-                      </span>
-                      <span className="breakdown-row__value" role="cell">
-                        --
-                      </span>
-                      <span className="breakdown-row__percent" role="cell">
-                        Revenue efficiency
-                      </span>
-                    </div>
-                    <div className="breakdown-row" role="row">
-                      <span className="breakdown-row__label" role="cell">
-                        Worked vs Scheduled Hours
-                      </span>
-                      <span className="breakdown-row__value" role="cell">
-                        --×
-                      </span>
-                      <span className="breakdown-row__percent" role="cell">
-                        Overage ratio
-                      </span>
-                    </div>
-                    <div className="breakdown-row" role="row">
-                      <span className="breakdown-row__label" role="cell">
-                        Sales per Sq Ft
-                      </span>
-                      <span className="breakdown-row__value" role="cell">
-                        --
-                      </span>
-                      <span className="breakdown-row__percent" role="cell">
-                        Annualized
-                      </span>
-                    </div>
+                  <div className="kpi-grid" role="list">
+                    {[
+                      { label: "Prime Cost", value: "--%" },
+                      { label: "Sales per Labor Hour", value: "$--" },
+                      { label: "Worked vs Scheduled Hours", value: "--%" },
+                      { label: "Sales per Sq Ft", value: "$--" },
+                      { label: "Net Profit %", value: "--%" },
+                      { label: "Rent as % of Sales", value: "--%" },
+                      { label: "Average Weekly Sales", value: "$--" },
+                      { label: "Average Employee Hourly Wage", value: "$-- / hr" },
+                    ].map((item) => (
+                      <div key={item.label} className="kpi-tile" role="listitem">
+                        <p className="kpi-tile__value">{item.value}</p>
+                        <p className="kpi-tile__label">{item.label}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </section>
