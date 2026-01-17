@@ -588,8 +588,8 @@ const AppShell = () => {
   }, [secondaryTabs, activeSecondaryId]);
 
   useEffect(() => {
-    setActiveSecondaryId(secondaryTabs[0]?.id ?? null);
-  }, [activePrimaryId, secondaryTabs]);
+    setActiveSecondaryId(secondaryTabsByPrimary[activePrimaryId]?.[0]?.id ?? null);
+  }, [activePrimaryId]);
 
   useEffect(() => {
     setActiveTime(timeOptions[7]);
