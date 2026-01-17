@@ -725,8 +725,6 @@ const AppShell = () => {
     activePrimaryId === "financials" && activeSecondaryId === "cashflow";
   const isFinancialsProForma =
     activePrimaryId === "financials" && activeSecondaryId === "pro-forma";
-  const isFinancialsKpis =
-    activePrimaryId === "financials" && activeSecondaryId === "kpis";
   const isFinancialsProfitLoss =
     activePrimaryId === "financials" && activeSecondaryId === "profit-loss";
   const isPresenceReviews =
@@ -735,6 +733,8 @@ const AppShell = () => {
     activePrimaryId === "presence" && activeSecondaryId === "traffic";
   const isPresenceSocial =
     activePrimaryId === "presence" && activeSecondaryId === "social";
+  const isPresenceSeo =
+    activePrimaryId === "presence" && activeSecondaryId === "seo";
   const isReporting = activePrimaryId === "reporting";
   const isReportingEmailReports =
     activePrimaryId === "reporting" && activeSecondaryId === "email-reports";
@@ -1353,7 +1353,10 @@ const AppShell = () => {
 
                     return (
                       <div className="breakdown-table" role="table">
-                        <div className="breakdown-row breakdown-row--header" role="row">
+                        <div
+                          className="breakdown-row breakdown-row--header budget-row"
+                          role="row"
+                        >
                           <span className="breakdown-row__label" role="columnheader">
                             Category
                           </span>
@@ -1451,6 +1454,14 @@ const AppShell = () => {
                       Chemicals: 3200,
                       Linen: 2200,
                     };
+                    const budgetRows = [
+                      { key: "Labor", label: "Labor" },
+                      { key: "COGS", label: "COGS" },
+                      { key: "Fixed costs", label: "Fixed Costs" },
+                      { key: "Utilities", label: "Utilities" },
+                      { key: "Chemicals", label: "Chemicals" },
+                      { key: "Linen", label: "Linen" },
+                    ];
 
                     return (
                       <div className="breakdown-table" role="table">
@@ -1468,21 +1479,23 @@ const AppShell = () => {
                             Variance
                           </span>
                         </div>
-                        {expensesCategoryRows.map((label) => {
-                          const actual = parseCurrency(activeExpensesCategories[label]);
-                          const budget = budgets[label] ?? 0;
+                        {budgetRows.map((row) => {
+                          const actual = parseCurrency(
+                            activeExpensesCategories[row.key],
+                          );
+                          const budget = budgets[row.key] ?? 0;
                           const variance = actual - budget;
                           const varianceTone = variance > 0 ? "#c65d4e" : "#4b7a60";
                           return (
-                            <div key={label} className="breakdown-row" role="row">
+                            <div key={row.key} className="breakdown-row budget-row" role="row">
                               <span className="breakdown-row__label" role="cell">
-                                {label}
+                                {row.label}
                               </span>
                               <span className="breakdown-row__value" role="cell">
                                 {formatCurrency(budget)}
                               </span>
                               <span className="breakdown-row__value" role="cell">
-                                {activeExpensesCategories[label]}
+                                {activeExpensesCategories[row.key]}
                               </span>
                               <span
                                 className="breakdown-row__percent"
@@ -1789,228 +1802,185 @@ const AppShell = () => {
                         ))}
                       </div>
                     </div>
-                    {cashflowDetail ? (
-                      (() => {
-                        const salesItems = [
-                          { label: "Credit card sales", share: 0.55 },
-                          { label: "Cash sales", share: 0.18 },
-                          { label: "3rd-party delivery sales", share: 0.17 },
-                          { label: "Sales tax collected", share: 0.06 },
-                          { label: "Tips collected", share: 0.04 },
-                        ];
-                        const expenseItems = [
-                          { label: "Northern Provisions", share: 0.4 },
-                          { label: "Harbor Supply Co.", share: 0.25 },
-                          { label: "Capital Farms", share: 0.2 },
-                          { label: "District Utilities", share: 0.15 },
-                        ];
-                        const totalSales = cashflowDetail.sales;
-                        const totalExpenses = cashflowDetail.expenses;
-                        const netTotal = totalSales - totalExpenses;
-
+                    <div className="cashflow-calendar" role="grid">
+                      {(cashflowView === "Month"
+                        ? cashflowDays
+                        : cashflowWeek
+                      ).map((entry, index) => {
+                        const net = entry.sales - entry.expenses;
+                        const netLabel = `${net >= 0 ? "+" : "-"} ${formatCompact(
+                          Math.abs(net),
+                        )}`;
+                        const isMuted =
+                          cashflowView === "Month" &&
+                          "current" in entry &&
+                          !entry.current;
+                        const dayLabel =
+                          cashflowView === "Month"
+                            ? (() => {
+                                const weekdays = [
+                                  "Mon",
+                                  "Tue",
+                                  "Wed",
+                                  "Thu",
+                                  "Fri",
+                                  "Sat",
+                                  "Sun",
+                                ];
+                                const weekday = weekdays[index % weekdays.length];
+                                return `${weekday}, Sep ${entry.day}`;
+                              })()
+                            : ` ${"label" in entry ? entry.label.replace(" · ", ", Sep ") : ""}`;
                         return (
-                          <div className="cashflow-detail">
-                            <div className="cashflow-detail__header">
-                              <div>
-                                <p className="cashflow-detail__title">
-                                  {cashflowDetail.label}
-                                </p>
-                                <p className="cashflow-detail__subtitle">
-                                  Cashflow detail
-                                </p>
-                              </div>
-                              <div className="cashflow-detail__meta">
-                                <span className="cashflow-detail__net">
-                                  {formatCurrency(netTotal)}
-                                </span>
-                                <button
-                                  type="button"
-                                  className="cashflow-detail__back"
-                                  onClick={handleCashflowDetailClose}
-                                >
-                                  Back
-                                </button>
-                              </div>
-                            </div>
-                            <div className="cashflow-detail__body">
-                              <div className="cashflow-detail__section">
-                                <p className="metric__label">Sales In</p>
-                                <div className="cashflow-detail__list">
-                                  {salesItems.map((item) => (
-                                    <div key={item.label} className="cashflow-detail__row">
-                                      <span className="cashflow-detail__label">
-                                        {item.label}
-                                      </span>
-                                      <span className="cashflow-detail__value">
-                                        {formatCurrency(totalSales * item.share)}
-                                      </span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                              <div className="cashflow-detail__section">
-                                <p className="metric__label">Expenses Out</p>
-                                <div className="cashflow-detail__list">
-                                  {expenseItems.map((item) => (
-                                    <div key={item.label} className="cashflow-detail__row">
-                                      <span className="cashflow-detail__label">
-                                        {item.label}
-                                      </span>
-                                      <span className="cashflow-detail__value">
-                                        {formatCurrency(totalExpenses * item.share)}
-                                      </span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                              <div className="cashflow-detail__summary">
-                                <div className="cashflow-detail__row">
-                                  <span className="cashflow-detail__label">
-                                    Total Sales In
-                                  </span>
-                                  <span className="cashflow-detail__value">
-                                    {formatCurrency(totalSales)}
-                                  </span>
-                                </div>
-                                <div className="cashflow-detail__row">
-                                  <span className="cashflow-detail__label">
-                                    Total Expenses Out
-                                  </span>
-                                  <span className="cashflow-detail__value">
-                                    {formatCurrency(totalExpenses)}
-                                  </span>
-                                </div>
-                                <div className="cashflow-detail__row cashflow-detail__row--strong">
-                                  <span className="cashflow-detail__label">Net Profit</span>
-                                  <span className="cashflow-detail__value">
-                                    {formatCurrency(netTotal)}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })()
-                    ) : (
-                      <div className="cashflow-calendar" role="grid">
-                        {(cashflowView === "Month"
-                          ? cashflowDays
-                          : cashflowWeek
-                        ).map((entry, index) => {
-                          const net = entry.sales - entry.expenses;
-                          const netLabel = `${net >= 0 ? "+" : "-"} ${formatCompact(
-                            Math.abs(net),
-                          )}`;
-                          const isMuted =
-                            cashflowView === "Month" &&
-                            "current" in entry &&
-                            !entry.current;
-                          const dayLabel =
-                            cashflowView === "Month"
-                              ? (() => {
-                                  const weekdays = [
-                                    "Mon",
-                                    "Tue",
-                                    "Wed",
-                                    "Thu",
-                                    "Fri",
-                                    "Sat",
-                                    "Sun",
-                                  ];
-                                  const weekday = weekdays[index % weekdays.length];
-                                  return `${weekday}, Sep ${entry.day}`;
-                                })()
-                              : `${"label" in entry ? entry.label.replace(" · ", ", Sep ") : ""}`;
-                          return (
-                            <div
-                              key={`${"day" in entry ? entry.day : entry.label}-${index}`}
-                              className={`cashflow-day ${getShadeClass(net)}${
-                                isMuted ? " cashflow-day--muted" : ""
-                              }`}
-                              role="gridcell"
-                              tabIndex={0}
-                              onClick={() =>
+                          <div
+                            key={`${"day" in entry ? entry.day : entry.label}-${index}`}
+                            className={`cashflow-day ${getShadeClass(net)}${
+                              isMuted ? " cashflow-day--muted" : ""
+                            }`}
+                            role="gridcell"
+                            tabIndex={0}
+                            onClick={() =>
+                              handleCashflowDetailOpen({
+                                label: dayLabel.trim(),
+                                sales: entry.sales,
+                                expenses: entry.expenses,
+                              })
+                            }
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
                                 handleCashflowDetailOpen({
                                   label: dayLabel.trim(),
                                   sales: entry.sales,
                                   expenses: entry.expenses,
-                                })
+                                });
                               }
-                              onKeyDown={(event) => {
-                                if (event.key === "Enter" || event.key === " ") {
-                                  event.preventDefault();
-                                  handleCashflowDetailOpen({
-                                    label: dayLabel.trim(),
-                                    sales: entry.sales,
-                                    expenses: entry.expenses,
-                                  });
-                                }
-                              }}
-                            >
-                              <span className="cashflow-day__date">
-                                {"day" in entry ? entry.day : entry.label}
-                              </span>
-                              <span className="cashflow-day__net">{netLabel}</span>
-                              <span className="cashflow-day__detail">
-                                Sales: {formatCompact(entry.sales)}
-                              </span>
-                              <span className="cashflow-day__detail">
-                                Exp: {formatCompact(entry.expenses)}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              })()
-            ) : isFinancialsKpis ? (
-              (() => {
-                const kpis = [
-                  {
-                    name: "Prime Cost %",
-                    value: "58%",
-                    note: "COGS + Labor ÷ Sales",
-                  },
-                  {
-                    name: "Sales per Labor Hour",
-                    value: "$165",
-                    note: "Sales ÷ Labor hours",
-                  },
-                  {
-                    name: "Worked vs Scheduled Hours",
-                    value: "312 / 328",
-                    note: "Hours this week",
-                  },
-                  {
-                    name: "Sales per Sq Ft",
-                    value: "$48",
-                    note: "Monthly average",
-                  },
-                  {
-                    name: "Avg Check",
-                    value: "$34.20",
-                    note: "Net sales ÷ covers",
-                  },
-                  {
-                    name: "Net Margin",
-                    value: "12.4%",
-                    note: "Net profit ÷ sales",
-                  },
-                ];
-
-                return (
-                  <div className="truth-section__content">
-                    <div className="kpi-grid">
-                      {kpis.map((kpi) => (
-                        <div key={kpi.name} className="kpi-card">
-                          <p className="kpi-card__label">{kpi.name}</p>
-                          <p className="kpi-card__value">{kpi.value}</p>
-                          <p className="kpi-card__note">{kpi.note}</p>
-                        </div>
-                      ))}
+                            }}
+                          >
+                            <span className="cashflow-day__date">
+                              {"day" in entry ? entry.day : entry.label}
+                            </span>
+                            <span className="cashflow-day__net">{netLabel}</span>
+                            <span className="cashflow-day__detail">
+                              Sales: {formatCompact(entry.sales)}
+                            </span>
+                            <span className="cashflow-day__detail">
+                              Exp: {formatCompact(entry.expenses)}
+                            </span>
+                          </div>
+                        );
+                      })}
                     </div>
+                    {cashflowDetail ? (
+                      <div
+                        className="modal-overlay"
+                        role="presentation"
+                        onClick={handleCashflowDetailClose}
+                      >
+                        <div
+                          className="modal-sheet"
+                          role="dialog"
+                          aria-modal="true"
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          <div className="modal-header">
+                            <div>
+                              <p className="modal-title">{cashflowDetail.label}</p>
+                              <p className="modal-subtitle">Cashflow detail</p>
+                            </div>
+                            <div className="modal-header__meta">
+                              <span className="modal-net">
+                                {formatCurrency(
+                                  cashflowDetail.sales - cashflowDetail.expenses,
+                                )}
+                              </span>
+                              <button
+                                type="button"
+                                className="modal-close"
+                                onClick={handleCashflowDetailClose}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          </div>
+                          {(() => {
+                            const salesItems = [
+                              { label: "Credit card sales", share: 0.55 },
+                              { label: "Cash sales", share: 0.18 },
+                              { label: "3rd-party delivery sales", share: 0.17 },
+                              { label: "Sales tax collected", share: 0.06 },
+                              { label: "Tips collected", share: 0.04 },
+                            ];
+                            const expenseItems = [
+                              { label: "Northern Provisions", share: 0.4 },
+                              { label: "Harbor Supply Co.", share: 0.25 },
+                              { label: "Capital Farms", share: 0.2 },
+                              { label: "District Utilities", share: 0.15 },
+                            ];
+                            const totalSales = cashflowDetail.sales;
+                            const totalExpenses = cashflowDetail.expenses;
+                            const netTotal = totalSales - totalExpenses;
+
+                            return (
+                              <div className="modal-body">
+                                <div className="modal-section">
+                                  <p className="metric__label">Sales In</p>
+                                  <div className="modal-list">
+                                    {salesItems.map((item) => (
+                                      <div key={item.label} className="modal-row">
+                                        <span className="modal-row__label">
+                                          {item.label}
+                                        </span>
+                                        <span className="modal-row__value">
+                                          {formatCurrency(totalSales * item.share)}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="modal-section">
+                                  <p className="metric__label">Expenses Out</p>
+                                  <div className="modal-list">
+                                    {expenseItems.map((item) => (
+                                      <div key={item.label} className="modal-row">
+                                        <span className="modal-row__label">
+                                          {item.label}
+                                        </span>
+                                        <span className="modal-row__value">
+                                          {formatCurrency(totalExpenses * item.share)}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="modal-summary">
+                                  <div className="modal-row">
+                                    <span className="modal-row__label">Total Sales In</span>
+                                    <span className="modal-row__value">
+                                      {formatCurrency(totalSales)}
+                                    </span>
+                                  </div>
+                                  <div className="modal-row">
+                                    <span className="modal-row__label">
+                                      Total Expenses Out
+                                    </span>
+                                    <span className="modal-row__value">
+                                      {formatCurrency(totalExpenses)}
+                                    </span>
+                                  </div>
+                                  <div className="modal-row modal-row--strong">
+                                    <span className="modal-row__label">Net Profit</span>
+                                    <span className="modal-row__value">
+                                      {formatCurrency(netTotal)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 );
               })()
@@ -2468,6 +2438,101 @@ const AppShell = () => {
                         </article>
                       );
                       })}
+                    </div>
+                  </div>
+                );
+              })()
+            ) : isPresenceSeo ? (
+              (() => {
+                const visibilityStats = [
+                  { label: "Indexed pages", value: "128" },
+                  { label: "Local search visibility", value: "Up" },
+                  { label: "Estimated monthly impressions", value: "48,200" },
+                  { label: "Estimated monthly clicks", value: "3,740" },
+                ];
+                const topQueries = [
+                  { query: "seasonal tasting menu", impressions: "9,200" },
+                  { query: "restaurant near union market", impressions: "8,150" },
+                  { query: "brunch in northeast dc", impressions: "6,980" },
+                  { query: "private dining dc", impressions: "5,440" },
+                  { query: "local dinner reservations", impressions: "4,860" },
+                ];
+                const topPages = [
+                  { page: "Home", traffic: "1,820" },
+                  { page: "Menu", traffic: "1,410" },
+                  { page: "Hours & Location", traffic: "1,060" },
+                  { page: "Private Dining", traffic: "780" },
+                  { page: "Reservations", traffic: "640" },
+                ];
+                const healthChecks = [
+                  { label: "Title tags present", status: "pass" },
+                  { label: "Meta descriptions present", status: "pass" },
+                  { label: "Local business schema detected", status: "unknown" },
+                  { label: "Sitemap detected", status: "pass" },
+                  { label: "Mobile-friendly", status: "issue" },
+                ];
+                const statusColor: Record<string, string> = {
+                  pass: "#4b7a60",
+                  unknown: "#9aa3af",
+                  issue: "#c98a56",
+                };
+
+                return (
+                  <div className="truth-section__content">
+                    <div className="vendor-section">
+                      <p className="metric__label">Visibility Summary</p>
+                      <div className="reporting-list seo-list">
+                        {visibilityStats.map((stat) => (
+                          <div key={stat.label} className="reporting-row reporting-row--simple">
+                            <div className="reporting-row__label">{stat.label}</div>
+                            <div className="reporting-row__value">{stat.value}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="vendor-section">
+                      <p className="metric__label">Top Queries</p>
+                      <div className="reporting-list seo-list">
+                        {topQueries.map((item) => (
+                          <div key={item.query} className="reporting-row reporting-row--simple">
+                            <div className="reporting-row__label">{item.query}</div>
+                            <div className="reporting-row__value">
+                              {item.impressions}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="vendor-section">
+                      <p className="metric__label">Top Landing Pages</p>
+                      <div className="reporting-list seo-list">
+                        {topPages.map((item) => (
+                          <div key={item.page} className="reporting-row reporting-row--simple">
+                            <div className="reporting-row__label">{item.page}</div>
+                            <div className="reporting-row__value">{item.traffic}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="vendor-section">
+                      <p className="metric__label">SEO Health Checks</p>
+                      <div className="reporting-list seo-list">
+                        {healthChecks.map((item) => (
+                          <div key={item.label} className="reporting-row reporting-row--simple">
+                            <div className="reporting-row__label">{item.label}</div>
+                            <div
+                              className="reporting-row__value"
+                              style={{ color: statusColor[item.status] }}
+                            >
+                              {item.status === "pass"
+                                ? "✔"
+                                : item.status === "issue"
+                                  ? "⚠"
+                                  : "—"}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 );
