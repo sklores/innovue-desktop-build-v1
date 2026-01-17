@@ -1646,139 +1646,77 @@ const AppShell = () => {
                     };
 
                     return (
-                      <div className="breakdown-table" role="table">
-                        <div className="breakdown-row breakdown-row--header" role="row">
-                          <span className="breakdown-row__label" role="columnheader">
-                            Category
-                          </span>
-                          <span className="breakdown-row__value" role="columnheader">
-                            Budget
-                          </span>
-                          <span className="breakdown-row__value" role="columnheader">
-                            Actual
-                          </span>
-                          <span className="breakdown-row__percent" role="columnheader">
-                            Variance
-                          </span>
-                          <span className="breakdown-row__percent" role="columnheader">
-                            Spend
-                          </span>
-                        </div>
-                        {budgetRows.map((row) => {
-                          const actual =
-                            actualsByTime[activeTime]?.[row.key] ??
-                            actualsByTime.Week[row.key] ??
-                            0;
-                          const budget = budgets[row.key] ?? 0;
-                          const variance = actual - budget;
-                          const isOpen = openBudgetCategoryId === row.key;
-                          const detailRows = budgetDetails[row.key] ?? [];
-                          const spendPercent = getSpendPercent(actual, budget);
-                          const varianceClass = getVarianceClass(variance);
-                          const actualClass = getActualClass(variance);
-                          const spendClass = getSpendClass(spendPercent);
-                          return (
-                            <div key={row.key} className="expense-accordion__item">
-                              <div
-                                className="breakdown-row budget-row budget-accordion__row"
-                                role="row"
-                                tabIndex={0}
-                                onClick={() => handleBudgetCategoryToggle(row.key)}
-                                onKeyDown={(event) =>
-                                  handleBudgetCategoryKeyDown(event, row.key)
-                                }
-                              >
-                                <span className="breakdown-row__label" role="cell">
-                                  {row.label}
-                                </span>
-                                <span className="breakdown-row__value" role="cell">
+                      <table className="budget-table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Category</th>
+                            <th scope="col">Budget</th>
+                            <th scope="col">Actual</th>
+                            <th scope="col">Variance</th>
+                            <th scope="col">Spend</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {budgetRows.map((row) => {
+                            const actual =
+                              actualsByTime[activeTime]?.[row.key] ??
+                              actualsByTime.Week[row.key] ??
+                              0;
+                            const budget = budgets[row.key] ?? 0;
+                            const variance = actual - budget;
+                            const spendPercent = getSpendPercent(actual, budget);
+                            const varianceClass = getVarianceClass(variance);
+                            const actualClass = getActualClass(variance);
+                            const spendClass = getSpendClass(spendPercent);
+                            return (
+                              <tr key={row.key}>
+                                <td>{row.label}</td>
+                                <td className="budget-table__number">
                                   {formatCurrency(budget)}
-                                </span>
-                                <span
-                                  className={`breakdown-row__value ${actualClass}`}
-                                  role="cell"
-                                >
+                                </td>
+                                <td className={`budget-table__number ${actualClass}`}>
                                   {formatCurrency(actual)}
-                                </span>
-                                <span
-                                  className={`breakdown-row__percent ${varianceClass}`}
-                                  role="cell"
-                                >
+                                </td>
+                                <td className={`budget-table__number ${varianceClass}`}>
                                   {formatVariance(variance)}
-                                </span>
-                                <span
-                                  className={`breakdown-row__percent ${spendClass}`}
-                                  role="cell"
-                                >
+                                </td>
+                                <td className={`budget-table__number ${spendClass}`}>
                                   {spendPercent}%
-                                </span>
-                              </div>
-                              <div
-                                className={`expense-accordion__panel${
-                                  isOpen ? " expense-accordion__panel--open" : ""
-                                }`}
-                              >
-                                <div className="expense-accordion__details">
-                                  {detailRows.map((item) => {
-                                    const amount = budget * item.share;
-                                    const percent = budget
-                                      ? Math.round((amount / budget) * 100)
-                                      : 0;
-                                    return (
-                                      <div
-                                        key={item.label}
-                                        className="expense-accordion__detail"
-                                      >
-                                        <span className="expense-accordion__detail-label">
-                                          {item.label}
-                                        </span>
-                                        <span className="expense-accordion__detail-value">
-                                          {formatCurrency(amount)}
-                                        </span>
-                                        <span className="expense-accordion__detail-percent">
-                                          {percent}%
-                                        </span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                        <div className="breakdown-row budget-row budget-total-row" role="row">
-                          <span className="breakdown-row__label" role="cell">
-                            Total
-                          </span>
-                          <span className="breakdown-row__value" role="cell">
-                            {formatCurrency(totals.budget)}
-                          </span>
-                          <span
-                            className={`breakdown-row__value ${getActualClass(
-                              totalVariance,
-                            )}`}
-                            role="cell"
-                          >
-                            {formatCurrency(totals.actual)}
-                          </span>
-                          <span
-                            className={`breakdown-row__percent ${getVarianceClass(
-                              totalVariance,
-                            )}`}
-                            role="cell"
-                          >
-                            {formatVariance(totalVariance)}
-                          </span>
-                          <span
-                            className={`breakdown-row__percent ${getSpendClass(
-                              getSpendPercent(totals.actual, totals.budget),
-                            )}`}
-                            role="cell"
-                          >
-                            {getSpendPercent(totals.actual, totals.budget)}%
-                          </span>
-                        </div>
-                      </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                        <tfoot>
+                          <tr className="budget-table__total">
+                            <td>Total</td>
+                            <td className="budget-table__number">
+                              {formatCurrency(totals.budget)}
+                            </td>
+                            <td
+                              className={`budget-table__number ${getActualClass(
+                                totalVariance,
+                              )}`}
+                            >
+                              {formatCurrency(totals.actual)}
+                            </td>
+                            <td
+                              className={`budget-table__number ${getVarianceClass(
+                                totalVariance,
+                              )}`}
+                            >
+                              {formatVariance(totalVariance)}
+                            </td>
+                            <td
+                              className={`budget-table__number ${getSpendClass(
+                                getSpendPercent(totals.actual, totals.budget),
+                              )}`}
+                            >
+                              {getSpendPercent(totals.actual, totals.budget)}%
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
                     );
                   })()
                 ) : null}
