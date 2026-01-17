@@ -600,6 +600,9 @@ const AppShell = () => {
   const [openExpenseCategoryId, setOpenExpenseCategoryId] = useState<string | null>(
     null,
   );
+  const [openBudgetCategoryId, setOpenBudgetCategoryId] = useState<string | null>(
+    null,
+  );
   const [cashflowView, setCashflowView] = useState<"Month" | "Week">("Month");
   const [cashflowDetail, setCashflowDetail] = useState<{
     label: string;
@@ -806,6 +809,20 @@ const AppShell = () => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       handleExpenseCategoryToggle(id);
+    }
+  };
+
+  const handleBudgetCategoryToggle = (id: string) => {
+    setOpenBudgetCategoryId((prev) => (prev === id ? null : id));
+  };
+
+  const handleBudgetCategoryKeyDown = (
+    event: KeyboardEvent<HTMLDivElement>,
+    id: string,
+  ) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleBudgetCategoryToggle(id);
     }
   };
 
@@ -1470,14 +1487,90 @@ const AppShell = () => {
                     };
                     const formatCurrency = (value: number) =>
                       `$${Math.round(value).toLocaleString()}`;
-                    const budgets: Record<string, number> = {
-                      Labor: 52000,
-                      COGS: 33000,
-                      "Fixed costs": 18000,
-                      Utilities: 7200,
-                      Chemicals: 3200,
-                      Linen: 2200,
+                    const budgetsByTime: Record<string, Record<string, number>> = {
+                      Mon: {
+                        Labor: 7400,
+                        COGS: 4800,
+                        "Fixed costs": 2600,
+                        Utilities: 980,
+                        Chemicals: 460,
+                        Linen: 320,
+                      },
+                      Tue: {
+                        Labor: 7600,
+                        COGS: 4900,
+                        "Fixed costs": 2600,
+                        Utilities: 980,
+                        Chemicals: 460,
+                        Linen: 320,
+                      },
+                      Wed: {
+                        Labor: 7800,
+                        COGS: 5000,
+                        "Fixed costs": 2700,
+                        Utilities: 1000,
+                        Chemicals: 470,
+                        Linen: 330,
+                      },
+                      Thu: {
+                        Labor: 7700,
+                        COGS: 5000,
+                        "Fixed costs": 2700,
+                        Utilities: 990,
+                        Chemicals: 470,
+                        Linen: 330,
+                      },
+                      Fri: {
+                        Labor: 8200,
+                        COGS: 5400,
+                        "Fixed costs": 2800,
+                        Utilities: 1040,
+                        Chemicals: 490,
+                        Linen: 340,
+                      },
+                      Sat: {
+                        Labor: 6200,
+                        COGS: 4200,
+                        "Fixed costs": 2400,
+                        Utilities: 860,
+                        Chemicals: 420,
+                        Linen: 300,
+                      },
+                      Sun: {
+                        Labor: 6000,
+                        COGS: 4100,
+                        "Fixed costs": 2400,
+                        Utilities: 840,
+                        Chemicals: 410,
+                        Linen: 300,
+                      },
+                      Week: {
+                        Labor: 52000,
+                        COGS: 33000,
+                        "Fixed costs": 18000,
+                        Utilities: 7200,
+                        Chemicals: 3200,
+                        Linen: 2200,
+                      },
+                      Month: {
+                        Labor: 214000,
+                        COGS: 134000,
+                        "Fixed costs": 72000,
+                        Utilities: 29400,
+                        Chemicals: 12800,
+                        Linen: 8800,
+                      },
+                      Year: {
+                        Labor: 2580000,
+                        COGS: 1620000,
+                        "Fixed costs": 864000,
+                        Utilities: 352800,
+                        Chemicals: 153600,
+                        Linen: 105600,
+                      },
                     };
+                    const budgets =
+                      budgetsByTime[activeTime] ?? budgetsByTime.Week;
                     const budgetRows = [
                       { key: "Labor", label: "Labor" },
                       { key: "COGS", label: "COGS" },
@@ -1486,6 +1579,62 @@ const AppShell = () => {
                       { key: "Chemicals", label: "Chemicals" },
                       { key: "Linen", label: "Linen" },
                     ];
+                    const budgetDetails: Record<
+                      string,
+                      { label: string; share: number }[]
+                    > = {
+                      Labor: [
+                        { label: "Cook", share: 0.45 },
+                        { label: "Manager", share: 0.33 },
+                        { label: "Cashier", share: 0.22 },
+                      ],
+                      COGS: [
+                        { label: "Food", share: 0.52 },
+                        { label: "Beverage", share: 0.28 },
+                        { label: "Alcohol", share: 0.2 },
+                      ],
+                      "Fixed costs": [
+                        { label: "Rent", share: 0.5 },
+                        { label: "Insurance", share: 0.2 },
+                        { label: "Accounting", share: 0.18 },
+                        { label: "Bookkeeping", share: 0.12 },
+                      ],
+                      Utilities: [
+                        { label: "Electric", share: 0.4 },
+                        { label: "Gas", share: 0.25 },
+                        { label: "Water", share: 0.2 },
+                        { label: "Internet", share: 0.15 },
+                      ],
+                      Chemicals: [
+                        { label: "Cleaning supplies", share: 0.6 },
+                        { label: "Sanitizer", share: 0.4 },
+                      ],
+                      Linen: [
+                        { label: "Linen service", share: 0.7 },
+                        { label: "Towels", share: 0.3 },
+                      ],
+                    };
+                    const totals = budgetRows.reduce(
+                      (acc, row) => {
+                        const actual = parseCurrency(
+                          activeExpensesCategories[row.key],
+                        );
+                        const budget = budgets[row.key] ?? 0;
+                        return {
+                          budget: acc.budget + budget,
+                          actual: acc.actual + actual,
+                        };
+                      },
+                      { budget: 0, actual: 0 },
+                    );
+                    const totalVariance = totals.actual - totals.budget;
+                    const formatVariance = (value: number) => {
+                      if (value === 0) {
+                        return formatCurrency(0);
+                      }
+                      const sign = value > 0 ? "+" : "−";
+                      return `${sign}${formatCurrency(Math.abs(value))}`;
+                    };
 
                     return (
                       <div className="breakdown-table" role="table">
@@ -1509,29 +1658,93 @@ const AppShell = () => {
                           );
                           const budget = budgets[row.key] ?? 0;
                           const variance = actual - budget;
-                          const varianceTone = variance > 0 ? "#c65d4e" : "#4b7a60";
+                          const isOpen = openBudgetCategoryId === row.key;
+                          const detailRows = budgetDetails[row.key] ?? [];
+                          const varianceClass =
+                            variance > 0
+                              ? "budget-variance--over"
+                              : "budget-variance--under";
                           return (
-                            <div key={row.key} className="breakdown-row budget-row" role="row">
-                              <span className="breakdown-row__label" role="cell">
-                                {row.label}
-                              </span>
-                              <span className="breakdown-row__value" role="cell">
-                                {formatCurrency(budget)}
-                              </span>
-                              <span className="breakdown-row__value" role="cell">
-                                {activeExpensesCategories[row.key]}
-                              </span>
-                              <span
-                                className="breakdown-row__percent"
-                                role="cell"
-                                style={{ color: varianceTone }}
+                            <div key={row.key} className="expense-accordion__item">
+                              <div
+                                className="breakdown-row budget-row budget-accordion__row"
+                                role="row"
+                                tabIndex={0}
+                                onClick={() => handleBudgetCategoryToggle(row.key)}
+                                onKeyDown={(event) =>
+                                  handleBudgetCategoryKeyDown(event, row.key)
+                                }
                               >
-                                {variance > 0 ? "+" : ""}
-                                {formatCurrency(variance)}
-                              </span>
+                                <span className="breakdown-row__label" role="cell">
+                                  {row.label}
+                                </span>
+                                <span className="breakdown-row__value" role="cell">
+                                  {formatCurrency(budget)}
+                                </span>
+                                <span className="breakdown-row__value" role="cell">
+                                  {activeExpensesCategories[row.key]}
+                                </span>
+                                <span
+                                  className={`breakdown-row__percent ${varianceClass}`}
+                                  role="cell"
+                                >
+                                  {formatVariance(variance)}
+                                </span>
+                              </div>
+                              <div
+                                className={`expense-accordion__panel${
+                                  isOpen ? " expense-accordion__panel--open" : ""
+                                }`}
+                              >
+                                <div className="expense-accordion__details">
+                                  {detailRows.map((item) => {
+                                    const amount = budget * item.share;
+                                    const percent = budget
+                                      ? Math.round((amount / budget) * 100)
+                                      : 0;
+                                    return (
+                                      <div
+                                        key={item.label}
+                                        className="expense-accordion__detail"
+                                      >
+                                        <span className="expense-accordion__detail-label">
+                                          {item.label}
+                                        </span>
+                                        <span className="expense-accordion__detail-value">
+                                          {formatCurrency(amount)}
+                                        </span>
+                                        <span className="expense-accordion__detail-percent">
+                                          {percent}%
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
                             </div>
                           );
                         })}
+                        <div className="breakdown-row budget-row budget-total-row" role="row">
+                          <span className="breakdown-row__label" role="cell">
+                            Total
+                          </span>
+                          <span className="breakdown-row__value" role="cell">
+                            {formatCurrency(totals.budget)}
+                          </span>
+                          <span className="breakdown-row__value" role="cell">
+                            {formatCurrency(totals.actual)}
+                          </span>
+                          <span
+                            className={`breakdown-row__percent ${
+                              totalVariance > 0
+                                ? "budget-variance--over"
+                                : "budget-variance--under"
+                            }`}
+                            role="cell"
+                          >
+                            {formatVariance(totalVariance)}
+                          </span>
+                        </div>
                       </div>
                     );
                   })()
