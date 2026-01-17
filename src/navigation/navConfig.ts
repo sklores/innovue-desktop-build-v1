@@ -2,7 +2,7 @@ export const primaryTabs = [
   { id: "sales", label: "Sales" },
   { id: "expenses", label: "Expenses" },
   { id: "financials", label: "Financials" },
-  { id: "presence", label: "Presence" },
+  { id: "presence", label: "Online" },
   { id: "settings", label: "Settings" },
 ];
 
@@ -14,9 +14,9 @@ export const secondaryTabsByPrimary = {
     { id: "product", label: "Product" },
   ],
   expenses: [
-    { id: "overview", label: "Overview" },
-    { id: "categories", label: "Categories" },
+    { id: "breakdown", label: "Breakdown" },
     { id: "vendors", label: "Vendors" },
+    { id: "invoices", label: "Invoices" },
     { id: "budgets", label: "Budgets" },
   ],
   financials: [
