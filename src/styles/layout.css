@@ -539,6 +539,9 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .review-card {
@@ -548,6 +551,27 @@
   padding: 16px;
   display: grid;
   gap: 10px;
+}
+
+.review-card--google {
+  background: rgba(65, 132, 247, 0.06);
+}
+
+.review-card--yelp {
+  background: rgba(220, 38, 38, 0.05);
+}
+
+.review-card--tripadvisor {
+  background: rgba(52, 211, 153, 0.06);
+}
+
+.review-card--uber,
+.review-card--delivery {
+  background: rgba(20, 184, 166, 0.05);
+}
+
+.review-card--neutral {
+  background: rgba(148, 163, 184, 0.04);
 }
 
 .review-card__meta {
@@ -688,6 +712,9 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .social-card {
@@ -697,6 +724,30 @@
   padding: 16px;
   display: grid;
   gap: 10px;
+}
+
+.social-card--instagram {
+  background: rgba(217, 70, 239, 0.05);
+}
+
+.social-card--tiktok {
+  background: rgba(148, 163, 184, 0.05);
+}
+
+.social-card--facebook {
+  background: rgba(96, 165, 250, 0.05);
+}
+
+.social-card--google {
+  background: rgba(65, 132, 247, 0.06);
+}
+
+.social-card--x {
+  background: rgba(148, 163, 184, 0.04);
+}
+
+.social-card--neutral {
+  background: rgba(148, 163, 184, 0.04);
 }
 
 .social-card__header {

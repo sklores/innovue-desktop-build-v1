@@ -1579,14 +1579,27 @@ const AppShell = () => {
                     text: "We had a great lunch here. The menu was easy to navigate and everything felt thoughtfully prepared with a nice finish.",
                   },
                 ];
+                const reviewTintMap: Record<string, string> = {
+                  google: "review-card--google",
+                  "google maps": "review-card--google",
+                  "google business profile": "review-card--google",
+                  yelp: "review-card--yelp",
+                  tripadvisor: "review-card--tripadvisor",
+                  "uber eats": "review-card--uber",
+                  "delivery apps": "review-card--delivery",
+                };
 
                 return (
                   <div className="truth-section__content">
                     <div className="reviews-feed" role="list">
-                      {reviews.map((review) => (
+                      {reviews.map((review) => {
+                        const tintClass =
+                          reviewTintMap[review.source.toLowerCase()] ??
+                          "review-card--neutral";
+                        return (
                         <article
                           key={review.id}
-                          className="review-card"
+                          className={`review-card ${tintClass}`}
                           role="listitem"
                         >
                           <div className="review-card__meta">
@@ -1605,7 +1618,8 @@ const AppShell = () => {
                           </div>
                           <p className="review-card__text">{review.text}</p>
                         </article>
-                      ))}
+                      );
+                      })}
                     </div>
                   </div>
                 );
@@ -1798,12 +1812,27 @@ const AppShell = () => {
                     message: "New platform activity detected.",
                   },
                 ];
+                const socialTintMap: Record<string, string> = {
+                  instagram: "social-card--instagram",
+                  tiktok: "social-card--tiktok",
+                  facebook: "social-card--facebook",
+                  "google business profile": "social-card--google",
+                  x: "social-card--x",
+                };
 
                 return (
                   <div className="truth-section__content">
                     <div className="social-feed" role="list">
-                      {feedItems.map((item) => (
-                        <article key={item.id} className="social-card" role="listitem">
+                      {feedItems.map((item) => {
+                        const tintClass =
+                          socialTintMap[item.platform.toLowerCase()] ??
+                          "social-card--neutral";
+                        return (
+                        <article
+                          key={item.id}
+                          className={`social-card ${tintClass}`}
+                          role="listitem"
+                        >
                           <div className="social-card__header">
                             <span className="social-card__platform">
                               {item.platform}
@@ -1828,7 +1857,8 @@ const AppShell = () => {
                             <p className="social-card__message">{item.message}</p>
                           )}
                         </article>
-                      ))}
+                      );
+                      })}
                     </div>
                   </div>
                 );
