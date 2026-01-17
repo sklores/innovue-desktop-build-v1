@@ -418,6 +418,129 @@ const salesForecastSeries: Record<
   },
 };
 
+const salesProductMix: Record<string, { name: string; units: number }[]> = {
+  Mon: [
+    { name: "Signature Burger", units: 84 },
+    { name: "Citrus Kale Salad", units: 66 },
+    { name: "Smoked Brisket Plate", units: 58 },
+    { name: "Truffle Fries", units: 52 },
+    { name: "Roasted Chicken", units: 48 },
+    { name: "Seasonal Veg Bowl", units: 44 },
+    { name: "Shrimp Tacos", units: 41 },
+    { name: "Mushroom Risotto", units: 36 },
+    { name: "House Lemonade", units: 32 },
+    { name: "Chocolate Tart", units: 28 },
+  ],
+  Tue: [
+    { name: "Signature Burger", units: 78 },
+    { name: "Citrus Kale Salad", units: 62 },
+    { name: "Smoked Brisket Plate", units: 55 },
+    { name: "Truffle Fries", units: 50 },
+    { name: "Roasted Chicken", units: 46 },
+    { name: "Seasonal Veg Bowl", units: 42 },
+    { name: "Shrimp Tacos", units: 38 },
+    { name: "Mushroom Risotto", units: 34 },
+    { name: "House Lemonade", units: 30 },
+    { name: "Chocolate Tart", units: 26 },
+  ],
+  Wed: [
+    { name: "Signature Burger", units: 92 },
+    { name: "Citrus Kale Salad", units: 70 },
+    { name: "Smoked Brisket Plate", units: 63 },
+    { name: "Truffle Fries", units: 58 },
+    { name: "Roasted Chicken", units: 54 },
+    { name: "Seasonal Veg Bowl", units: 49 },
+    { name: "Shrimp Tacos", units: 45 },
+    { name: "Mushroom Risotto", units: 40 },
+    { name: "House Lemonade", units: 36 },
+    { name: "Chocolate Tart", units: 31 },
+  ],
+  Thu: [
+    { name: "Signature Burger", units: 88 },
+    { name: "Citrus Kale Salad", units: 68 },
+    { name: "Smoked Brisket Plate", units: 60 },
+    { name: "Truffle Fries", units: 56 },
+    { name: "Roasted Chicken", units: 52 },
+    { name: "Seasonal Veg Bowl", units: 48 },
+    { name: "Shrimp Tacos", units: 43 },
+    { name: "Mushroom Risotto", units: 39 },
+    { name: "House Lemonade", units: 34 },
+    { name: "Chocolate Tart", units: 29 },
+  ],
+  Fri: [
+    { name: "Signature Burger", units: 104 },
+    { name: "Citrus Kale Salad", units: 82 },
+    { name: "Smoked Brisket Plate", units: 74 },
+    { name: "Truffle Fries", units: 69 },
+    { name: "Roasted Chicken", units: 62 },
+    { name: "Seasonal Veg Bowl", units: 57 },
+    { name: "Shrimp Tacos", units: 53 },
+    { name: "Mushroom Risotto", units: 47 },
+    { name: "House Lemonade", units: 41 },
+    { name: "Chocolate Tart", units: 35 },
+  ],
+  Sat: [
+    { name: "Signature Burger", units: 96 },
+    { name: "Citrus Kale Salad", units: 78 },
+    { name: "Smoked Brisket Plate", units: 68 },
+    { name: "Truffle Fries", units: 64 },
+    { name: "Roasted Chicken", units: 58 },
+    { name: "Seasonal Veg Bowl", units: 54 },
+    { name: "Shrimp Tacos", units: 49 },
+    { name: "Mushroom Risotto", units: 43 },
+    { name: "House Lemonade", units: 38 },
+    { name: "Chocolate Tart", units: 33 },
+  ],
+  Sun: [
+    { name: "Signature Burger", units: 72 },
+    { name: "Citrus Kale Salad", units: 58 },
+    { name: "Smoked Brisket Plate", units: 52 },
+    { name: "Truffle Fries", units: 48 },
+    { name: "Roasted Chicken", units: 44 },
+    { name: "Seasonal Veg Bowl", units: 40 },
+    { name: "Shrimp Tacos", units: 36 },
+    { name: "Mushroom Risotto", units: 32 },
+    { name: "House Lemonade", units: 28 },
+    { name: "Chocolate Tart", units: 24 },
+  ],
+  Week: [
+    { name: "Signature Burger", units: 620 },
+    { name: "Citrus Kale Salad", units: 480 },
+    { name: "Smoked Brisket Plate", units: 420 },
+    { name: "Truffle Fries", units: 390 },
+    { name: "Roasted Chicken", units: 340 },
+    { name: "Seasonal Veg Bowl", units: 310 },
+    { name: "Shrimp Tacos", units: 285 },
+    { name: "Mushroom Risotto", units: 240 },
+    { name: "House Lemonade", units: 210 },
+    { name: "Chocolate Tart", units: 180 },
+  ],
+  Month: [
+    { name: "Signature Burger", units: 2480 },
+    { name: "Citrus Kale Salad", units: 1940 },
+    { name: "Smoked Brisket Plate", units: 1680 },
+    { name: "Truffle Fries", units: 1540 },
+    { name: "Roasted Chicken", units: 1380 },
+    { name: "Seasonal Veg Bowl", units: 1280 },
+    { name: "Shrimp Tacos", units: 1140 },
+    { name: "Mushroom Risotto", units: 980 },
+    { name: "House Lemonade", units: 860 },
+    { name: "Chocolate Tart", units: 720 },
+  ],
+  Year: [
+    { name: "Signature Burger", units: 29800 },
+    { name: "Citrus Kale Salad", units: 23600 },
+    { name: "Smoked Brisket Plate", units: 20400 },
+    { name: "Truffle Fries", units: 18900 },
+    { name: "Roasted Chicken", units: 17200 },
+    { name: "Seasonal Veg Bowl", units: 16000 },
+    { name: "Shrimp Tacos", units: 14600 },
+    { name: "Mushroom Risotto", units: 12800 },
+    { name: "House Lemonade", units: 11200 },
+    { name: "Chocolate Tart", units: 9800 },
+  ],
+};
+
 const breakdownRows = [
   "In-store",
   "Takeout",
@@ -583,6 +706,8 @@ const AppShell = () => {
     activePrimaryId === "sales" && activeSecondaryId === "breakdown";
   const isSalesForecast =
     activePrimaryId === "sales" && activeSecondaryId === "forecast";
+  const isSalesProduct =
+    activePrimaryId === "sales" && activeSecondaryId === "product";
   const isExpensesOverview =
     activePrimaryId === "expenses" && activeSecondaryId === "overview";
   const isExpensesCategories =
@@ -625,6 +750,7 @@ const AppShell = () => {
     salesBreakdownPercentages[activeTime] ?? salesBreakdownPercentages.Week;
   const activeForecast =
     salesForecastSeries[activeTime] ?? salesForecastSeries.Week;
+  const activeProductMix = salesProductMix[activeTime] ?? salesProductMix.Week;
   const activeExpensesTotal =
     expensesOverviewTotals[activeTime] ?? expensesOverviewTotals.Week;
   const activeExpensesCategories =
@@ -725,6 +851,7 @@ const AppShell = () => {
     isSalesOverview ||
     isSalesBreakdown ||
     isSalesForecast ||
+    isSalesProduct ||
     isExpensesOverview ||
     isExpensesCategories;
 
@@ -1057,6 +1184,94 @@ const AppShell = () => {
                       />
                     </svg>
                   </div>
+                ) : null}
+
+                {isSalesProduct ? (
+                  (() => {
+                    const totalUnits = activeProductMix.reduce(
+                      (sum, item) => sum + item.units,
+                      0,
+                    );
+                    const topSellers = [...activeProductMix]
+                      .sort((a, b) => b.units - a.units)
+                      .slice(0, 5);
+                    const bottomSellers = [...activeProductMix]
+                      .sort((a, b) => a.units - b.units)
+                      .slice(0, 5);
+
+                    return (
+                      <div className="vendor-section">
+                        <div className="vendor-section">
+                          <p className="metric__label">Top 5 Products</p>
+                          <div className="breakdown-table" role="table">
+                            <div className="breakdown-row breakdown-row--header" role="row">
+                              <span className="breakdown-row__label" role="columnheader">
+                                Product
+                              </span>
+                              <span className="breakdown-row__value" role="columnheader">
+                                Units
+                              </span>
+                              <span className="breakdown-row__percent" role="columnheader">
+                                % of Total
+                              </span>
+                            </div>
+                            {topSellers.map((item) => {
+                              const percent = totalUnits
+                                ? Math.round((item.units / totalUnits) * 100)
+                                : 0;
+                              return (
+                                <div key={item.name} className="breakdown-row" role="row">
+                                  <span className="breakdown-row__label" role="cell">
+                                    {item.name}
+                                  </span>
+                                  <span className="breakdown-row__value" role="cell">
+                                    {item.units}
+                                  </span>
+                                  <span className="breakdown-row__percent" role="cell">
+                                    {percent}%
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        <div className="vendor-section">
+                          <p className="metric__label">Bottom 5 Products</p>
+                          <div className="breakdown-table" role="table">
+                            <div className="breakdown-row breakdown-row--header" role="row">
+                              <span className="breakdown-row__label" role="columnheader">
+                                Product
+                              </span>
+                              <span className="breakdown-row__value" role="columnheader">
+                                Units
+                              </span>
+                              <span className="breakdown-row__percent" role="columnheader">
+                                % of Total
+                              </span>
+                            </div>
+                            {bottomSellers.map((item) => {
+                              const percent = totalUnits
+                                ? Math.round((item.units / totalUnits) * 100)
+                                : 0;
+                              return (
+                                <div key={item.name} className="breakdown-row" role="row">
+                                  <span className="breakdown-row__label" role="cell">
+                                    {item.name}
+                                  </span>
+                                  <span className="breakdown-row__value" role="cell">
+                                    {item.units}
+                                  </span>
+                                  <span className="breakdown-row__percent" role="cell">
+                                    {percent}%
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()
                 ) : null}
 
                 {isExpensesOverview ? (
