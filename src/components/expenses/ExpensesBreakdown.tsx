@@ -5,12 +5,12 @@ type ExpensesBreakdownProps = {
 };
 
 const breakdownRows = [
-  "Labor",
-  "COGS",
-  "Fixed costs",
-  "Utilities",
-  "Chemicals",
-  "Linen",
+  { key: "Labor", label: "Labor" },
+  { key: "COGS", label: "COGS" },
+  { key: "Fixed costs", label: "Fixed Costs" },
+  { key: "Utilities", label: "Utilities" },
+  { key: "Chemicals", label: "Chemicals" },
+  { key: "Linen", label: "Linen" },
 ] as const;
 
 const ExpensesBreakdown = ({ total, categories, percents }: ExpensesBreakdownProps) => {
@@ -38,16 +38,16 @@ const ExpensesBreakdown = ({ total, categories, percents }: ExpensesBreakdownPro
           100%
         </span>
       </div>
-      {breakdownRows.map((label) => (
-        <div key={label} className="breakdown-row" role="row">
+      {breakdownRows.map((row) => (
+        <div key={row.key} className="breakdown-row" role="row">
           <span className="breakdown-row__label" role="cell">
-            {label}
+            {row.label}
           </span>
           <span className="breakdown-row__value" role="cell">
-            {categories[label]}
+            {categories[row.key]}
           </span>
           <span className="breakdown-row__percent" role="cell">
-            {percents[label]}
+            {percents[row.key]}
           </span>
         </div>
       ))}
