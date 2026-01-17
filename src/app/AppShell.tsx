@@ -474,6 +474,10 @@ const AppShell = () => {
   const [openVendorId, setOpenVendorId] = useState<string | null>(null);
   const [openOrderGuideId, setOpenOrderGuideId] = useState<string | null>(null);
   const [openTrafficId, setOpenTrafficId] = useState<string | null>(null);
+  const [proFormaSalesAdjustment, setProFormaSalesAdjustment] = useState(0);
+  const [proFormaCogsPercent, setProFormaCogsPercent] = useState(34);
+  const [proFormaLaborPercent, setProFormaLaborPercent] = useState(30);
+  const [proFormaOperatingPercent, setProFormaOperatingPercent] = useState(26);
   const [reportPreferences, setReportPreferences] = useState([
     {
       id: "daily-sales-summary",
@@ -749,23 +753,232 @@ const AppShell = () => {
               </div>
             </section>
 
-            <section className="truth-section">
-              {isTimeBasedView ? (
-                <div className="truth-section__content">
-                <div className="time-selector" role="tablist" aria-label="Time range">
-                  {timeOptions.map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      className={`time-pill${
-                        activeTime === option ? " time-pill--active" : ""
-                      }`}
-                      onClick={() => setActiveTime(option)}
+            {isFinancialsProForma ? (
+              <>
+                <section className="truth-section">
+                  {(() => {
+                    const formatCurrency = (value: number) =>
+                      `$${Math.round(value).toLocaleString()}`;
+                    const formatMargin = (value: number) =>
+                      `${Math.round(value * 100)}%`;
+                    const baseSales = 52000;
+                    const adjustedSales =
+                      baseSales * (1 + proFormaSalesAdjustment / 100);
+                    const totalCostPercent =
+                      proFormaCogsPercent +
+                      proFormaLaborPercent +
+                      proFormaOperatingPercent;
+                    const buildScenario = (
+                      id: string,
+                      label: string,
+                      multiplier: number,
+                      tone: string,
+                      bar: string,
+                    ) => {
+                      const sales = adjustedSales * multiplier;
+                      const costs = sales * (totalCostPercent / 100);
+                      const profit = sales - costs;
+                      return {
+                        id,
+                        label,
+                        monthly: formatCurrency(profit),
+                        yearly: formatCurrency(profit * 12),
+                        margin: formatMargin(sales ? profit / sales : 0),
+                        tone,
+                        bar,
+                      };
+                    };
+                    const scenarios = [
+                      buildScenario(
+                        "high",
+                        "High",
+                        1.15,
+                        "proforma-row--positive",
+                        "proforma-bar--high",
+                      ),
+                      buildScenario(
+                        "medium",
+                        "Medium",
+                        1,
+                        "proforma-row--neutral",
+                        "proforma-bar--medium",
+                      ),
+                      buildScenario(
+                        "low",
+                        "Low",
+                        0.85,
+                        "proforma-row--negative",
+                        "proforma-bar--low",
+                      ),
+                    ];
+
+                    return (
+                      <div className="truth-section__content">
+                        <div className="proforma-header">
+                          <p className="proforma-subtitle">
+                            Scenario-based profitability snapshot
+                          </p>
+                        </div>
+                        <div className="proforma-table" role="table">
+                          <div className="proforma-row proforma-row--header" role="row">
+                            <span className="proforma-cell" role="columnheader">
+                              Scenario
+                            </span>
+                            <span className="proforma-cell" role="columnheader">
+                              Monthly Profit
+                            </span>
+                            <span className="proforma-cell" role="columnheader">
+                              Yearly Profit
+                            </span>
+                            <span className="proforma-cell" role="columnheader">
+                              Profit Margin
+                            </span>
+                          </div>
+                          {scenarios.map((scenario) => (
+                            <div
+                              key={scenario.id}
+                              className={`proforma-row ${scenario.tone}`}
+                              role="row"
+                            >
+                              <span
+                                className="proforma-cell proforma-cell--label"
+                                role="cell"
+                              >
+                                {scenario.label}
+                              </span>
+                              <span className="proforma-cell" role="cell">
+                                {scenario.monthly}
+                              </span>
+                              <span className="proforma-cell" role="cell">
+                                {scenario.yearly}
+                              </span>
+                              <span className="proforma-cell" role="cell">
+                                {scenario.margin}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="proforma-bars" role="presentation">
+                          {scenarios.map((scenario) => (
+                            <div key={scenario.id} className="proforma-bar-row">
+                              <span className="proforma-bar-label">{scenario.label}</span>
+                              <span className={`proforma-bar ${scenario.bar}`} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </section>
+                <section className="truth-section">
+                  <div className="truth-section__content">
+                    <div className="proforma-controls">
+                      <div className="proforma-controls__header">
+                        <p className="proforma-controls__title">Pro Forma Controls</p>
+                        <p className="proforma-controls__subtitle">
+                          Adjust assumptions to preview profitability.
+                        </p>
+                      </div>
+                      <div className="proforma-controls__rows">
+                        <label className="proforma-controls__row">
+                          <span className="proforma-controls__label">
+                            Sales (adjustment)
+                          </span>
+                          <input
+                            className="proforma-controls__slider"
+                            type="range"
+                            min="-15"
+                            max="15"
+                            step="1"
+                            value={proFormaSalesAdjustment}
+                            onChange={(event) =>
+                              setProFormaSalesAdjustment(Number(event.target.value))
+                            }
+                          />
+                          <span className="proforma-controls__value">
+                            {proFormaSalesAdjustment}%
+                          </span>
+                        </label>
+                        <label className="proforma-controls__row">
+                          <span className="proforma-controls__label">COGS %</span>
+                          <input
+                            className="proforma-controls__slider"
+                            type="range"
+                            min="20"
+                            max="45"
+                            step="1"
+                            value={proFormaCogsPercent}
+                            onChange={(event) =>
+                              setProFormaCogsPercent(Number(event.target.value))
+                            }
+                          />
+                          <span className="proforma-controls__value">
+                            {proFormaCogsPercent}%
+                          </span>
+                        </label>
+                        <label className="proforma-controls__row">
+                          <span className="proforma-controls__label">Labor %</span>
+                          <input
+                            className="proforma-controls__slider"
+                            type="range"
+                            min="20"
+                            max="45"
+                            step="1"
+                            value={proFormaLaborPercent}
+                            onChange={(event) =>
+                              setProFormaLaborPercent(Number(event.target.value))
+                            }
+                          />
+                          <span className="proforma-controls__value">
+                            {proFormaLaborPercent}%
+                          </span>
+                        </label>
+                        <label className="proforma-controls__row">
+                          <span className="proforma-controls__label">
+                            Operating Expenses %
+                          </span>
+                          <input
+                            className="proforma-controls__slider"
+                            type="range"
+                            min="10"
+                            max="35"
+                            step="1"
+                            value={proFormaOperatingPercent}
+                            onChange={(event) =>
+                              setProFormaOperatingPercent(Number(event.target.value))
+                            }
+                          />
+                          <span className="proforma-controls__value">
+                            {proFormaOperatingPercent}%
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </>
+            ) : (
+              <section className="truth-section">
+                {isTimeBasedView ? (
+                  <div className="truth-section__content">
+                    <div
+                      className="time-selector"
+                      role="tablist"
+                      aria-label="Time range"
                     >
-                      {option}
-                    </button>
-                  ))}
-                </div>
+                      {timeOptions.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          className={`time-pill${
+                            activeTime === option ? " time-pill--active" : ""
+                          }`}
+                          onClick={() => setActiveTime(option)}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
 
                 {isSalesOverview ? (
                   <div className="metrics">
@@ -1149,92 +1362,6 @@ const AppShell = () => {
                           </div>
                         );
                       })}
-                    </div>
-                  </div>
-                );
-              })()
-            ) : isFinancialsProForma ? (
-              (() => {
-                const scenarios = [
-                  {
-                    id: "high",
-                    label: "High",
-                    monthly: "$12,642",
-                    yearly: "$151,708",
-                    margin: "15%",
-                    tone: "proforma-row--positive",
-                    bar: "proforma-bar--high",
-                  },
-                  {
-                    id: "medium",
-                    label: "Medium",
-                    monthly: "$5,084",
-                    yearly: "$61,010",
-                    margin: "8%",
-                    tone: "proforma-row--neutral",
-                    bar: "proforma-bar--medium",
-                  },
-                  {
-                    id: "low",
-                    label: "Low",
-                    monthly: "$45",
-                    yearly: "$544",
-                    margin: "0%",
-                    tone: "proforma-row--negative",
-                    bar: "proforma-bar--low",
-                  },
-                ];
-
-                return (
-                  <div className="truth-section__content">
-                    <div className="proforma-header">
-                      <p className="proforma-subtitle">
-                        Scenario-based profitability snapshot
-                      </p>
-                    </div>
-                    <div className="proforma-table" role="table">
-                      <div className="proforma-row proforma-row--header" role="row">
-                        <span className="proforma-cell" role="columnheader">
-                          Scenario
-                        </span>
-                        <span className="proforma-cell" role="columnheader">
-                          Monthly Profit
-                        </span>
-                        <span className="proforma-cell" role="columnheader">
-                          Yearly Profit
-                        </span>
-                        <span className="proforma-cell" role="columnheader">
-                          Profit Margin
-                        </span>
-                      </div>
-                      {scenarios.map((scenario) => (
-                        <div
-                          key={scenario.id}
-                          className={`proforma-row ${scenario.tone}`}
-                          role="row"
-                        >
-                          <span className="proforma-cell proforma-cell--label" role="cell">
-                            {scenario.label}
-                          </span>
-                          <span className="proforma-cell" role="cell">
-                            {scenario.monthly}
-                          </span>
-                          <span className="proforma-cell" role="cell">
-                            {scenario.yearly}
-                          </span>
-                          <span className="proforma-cell" role="cell">
-                            {scenario.margin}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="proforma-bars" role="presentation">
-                      {scenarios.map((scenario) => (
-                        <div key={scenario.id} className="proforma-bar-row">
-                          <span className="proforma-bar-label">{scenario.label}</span>
-                          <span className={`proforma-bar ${scenario.bar}`} />
-                        </div>
-                      ))}
                     </div>
                   </div>
                 );
@@ -2003,6 +2130,7 @@ const AppShell = () => {
                 <p className="truth-section__body">Placeholder summary</p>
               )}
             </section>
+          )}
           </div>
         </main>
       </div>
