@@ -218,7 +218,8 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
     "In-store": "$48,200",
     Takeout: "$31,400",
     Delivery: "$28,100",
-    "3rd-party tips": "$3,600",
+    "3rd-party sales": "$12,400",
+    Tips: "$3,600",
     "Check average": "$42.10",
     Covers: "1,142",
   },
@@ -226,7 +227,8 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
     "In-store": "$52,900",
     Takeout: "$34,200",
     Delivery: "$29,500",
-    "3rd-party tips": "$3,900",
+    "3rd-party sales": "$13,200",
+    Tips: "$3,900",
     "Check average": "$41.80",
     Covers: "1,208",
   },
@@ -234,7 +236,8 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
     "In-store": "$56,300",
     Takeout: "$36,900",
     Delivery: "$31,400",
-    "3rd-party tips": "$4,100",
+    "3rd-party sales": "$14,100",
+    Tips: "$4,100",
     "Check average": "$43.20",
     Covers: "1,274",
   },
@@ -242,7 +245,8 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
     "In-store": "$54,100",
     Takeout: "$35,400",
     Delivery: "$30,600",
-    "3rd-party tips": "$3,800",
+    "3rd-party sales": "$13,600",
+    Tips: "$3,800",
     "Check average": "$42.60",
     Covers: "1,236",
   },
@@ -250,7 +254,8 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
     "In-store": "$62,800",
     Takeout: "$40,200",
     Delivery: "$34,900",
-    "3rd-party tips": "$4,700",
+    "3rd-party sales": "$16,200",
+    Tips: "$4,700",
     "Check average": "$45.10",
     Covers: "1,412",
   },
@@ -258,7 +263,8 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
     "In-store": "$38,900",
     Takeout: "$27,100",
     Delivery: "$24,200",
-    "3rd-party tips": "$2,400",
+    "3rd-party sales": "$10,400",
+    Tips: "$2,400",
     "Check average": "$39.70",
     Covers: "986",
   },
@@ -266,7 +272,8 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
     "In-store": "$34,500",
     Takeout: "$24,800",
     Delivery: "$22,600",
-    "3rd-party tips": "$2,100",
+    "3rd-party sales": "$9,200",
+    Tips: "$2,100",
     "Check average": "$38.90",
     Covers: "912",
   },
@@ -274,7 +281,8 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
     "In-store": "$347,700",
     Takeout: "$229,900",
     Delivery: "$201,300",
-    "3rd-party tips": "$24,600",
+    "3rd-party sales": "$95,800",
+    Tips: "$24,600",
     "Check average": "$42.20",
     Covers: "8,170",
   },
@@ -282,7 +290,8 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
     "In-store": "$1,362,400",
     Takeout: "$936,800",
     Delivery: "$799,300",
-    "3rd-party tips": "$95,700",
+    "3rd-party sales": "$372,600",
+    Tips: "$95,700",
     "Check average": "$42.70",
     Covers: "32,580",
   },
@@ -290,72 +299,10 @@ const salesBreakdownMetrics: Record<string, Record<string, string>> = {
     "In-store": "$16,204,000",
     Takeout: "$11,402,000",
     Delivery: "$9,286,000",
-    "3rd-party tips": "$1,192,000",
+    "3rd-party sales": "$4,512,000",
+    Tips: "$1,192,000",
     "Check average": "$43.10",
     Covers: "382,400",
-  },
-};
-
-const salesBreakdownPercentages: Record<string, Record<string, string>> = {
-  Mon: {
-    "In-store": "38%",
-    Takeout: "25%",
-    Delivery: "22%",
-    "3rd-party tips": "3%",
-  },
-  Tue: {
-    "In-store": "39%",
-    Takeout: "25%",
-    Delivery: "22%",
-    "3rd-party tips": "3%",
-  },
-  Wed: {
-    "In-store": "40%",
-    Takeout: "26%",
-    Delivery: "22%",
-    "3rd-party tips": "3%",
-  },
-  Thu: {
-    "In-store": "39%",
-    Takeout: "26%",
-    Delivery: "23%",
-    "3rd-party tips": "3%",
-  },
-  Fri: {
-    "In-store": "40%",
-    Takeout: "25%",
-    Delivery: "22%",
-    "3rd-party tips": "3%",
-  },
-  Sat: {
-    "In-store": "42%",
-    Takeout: "29%",
-    Delivery: "26%",
-    "3rd-party tips": "3%",
-  },
-  Sun: {
-    "In-store": "41%",
-    Takeout: "29%",
-    Delivery: "26%",
-    "3rd-party tips": "2%",
-  },
-  Week: {
-    "In-store": "40%",
-    Takeout: "26%",
-    Delivery: "23%",
-    "3rd-party tips": "3%",
-  },
-  Month: {
-    "In-store": "40%",
-    Takeout: "27%",
-    Delivery: "23%",
-    "3rd-party tips": "3%",
-  },
-  Year: {
-    "In-store": "41%",
-    Takeout: "29%",
-    Delivery: "24%",
-    "3rd-party tips": "3%",
   },
 };
 
@@ -543,10 +490,12 @@ const salesProductMix: Record<string, { name: string; units: number }[]> = {
 };
 
 const breakdownRows = [
+  "Total Sales",
   "In-store",
   "Takeout",
   "Delivery",
-  "3rd-party tips",
+  "3rd-party sales",
+  "Tips",
   "Check average",
   "Covers",
 ];
@@ -709,8 +658,6 @@ const AppShell = () => {
     setActiveTime(timeOptions[7]);
   }, [activePrimaryId, activeSecondaryId]);
 
-  const isSalesOverview =
-    activePrimaryId === "sales" && activeSecondaryId === "overview";
   const isSalesBreakdown =
     activePrimaryId === "sales" && activeSecondaryId === "breakdown";
   const isSalesForecast =
@@ -758,11 +705,8 @@ const AppShell = () => {
   const isSettingsDisplay =
     activePrimaryId === "settings" && activeSecondaryId === "display";
 
-  const activeMetrics = salesOverviewMetrics[activeTime] ?? salesOverviewMetrics.Week;
   const activeBreakdown =
     salesBreakdownMetrics[activeTime] ?? salesBreakdownMetrics.Week;
-  const activeBreakdownPercent =
-    salesBreakdownPercentages[activeTime] ?? salesBreakdownPercentages.Week;
   const activeForecast =
     salesForecastSeries[activeTime] ?? salesForecastSeries.Week;
   const activeProductMix = salesProductMix[activeTime] ?? salesProductMix.Week;
@@ -889,7 +833,6 @@ const AppShell = () => {
   };
 
   const isTimeBasedView =
-    isSalesOverview ||
     isSalesBreakdown ||
     isSalesForecast ||
     isSalesProduct ||
@@ -1191,45 +1134,74 @@ const AppShell = () => {
                       )}
                     </div>
 
-                {isSalesOverview ? (
-                  <div className="metrics">
-                    <div className="metric">
-                      <p className="metric__label">Gross Sales</p>
-                      <p className="metric__value">{activeMetrics.gross}</p>
-                    </div>
-                    <div className="metric">
-                      <p className="metric__label">Net Sales</p>
-                      <p className="metric__value">{activeMetrics.net}</p>
-                    </div>
-                  </div>
-                ) : null}
-
                 {isSalesBreakdown ? (
                   <div className="breakdown-table" role="table">
-                    <div className="breakdown-row breakdown-row--header" role="row">
-                      <span className="breakdown-row__label" role="columnheader">
-                        Category
-                      </span>
-                      <span className="breakdown-row__value" role="columnheader">
-                        Amount
-                      </span>
-                      <span className="breakdown-row__percent" role="columnheader">
-                        % of Total
-                      </span>
-                    </div>
-                    {breakdownRows.map((label) => (
-                      <div key={label} className="breakdown-row" role="row">
-                        <span className="breakdown-row__label" role="cell">
-                          {label}
-                        </span>
-                        <span className="breakdown-row__value" role="cell">
-                          {activeBreakdown[label]}
-                        </span>
-                        <span className="breakdown-row__percent" role="cell">
-                          {activeBreakdownPercent[label] ?? "—"}
-                        </span>
-                      </div>
-                    ))}
+                    {(() => {
+                      const parseCurrency = (value: string) => {
+                        const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
+                        return Number.isNaN(numeric) ? 0 : numeric;
+                      };
+                      const formatCurrency = (value: number) =>
+                        `$${Math.round(value).toLocaleString()}`;
+                      const salesKeys = [
+                        "In-store",
+                        "Takeout",
+                        "Delivery",
+                        "3rd-party sales",
+                      ];
+                      const tipValue = parseCurrency(activeBreakdown.Tips ?? "$0");
+                      const totalSales = salesKeys.reduce((sum, key) => {
+                        return sum + parseCurrency(activeBreakdown[key] ?? "$0");
+                      }, 0);
+                      const percentFor = (label: string) => {
+                        if (label === "Total Sales") return "100%";
+                        if (label === "Tips") {
+                          return totalSales
+                            ? `${Math.round((tipValue / totalSales) * 100)}%`
+                            : "0%";
+                        }
+                        if (salesKeys.includes(label)) {
+                          const value = parseCurrency(activeBreakdown[label] ?? "$0");
+                          return totalSales
+                            ? `${Math.round((value / totalSales) * 100)}%`
+                            : "0%";
+                        }
+                        return "—";
+                      };
+                      const valueFor = (label: string) => {
+                        if (label === "Total Sales") return formatCurrency(totalSales);
+                        return activeBreakdown[label];
+                      };
+
+                      return (
+                        <>
+                          <div className="breakdown-row breakdown-row--header" role="row">
+                            <span className="breakdown-row__label" role="columnheader">
+                              Category
+                            </span>
+                            <span className="breakdown-row__value" role="columnheader">
+                              Amount
+                            </span>
+                            <span className="breakdown-row__percent" role="columnheader">
+                              % of Total
+                            </span>
+                          </div>
+                          {breakdownRows.map((label) => (
+                            <div key={label} className="breakdown-row" role="row">
+                              <span className="breakdown-row__label" role="cell">
+                                {label}
+                              </span>
+                              <span className="breakdown-row__value" role="cell">
+                                {valueFor(label)}
+                              </span>
+                              <span className="breakdown-row__percent" role="cell">
+                                {percentFor(label)}
+                              </span>
+                            </div>
+                          ))}
+                        </>
+                      );
+                    })()}
                   </div>
                 ) : null}
 

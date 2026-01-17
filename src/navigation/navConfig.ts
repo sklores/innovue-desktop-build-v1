@@ -8,9 +8,9 @@ export const primaryTabs = [
 
 export const secondaryTabsByPrimary = {
   sales: [
-    { id: "overview", label: "Overview" },
     { id: "breakdown", label: "Breakdown" },
     { id: "forecast", label: "Forecast" },
+    { id: "trends", label: "Trends" },
     { id: "product", label: "Product" },
   ],
   expenses: [
