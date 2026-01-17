@@ -23,6 +23,7 @@ export const secondaryTabsByPrimary = {
     { id: "profit-loss", label: "Profit & Loss" },
     { id: "cashflow", label: "Cashflow" },
     { id: "pro-forma", label: "Pro Forma" },
+    { id: "kpis", label: "KPIs" },
   ],
   presence: [
     { id: "reviews", label: "Reviews" },

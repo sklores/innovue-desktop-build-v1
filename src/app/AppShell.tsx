@@ -727,6 +727,8 @@ const AppShell = () => {
     activePrimaryId === "financials" && activeSecondaryId === "pro-forma";
   const isFinancialsProfitLoss =
     activePrimaryId === "financials" && activeSecondaryId === "profit-loss";
+  const isFinancialsKpis =
+    activePrimaryId === "financials" && activeSecondaryId === "kpis";
   const isPresenceReviews =
     activePrimaryId === "presence" && activeSecondaryId === "reviews";
   const isPresenceTraffic =
@@ -1124,6 +1126,31 @@ const AppShell = () => {
                   </div>
                 </section>
               </>
+            ) : isFinancialsKpis ? (
+              <section className="truth-section">
+                <div className="truth-section__content">
+                  <div className="truth-section__header">
+                    <p className="truth-section__title">KPIs</p>
+                  </div>
+                  <div className="breakdown-table" role="table">
+                    {[
+                      "Prime Cost",
+                      "Sales per Labor Hour",
+                      "Worked vs Scheduled Hours",
+                      "Sales per Sq Ft",
+                    ].map((label) => (
+                      <div key={label} className="breakdown-row" role="row">
+                        <span className="breakdown-row__label" role="cell">
+                          {label}
+                        </span>
+                        <span className="breakdown-row__value" role="cell">
+                          --
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
             ) : (
               <section className="truth-section">
                 {isTimeBasedView ? (
