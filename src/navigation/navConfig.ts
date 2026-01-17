@@ -2,7 +2,7 @@ export const primaryTabs = [
   { id: "sales", label: "Sales" },
   { id: "expenses", label: "Expenses" },
   { id: "financials", label: "Financials" },
-  { id: "presence", label: "Presence" },
+  { id: "presence", label: "Online" },
   { id: "settings", label: "Settings" },
 ];
 
