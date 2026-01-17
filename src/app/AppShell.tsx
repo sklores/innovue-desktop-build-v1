@@ -5,6 +5,7 @@ import PrimaryNav from "../navigation/PrimaryNav";
 import SecondaryNav from "../navigation/SecondaryNav";
 import { primaryTabs, secondaryTabsByPrimary } from "../navigation/navConfig";
 import SalesTrends from "../components/sales/SalesTrends";
+import ExpensesInvoices from "../components/expenses/ExpensesInvoices";
 
 const timeOptions = [
   "Mon",
@@ -615,6 +616,8 @@ const AppShell = () => {
     activePrimaryId === "expenses" && activeSecondaryId === "categories";
   const isExpensesVendors =
     activePrimaryId === "expenses" && activeSecondaryId === "vendors";
+  const isExpensesInvoices =
+    activePrimaryId === "expenses" && activeSecondaryId === "invoices";
   const isExpensesBudgets =
     activePrimaryId === "expenses" && activeSecondaryId === "budgets";
   const isFinancialsCashflow =
@@ -1974,6 +1977,8 @@ const AppShell = () => {
                   </div>
                 );
               })()
+            ) : isExpensesInvoices ? (
+              <ExpensesInvoices />
             ) : isFinancialsCashflow ? (
               (() => {
                 const cashflowMonth = "September 2024";

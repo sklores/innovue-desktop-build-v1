@@ -455,6 +455,68 @@
   font-weight: 500;
 }
 
+.expense-invoices {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.expense-invoices__table {
+  display: grid;
+  gap: 12px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.expense-invoices__row {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1.2fr) minmax(0, 0.9fr) minmax(0, 0.8fr) minmax(
+      0,
+      0.7fr
+    ) minmax(0, 0.6fr);
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.expense-invoices__row--header {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.expense-invoices__cell {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.expense-invoices__amount {
+  text-align: right;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.expense-invoices__status {
+  font-weight: 500;
+}
+
+.expense-invoices__status--paid {
+  color: #4b7a60;
+}
+
+.expense-invoices__status--unpaid {
+  color: #9aa3af;
+}
+
+.expense-invoices__status--overdue {
+  color: #c65d4e;
+}
+
 .expense-accordion__row {
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.7fr) 32px;
   cursor: pointer;
