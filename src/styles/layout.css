@@ -176,6 +176,83 @@
   gap: 12px;
 }
 
+.sales-trends__to-date {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.sales-trends__selector {
+  display: flex;
+  gap: 10px;
+}
+
+.sales-trends__pill {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.sales-trends__pill--active {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border-color: var(--border);
+  font-weight: 600;
+}
+
+.sales-trends__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.sales-trends__card {
+  border-radius: 18px;
+  border: 1px solid var(--border-soft);
+  background: var(--card-bg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sales-trends__card--active {
+  border-color: var(--border);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+}
+
+.sales-trends__card-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sales-trends__card-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.sales-trends__card-value {
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sales-trends__mini-table {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .sales-trends__row {
   display: flex;
   justify-content: space-between;
