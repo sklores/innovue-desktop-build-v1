@@ -468,8 +468,8 @@ const AppShell = () => {
   }, []);
 
   const [activePrimaryId, setActivePrimaryId] = useState(primaryNavItems[0].id);
-  const [activeSecondaryId, setActiveSecondaryId] = useState(
-    secondaryTabsByPrimary[primaryNavItems[0].id][0].id,
+  const [activeSecondaryId, setActiveSecondaryId] = useState<string | null>(
+    secondaryTabsByPrimary[primaryNavItems[0].id]?.[0]?.id ?? null,
   );
   const [activeTime, setActiveTime] = useState(timeOptions[7]);
   const [financialsTime, setFinancialsTime] = useState(
@@ -576,69 +576,121 @@ const AppShell = () => {
   }, [activePrimaryId, primaryNavItems]);
 
   const secondaryTabs = useMemo(() => {
-    return secondaryTabsByPrimary[activePrimaryId] ?? secondaryTabsByPrimary.sales;
+    return secondaryTabsByPrimary[activePrimaryId] ?? [];
   }, [activePrimaryId]);
 
   const activeSecondary = useMemo(() => {
-    return secondaryTabs.find((tab) => tab.id === activeSecondaryId) ?? secondaryTabs[0];
+    return (
+      secondaryTabs.find((tab) => tab.id === activeSecondaryId) ??
+      secondaryTabs[0] ??
+      null
+    );
   }, [secondaryTabs, activeSecondaryId]);
 
   useEffect(() => {
-    setActiveSecondaryId(secondaryTabs[0].id);
-  }, [secondaryTabs]);
+    setActiveSecondaryId(secondaryTabs[0]?.id ?? null);
+  }, [activePrimaryId, secondaryTabs]);
 
   useEffect(() => {
     setActiveTime(timeOptions[7]);
   }, [activePrimaryId, activeSecondaryId]);
 
+  const hasValidSecondary =
+    !!activeSecondaryId &&
+    secondaryTabs.some((tab) => tab.id === activeSecondaryId);
   const isSalesBreakdown =
-    activePrimaryId === "sales" && activeSecondaryId === "breakdown";
+    hasValidSecondary &&
+    activePrimaryId === "sales" &&
+    activeSecondaryId === "breakdown";
   const isSalesForecast =
-    activePrimaryId === "sales" && activeSecondaryId === "forecast";
+    hasValidSecondary &&
+    activePrimaryId === "sales" &&
+    activeSecondaryId === "forecast";
   const isSalesProduct =
-    activePrimaryId === "sales" && activeSecondaryId === "product";
+    hasValidSecondary &&
+    activePrimaryId === "sales" &&
+    activeSecondaryId === "product";
   const isSalesTrends =
-    activePrimaryId === "sales" && activeSecondaryId === "trends";
+    hasValidSecondary &&
+    activePrimaryId === "sales" &&
+    activeSecondaryId === "trends";
   const isExpensesBreakdown =
-    activePrimaryId === "expenses" && activeSecondaryId === "breakdown";
+    hasValidSecondary &&
+    activePrimaryId === "expenses" &&
+    activeSecondaryId === "breakdown";
   const isExpensesVendors =
-    activePrimaryId === "expenses" && activeSecondaryId === "vendors";
+    hasValidSecondary &&
+    activePrimaryId === "expenses" &&
+    activeSecondaryId === "vendors";
   const isExpensesInvoices =
-    activePrimaryId === "expenses" && activeSecondaryId === "invoices";
+    hasValidSecondary &&
+    activePrimaryId === "expenses" &&
+    activeSecondaryId === "invoices";
   const isExpensesBudgets =
-    activePrimaryId === "expenses" && activeSecondaryId === "budgets";
+    hasValidSecondary &&
+    activePrimaryId === "expenses" &&
+    activeSecondaryId === "budgets";
   const isFinancialsCashflow =
-    activePrimaryId === "financials" && activeSecondaryId === "cashflow";
+    hasValidSecondary &&
+    activePrimaryId === "financials" &&
+    activeSecondaryId === "cashflow";
   const isFinancialsProForma =
-    activePrimaryId === "financials" && activeSecondaryId === "pro-forma";
+    hasValidSecondary &&
+    activePrimaryId === "financials" &&
+    activeSecondaryId === "pro-forma";
   const isFinancialsProfitLoss =
-    activePrimaryId === "financials" && activeSecondaryId === "profit-loss";
+    hasValidSecondary &&
+    activePrimaryId === "financials" &&
+    activeSecondaryId === "profit-loss";
   const isFinancialsKpis =
-    activePrimaryId === "financials" && activeSecondaryId === "kpis";
+    hasValidSecondary &&
+    activePrimaryId === "financials" &&
+    activeSecondaryId === "kpis";
   const isPresenceReviews =
-    activePrimaryId === "presence" && activeSecondaryId === "reviews";
+    hasValidSecondary &&
+    activePrimaryId === "presence" &&
+    activeSecondaryId === "reviews";
   const isPresenceTraffic =
-    activePrimaryId === "presence" && activeSecondaryId === "traffic";
+    hasValidSecondary &&
+    activePrimaryId === "presence" &&
+    activeSecondaryId === "traffic";
   const isPresenceSocial =
-    activePrimaryId === "presence" && activeSecondaryId === "social";
+    hasValidSecondary &&
+    activePrimaryId === "presence" &&
+    activeSecondaryId === "social";
   const isPresenceSeo =
-    activePrimaryId === "presence" && activeSecondaryId === "seo";
+    hasValidSecondary &&
+    activePrimaryId === "presence" &&
+    activeSecondaryId === "seo";
   const isReporting = activePrimaryId === "reporting";
   const isReportingEmailReports =
-    activePrimaryId === "reporting" && activeSecondaryId === "email-reports";
+    hasValidSecondary &&
+    activePrimaryId === "reporting" &&
+    activeSecondaryId === "email-reports";
   const isReportingNotifications =
-    activePrimaryId === "reporting" && activeSecondaryId === "notifications";
+    hasValidSecondary &&
+    activePrimaryId === "reporting" &&
+    activeSecondaryId === "notifications";
   const isSettingsBusiness =
-    activePrimaryId === "settings" && activeSecondaryId === "business";
+    hasValidSecondary &&
+    activePrimaryId === "settings" &&
+    activeSecondaryId === "business";
   const isSettingsOperations =
-    activePrimaryId === "settings" && activeSecondaryId === "operations";
+    hasValidSecondary &&
+    activePrimaryId === "settings" &&
+    activeSecondaryId === "operations";
   const isSettingsFinancialAssumptions =
+    hasValidSecondary &&
     activePrimaryId === "settings" &&
     activeSecondaryId === "financial-assumptions";
   const isSettingsAlerts =
-    activePrimaryId === "settings" && activeSecondaryId === "alerts";
+    hasValidSecondary &&
+    activePrimaryId === "settings" &&
+    activeSecondaryId === "alerts";
   const isSettingsDisplay =
-    activePrimaryId === "settings" && activeSecondaryId === "display";
+    hasValidSecondary &&
+    activePrimaryId === "settings" &&
+    activeSecondaryId === "display";
 
   const activeBreakdown =
     salesBreakdownMetrics[activeTime] ?? salesBreakdownMetrics.Week;
@@ -795,7 +847,7 @@ const AppShell = () => {
                 <h2 className="truth-card__title">{activePrimary.label}</h2>
                 <SecondaryNav
                   tabs={secondaryTabs}
-                  activeId={activeSecondary.id}
+                  activeId={activeSecondary?.id ?? ""}
                   onChange={setActiveSecondaryId}
                 />
               </div>
