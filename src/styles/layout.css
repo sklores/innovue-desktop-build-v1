@@ -197,6 +197,65 @@
   gap: 16px;
 }
 
+.expense-accordion__row {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.7fr) 32px;
+  cursor: pointer;
+}
+
+.expense-accordion__item {
+  display: grid;
+  gap: 8px;
+}
+
+.expense-accordion__chevron {
+  font-size: 16px;
+  color: var(--text-soft);
+  text-align: right;
+}
+
+.expense-accordion__panel {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.expense-accordion__panel--open {
+  max-height: 220px;
+  opacity: 1;
+}
+
+.expense-accordion__details {
+  display: grid;
+  gap: 10px;
+  padding: 0 4px 8px;
+}
+
+.expense-accordion__detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.7fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.expense-accordion__detail-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.expense-accordion__detail-value {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: right;
+}
+
+.expense-accordion__detail-percent {
+  font-size: 12px;
+  color: var(--text-soft);
+  text-align: right;
+}
+
 .breakdown-row__label {
   font-size: 14px;
   color: var(--text-muted);

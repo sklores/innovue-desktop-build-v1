@@ -474,6 +474,9 @@ const AppShell = () => {
   const [openVendorId, setOpenVendorId] = useState<string | null>(null);
   const [openOrderGuideId, setOpenOrderGuideId] = useState<string | null>(null);
   const [openTrafficId, setOpenTrafficId] = useState<string | null>(null);
+  const [openExpenseCategoryId, setOpenExpenseCategoryId] = useState<string | null>(
+    null,
+  );
   const [cashflowView, setCashflowView] = useState<"Month" | "Week">("Month");
   const [proFormaSalesAdjustment, setProFormaSalesAdjustment] = useState(0);
   const [proFormaCogsPercent, setProFormaCogsPercent] = useState(34);
@@ -652,6 +655,20 @@ const AppShell = () => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       handleOrderGuideToggle(id);
+    }
+  };
+
+  const handleExpenseCategoryToggle = (id: string) => {
+    setOpenExpenseCategoryId((prev) => (prev === id ? null : id));
+  };
+
+  const handleExpenseCategoryKeyDown = (
+    event: KeyboardEvent<HTMLDivElement>,
+    id: string,
+  ) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleExpenseCategoryToggle(id);
     }
   };
 
@@ -1052,32 +1069,133 @@ const AppShell = () => {
                 ) : null}
 
                 {isExpensesCategories ? (
-                  <div className="breakdown-table" role="table">
-                    <div className="breakdown-row breakdown-row--header" role="row">
-                      <span className="breakdown-row__label" role="columnheader">
-                        Category
-                      </span>
-                      <span className="breakdown-row__value" role="columnheader">
-                        Amount
-                      </span>
-                      <span className="breakdown-row__percent" role="columnheader">
-                        % of Total
-                      </span>
-                    </div>
-                    {expensesCategoryRows.map((label) => (
-                      <div key={label} className="breakdown-row" role="row">
-                        <span className="breakdown-row__label" role="cell">
-                          {label}
-                        </span>
-                        <span className="breakdown-row__value" role="cell">
-                          {activeExpensesCategories[label]}
-                        </span>
-                        <span className="breakdown-row__percent" role="cell">
-                          {activeExpensesPercents[label]}
-                        </span>
+                  (() => {
+                    const parseCurrency = (value: string) => {
+                      const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
+                      return Number.isNaN(numeric) ? 0 : numeric;
+                    };
+
+                    const formatCurrency = (value: number) =>
+                      `$${Math.round(value).toLocaleString()}`;
+
+                    const lineItemsByCategory: Record<
+                      string,
+                      { label: string; share: number }[]
+                    > = {
+                      Labor: [
+                        { label: "Cook", share: 0.45 },
+                        { label: "Manager", share: 0.35 },
+                        { label: "Cashier", share: 0.2 },
+                      ],
+                      COGS: [
+                        { label: "Food", share: 0.55 },
+                        { label: "Beverage", share: 0.25 },
+                        { label: "Alcohol", share: 0.2 },
+                      ],
+                      "Fixed costs": [
+                        { label: "Rent", share: 0.5 },
+                        { label: "Insurance", share: 0.2 },
+                        { label: "Accounting", share: 0.2 },
+                        { label: "Bookkeeping", share: 0.1 },
+                      ],
+                      Utilities: [
+                        { label: "Electric", share: 0.35 },
+                        { label: "Gas", share: 0.25 },
+                        { label: "Water", share: 0.2 },
+                        { label: "Internet", share: 0.2 },
+                      ],
+                      Chemicals: [
+                        { label: "Cleaning supplies", share: 0.6 },
+                        { label: "Sanitizer", share: 0.4 },
+                      ],
+                      Linen: [
+                        { label: "Linen service", share: 0.65 },
+                        { label: "Towels", share: 0.35 },
+                      ],
+                    };
+
+                    return (
+                      <div className="breakdown-table" role="table">
+                        <div className="breakdown-row breakdown-row--header" role="row">
+                          <span className="breakdown-row__label" role="columnheader">
+                            Category
+                          </span>
+                          <span className="breakdown-row__value" role="columnheader">
+                            Amount
+                          </span>
+                          <span className="breakdown-row__percent" role="columnheader">
+                            % of Total
+                          </span>
+                          <span
+                            className="breakdown-row__percent"
+                            role="columnheader"
+                          />
+                        </div>
+                        {expensesCategoryRows.map((label) => {
+                          const isOpen = openExpenseCategoryId === label;
+                          const total = parseCurrency(activeExpensesCategories[label]);
+                          const items = lineItemsByCategory[label] ?? [];
+                          return (
+                            <div key={label} className="expense-accordion__item">
+                              <div
+                                className="breakdown-row expense-accordion__row"
+                                role="button"
+                                tabIndex={0}
+                                aria-expanded={isOpen}
+                                onClick={() => handleExpenseCategoryToggle(label)}
+                                onKeyDown={(event) =>
+                                  handleExpenseCategoryKeyDown(event, label)
+                                }
+                              >
+                                <span className="breakdown-row__label" role="cell">
+                                  {label}
+                                </span>
+                                <span className="breakdown-row__value" role="cell">
+                                  {activeExpensesCategories[label]}
+                                </span>
+                                <span className="breakdown-row__percent" role="cell">
+                                  {activeExpensesPercents[label]}
+                                </span>
+                                <span className="expense-accordion__chevron" aria-hidden>
+                                  {isOpen ? "−" : "+"}
+                                </span>
+                              </div>
+                              <div
+                                className={`expense-accordion__panel${
+                                  isOpen ? " expense-accordion__panel--open" : ""
+                                }`}
+                              >
+                                <div className="expense-accordion__details">
+                                  {items.map((item) => {
+                                    const amount = total * item.share;
+                                    const percent = total
+                                      ? Math.round((amount / total) * 100)
+                                      : 0;
+                                    return (
+                                      <div
+                                        key={item.label}
+                                        className="expense-accordion__detail"
+                                      >
+                                        <span className="expense-accordion__detail-label">
+                                          {item.label}
+                                        </span>
+                                        <span className="expense-accordion__detail-value">
+                                          {formatCurrency(amount)}
+                                        </span>
+                                        <span className="expense-accordion__detail-percent">
+                                          {percent}%
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })()
                 ) : null}
               </div>
             ) : isExpensesVendors ? (
