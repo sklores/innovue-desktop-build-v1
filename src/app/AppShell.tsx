@@ -1787,185 +1787,179 @@ const AppShell = () => {
                         ))}
                       </div>
                     </div>
-                    <div className="cashflow-calendar" role="grid">
-                      {(cashflowView === "Month"
-                        ? cashflowDays
-                        : cashflowWeek
-                      ).map((entry, index) => {
-                        const net = entry.sales - entry.expenses;
-                        const netLabel = `${net >= 0 ? "+" : "-"} ${formatCompact(
-                          Math.abs(net),
-                        )}`;
-                        const isMuted =
-                          cashflowView === "Month" &&
-                          "current" in entry &&
-                          !entry.current;
-                        const dayLabel =
-                          cashflowView === "Month"
-                            ? (() => {
-                                const weekdays = [
-                                  "Mon",
-                                  "Tue",
-                                  "Wed",
-                                  "Thu",
-                                  "Fri",
-                                  "Sat",
-                                  "Sun",
-                                ];
-                                const weekday = weekdays[index % weekdays.length];
-                                return `${weekday}, Sep ${entry.day}`;
-                              })()
-                            : ` ${"label" in entry ? entry.label.replace(" · ", ", Sep ") : ""}`;
+                    {cashflowDetail ? (
+                      (() => {
+                        const salesItems = [
+                          { label: "Credit card sales", share: 0.55 },
+                          { label: "Cash sales", share: 0.18 },
+                          { label: "3rd-party delivery sales", share: 0.17 },
+                          { label: "Sales tax collected", share: 0.06 },
+                          { label: "Tips collected", share: 0.04 },
+                        ];
+                        const expenseItems = [
+                          { label: "Northern Provisions", share: 0.4 },
+                          { label: "Harbor Supply Co.", share: 0.25 },
+                          { label: "Capital Farms", share: 0.2 },
+                          { label: "District Utilities", share: 0.15 },
+                        ];
+                        const totalSales = cashflowDetail.sales;
+                        const totalExpenses = cashflowDetail.expenses;
+                        const netTotal = totalSales - totalExpenses;
+
                         return (
-                          <div
-                            key={`${"day" in entry ? entry.day : entry.label}-${index}`}
-                            className={`cashflow-day ${getShadeClass(net)}${
-                              isMuted ? " cashflow-day--muted" : ""
-                            }`}
-                            role="gridcell"
-                            tabIndex={0}
-                            onClick={() =>
-                              handleCashflowDetailOpen({
-                                label: dayLabel.trim(),
-                                sales: entry.sales,
-                                expenses: entry.expenses,
-                              })
-                            }
-                            onKeyDown={(event) => {
-                              if (event.key === "Enter" || event.key === " ") {
-                                event.preventDefault();
+                          <div className="cashflow-detail">
+                            <div className="cashflow-detail__header">
+                              <div>
+                                <p className="cashflow-detail__title">
+                                  {cashflowDetail.label}
+                                </p>
+                                <p className="cashflow-detail__subtitle">
+                                  Cashflow detail
+                                </p>
+                              </div>
+                              <div className="cashflow-detail__meta">
+                                <span className="cashflow-detail__net">
+                                  {formatCurrency(netTotal)}
+                                </span>
+                                <button
+                                  type="button"
+                                  className="cashflow-detail__back"
+                                  onClick={handleCashflowDetailClose}
+                                >
+                                  Back
+                                </button>
+                              </div>
+                            </div>
+                            <div className="cashflow-detail__body">
+                              <div className="cashflow-detail__section">
+                                <p className="metric__label">Sales In</p>
+                                <div className="cashflow-detail__list">
+                                  {salesItems.map((item) => (
+                                    <div key={item.label} className="cashflow-detail__row">
+                                      <span className="cashflow-detail__label">
+                                        {item.label}
+                                      </span>
+                                      <span className="cashflow-detail__value">
+                                        {formatCurrency(totalSales * item.share)}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="cashflow-detail__section">
+                                <p className="metric__label">Expenses Out</p>
+                                <div className="cashflow-detail__list">
+                                  {expenseItems.map((item) => (
+                                    <div key={item.label} className="cashflow-detail__row">
+                                      <span className="cashflow-detail__label">
+                                        {item.label}
+                                      </span>
+                                      <span className="cashflow-detail__value">
+                                        {formatCurrency(totalExpenses * item.share)}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="cashflow-detail__summary">
+                                <div className="cashflow-detail__row">
+                                  <span className="cashflow-detail__label">
+                                    Total Sales In
+                                  </span>
+                                  <span className="cashflow-detail__value">
+                                    {formatCurrency(totalSales)}
+                                  </span>
+                                </div>
+                                <div className="cashflow-detail__row">
+                                  <span className="cashflow-detail__label">
+                                    Total Expenses Out
+                                  </span>
+                                  <span className="cashflow-detail__value">
+                                    {formatCurrency(totalExpenses)}
+                                  </span>
+                                </div>
+                                <div className="cashflow-detail__row cashflow-detail__row--strong">
+                                  <span className="cashflow-detail__label">Net Profit</span>
+                                  <span className="cashflow-detail__value">
+                                    {formatCurrency(netTotal)}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()
+                    ) : (
+                      <div className="cashflow-calendar" role="grid">
+                        {(cashflowView === "Month"
+                          ? cashflowDays
+                          : cashflowWeek
+                        ).map((entry, index) => {
+                          const net = entry.sales - entry.expenses;
+                          const netLabel = `${net >= 0 ? "+" : "-"} ${formatCompact(
+                            Math.abs(net),
+                          )}`;
+                          const isMuted =
+                            cashflowView === "Month" &&
+                            "current" in entry &&
+                            !entry.current;
+                          const dayLabel =
+                            cashflowView === "Month"
+                              ? (() => {
+                                  const weekdays = [
+                                    "Mon",
+                                    "Tue",
+                                    "Wed",
+                                    "Thu",
+                                    "Fri",
+                                    "Sat",
+                                    "Sun",
+                                  ];
+                                  const weekday = weekdays[index % weekdays.length];
+                                  return `${weekday}, Sep ${entry.day}`;
+                                })()
+                              : `${"label" in entry ? entry.label.replace(" · ", ", Sep ") : ""}`;
+                          return (
+                            <div
+                              key={`${"day" in entry ? entry.day : entry.label}-${index}`}
+                              className={`cashflow-day ${getShadeClass(net)}${
+                                isMuted ? " cashflow-day--muted" : ""
+                              }`}
+                              role="gridcell"
+                              tabIndex={0}
+                              onClick={() =>
                                 handleCashflowDetailOpen({
                                   label: dayLabel.trim(),
                                   sales: entry.sales,
                                   expenses: entry.expenses,
-                                });
+                                })
                               }
-                            }}
-                          >
-                            <span className="cashflow-day__date">
-                              {"day" in entry ? entry.day : entry.label}
-                            </span>
-                            <span className="cashflow-day__net">{netLabel}</span>
-                            <span className="cashflow-day__detail">
-                              Sales: {formatCompact(entry.sales)}
-                            </span>
-                            <span className="cashflow-day__detail">
-                              Exp: {formatCompact(entry.expenses)}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    {cashflowDetail ? (
-                      <div
-                        className="modal-overlay"
-                        role="presentation"
-                        onClick={handleCashflowDetailClose}
-                      >
-                        <div
-                          className="modal-sheet"
-                          role="dialog"
-                          aria-modal="true"
-                          onClick={(event) => event.stopPropagation()}
-                        >
-                          <div className="modal-header">
-                            <div>
-                              <p className="modal-title">{cashflowDetail.label}</p>
-                              <p className="modal-subtitle">Cashflow detail</p>
-                            </div>
-                            <div className="modal-header__meta">
-                              <span className="modal-net">
-                                {formatCurrency(
-                                  cashflowDetail.sales - cashflowDetail.expenses,
-                                )}
+                              onKeyDown={(event) => {
+                                if (event.key === "Enter" || event.key === " ") {
+                                  event.preventDefault();
+                                  handleCashflowDetailOpen({
+                                    label: dayLabel.trim(),
+                                    sales: entry.sales,
+                                    expenses: entry.expenses,
+                                  });
+                                }
+                              }}
+                            >
+                              <span className="cashflow-day__date">
+                                {"day" in entry ? entry.day : entry.label}
                               </span>
-                              <button
-                                type="button"
-                                className="modal-close"
-                                onClick={handleCashflowDetailClose}
-                              >
-                                ×
-                              </button>
+                              <span className="cashflow-day__net">{netLabel}</span>
+                              <span className="cashflow-day__detail">
+                                Sales: {formatCompact(entry.sales)}
+                              </span>
+                              <span className="cashflow-day__detail">
+                                Exp: {formatCompact(entry.expenses)}
+                              </span>
                             </div>
-                          </div>
-                          {(() => {
-                            const salesItems = [
-                              { label: "Credit card sales", share: 0.55 },
-                              { label: "Cash sales", share: 0.18 },
-                              { label: "3rd-party delivery sales", share: 0.17 },
-                              { label: "Sales tax collected", share: 0.06 },
-                              { label: "Tips collected", share: 0.04 },
-                            ];
-                            const expenseItems = [
-                              { label: "Northern Provisions", share: 0.4 },
-                              { label: "Harbor Supply Co.", share: 0.25 },
-                              { label: "Capital Farms", share: 0.2 },
-                              { label: "District Utilities", share: 0.15 },
-                            ];
-                            const totalSales = cashflowDetail.sales;
-                            const totalExpenses = cashflowDetail.expenses;
-                            const netTotal = totalSales - totalExpenses;
-
-                            return (
-                              <div className="modal-body">
-                                <div className="modal-section">
-                                  <p className="metric__label">Sales In</p>
-                                  <div className="modal-list">
-                                    {salesItems.map((item) => (
-                                      <div key={item.label} className="modal-row">
-                                        <span className="modal-row__label">
-                                          {item.label}
-                                        </span>
-                                        <span className="modal-row__value">
-                                          {formatCurrency(totalSales * item.share)}
-                                        </span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                                <div className="modal-section">
-                                  <p className="metric__label">Expenses Out</p>
-                                  <div className="modal-list">
-                                    {expenseItems.map((item) => (
-                                      <div key={item.label} className="modal-row">
-                                        <span className="modal-row__label">
-                                          {item.label}
-                                        </span>
-                                        <span className="modal-row__value">
-                                          {formatCurrency(totalExpenses * item.share)}
-                                        </span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                                <div className="modal-summary">
-                                  <div className="modal-row">
-                                    <span className="modal-row__label">Total Sales In</span>
-                                    <span className="modal-row__value">
-                                      {formatCurrency(totalSales)}
-                                    </span>
-                                  </div>
-                                  <div className="modal-row">
-                                    <span className="modal-row__label">
-                                      Total Expenses Out
-                                    </span>
-                                    <span className="modal-row__value">
-                                      {formatCurrency(totalExpenses)}
-                                    </span>
-                                  </div>
-                                  <div className="modal-row modal-row--strong">
-                                    <span className="modal-row__label">Net Profit</span>
-                                    <span className="modal-row__value">
-                                      {formatCurrency(netTotal)}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })()}
-                        </div>
+                          );
+                        })}
                       </div>
-                    ) : null}
+                    )}
                   </div>
                 );
               })()

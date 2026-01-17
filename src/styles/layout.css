@@ -430,87 +430,74 @@
   background: rgba(145, 195, 160, 0.28);
 }
 
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(12, 20, 33, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  z-index: 20;
-}
-
-.modal-sheet {
-  width: min(100%, var(--content-max-width, 1120px));
-  background: var(--surface-raised);
+.cashflow-detail {
+  background: rgba(12, 20, 33, 0.04);
   border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 28px 32px;
-  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
+  border-radius: 20px;
+  padding: 20px 22px;
+  max-height: 520px;
+  overflow-y: auto;
 }
 
-.modal-header {
+.cashflow-detail__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
+  gap: 20px;
 }
 
-.modal-title {
-  font-size: 20px;
+.cashflow-detail__title {
+  font-size: 18px;
   font-weight: 500;
   color: var(--text-primary);
   margin: 0;
 }
 
-.modal-subtitle {
+.cashflow-detail__subtitle {
   font-size: 13px;
   color: var(--text-muted);
   margin: 6px 0 0;
 }
 
-.modal-header__meta {
+.cashflow-detail__meta {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
-.modal-net {
-  font-size: 22px;
+.cashflow-detail__net {
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-.modal-close {
+.cashflow-detail__back {
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text-muted);
   border-radius: 999px;
-  width: 32px;
-  height: 32px;
+  padding: 6px 14px;
+  font-size: 13px;
   cursor: pointer;
-  font-size: 18px;
-  line-height: 1;
 }
 
-.modal-body {
+.cashflow-detail__body {
   display: grid;
-  gap: 24px;
-  margin-top: 20px;
+  gap: 20px;
+  margin-top: 16px;
 }
 
-.modal-section {
+.cashflow-detail__section {
   display: grid;
   gap: 12px;
 }
 
-.modal-list {
+.cashflow-detail__list {
   display: grid;
   gap: 10px;
 }
 
-.modal-row {
+.cashflow-detail__row {
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -518,22 +505,22 @@
   color: var(--text-primary);
 }
 
-.modal-row__label {
+.cashflow-detail__label {
   color: var(--text-muted);
 }
 
-.modal-row__value {
+.cashflow-detail__value {
   font-weight: 500;
 }
 
-.modal-summary {
+.cashflow-detail__summary {
   border-top: 1px solid var(--border);
-  padding-top: 16px;
+  padding-top: 14px;
   display: grid;
   gap: 10px;
 }
 
-.modal-row--strong {
+.cashflow-detail__row--strong {
   font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
