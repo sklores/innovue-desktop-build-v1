@@ -604,6 +604,13 @@
   font-weight: 500;
 }
 
+.expense-breakdown__row--total .breakdown-row__label,
+.expense-breakdown__row--total .breakdown-row__value,
+.expense-breakdown__row--total .breakdown-row__percent {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
 .vendor-list {
   gap: 16px;
 }

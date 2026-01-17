@@ -14,11 +14,11 @@ export const secondaryTabsByPrimary = {
     { id: "product", label: "Product" },
   ],
   expenses: [
-    { id: "overview", label: "Overview" },
-    { id: "categories", label: "Categories" },
+    { id: "breakdown", label: "Breakdown" },
     { id: "vendors", label: "Vendors" },
     { id: "invoices", label: "Invoices" },
     { id: "budgets", label: "Budgets" },
+    { id: "invoices", label: "Invoices" },
   ],
   financials: [
     { id: "profit-loss", label: "Profit & Loss" },
