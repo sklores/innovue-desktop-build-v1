@@ -1133,21 +1133,61 @@ const AppShell = () => {
                     <p className="truth-section__title">KPIs</p>
                   </div>
                   <div className="breakdown-table" role="table">
-                    {[
-                      "Prime Cost",
-                      "Sales per Labor Hour",
-                      "Worked vs Scheduled Hours",
-                      "Sales per Sq Ft",
-                    ].map((label) => (
-                      <div key={label} className="breakdown-row" role="row">
-                        <span className="breakdown-row__label" role="cell">
-                          {label}
-                        </span>
-                        <span className="breakdown-row__value" role="cell">
-                          --
-                        </span>
-                      </div>
-                    ))}
+                    <div className="breakdown-row breakdown-row--header" role="row">
+                      <span className="breakdown-row__label" role="columnheader">
+                        Metric
+                      </span>
+                      <span className="breakdown-row__value" role="columnheader">
+                        Value
+                      </span>
+                      <span className="breakdown-row__percent" role="columnheader">
+                        Context
+                      </span>
+                    </div>
+                    <div className="breakdown-row" role="row">
+                      <span className="breakdown-row__label" role="cell">
+                        Prime Cost
+                      </span>
+                      <span className="breakdown-row__value" role="cell">
+                        --%
+                      </span>
+                      <span className="breakdown-row__percent" role="cell">
+                        % of sales
+                      </span>
+                    </div>
+                    <div className="breakdown-row" role="row">
+                      <span className="breakdown-row__label" role="cell">
+                        Sales per Labor Hour
+                      </span>
+                      <span className="breakdown-row__value" role="cell">
+                        --
+                      </span>
+                      <span className="breakdown-row__percent" role="cell">
+                        Revenue efficiency
+                      </span>
+                    </div>
+                    <div className="breakdown-row" role="row">
+                      <span className="breakdown-row__label" role="cell">
+                        Worked vs Scheduled Hours
+                      </span>
+                      <span className="breakdown-row__value" role="cell">
+                        --×
+                      </span>
+                      <span className="breakdown-row__percent" role="cell">
+                        Overage ratio
+                      </span>
+                    </div>
+                    <div className="breakdown-row" role="row">
+                      <span className="breakdown-row__label" role="cell">
+                        Sales per Sq Ft
+                      </span>
+                      <span className="breakdown-row__value" role="cell">
+                        --
+                      </span>
+                      <span className="breakdown-row__percent" role="cell">
+                        Annualized
+                      </span>
+                    </div>
                   </div>
                 </div>
               </section>
