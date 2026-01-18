@@ -10,9 +10,12 @@ type SecondaryNavProps = {
 };
 
 const SecondaryNav = ({ tabs, activeId, onChange }: SecondaryNavProps) => {
+  const uniqueTabs = tabs.filter(
+    (tab, index, list) => list.findIndex((item) => item.id === tab.id) === index,
+  );
   return (
     <div className="secondary-nav" role="tablist" aria-label="Secondary tabs">
-      {tabs.map((tab) => (
+      {uniqueTabs.map((tab) => (
         <button
           key={tab.id}
           type="button"
