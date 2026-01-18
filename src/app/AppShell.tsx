@@ -592,6 +592,11 @@ const AppShell = () => {
   }, [activePrimaryId, secondaryTabs, activeSecondaryId]);
 
   useEffect(() => {
+    // Secondary tab is intentionally reset on primary change to prevent cross-primary leakage.
+    setActiveSecondaryId(secondaryTabsByPrimary[activePrimaryId]?.[0]?.id ?? null);
+  }, [activePrimaryId]);
+
+  useEffect(() => {
     setActiveTime(timeOptions[7]);
   }, [activePrimaryId, activeSecondaryId]);
 
