@@ -579,13 +579,17 @@ const AppShell = () => {
     return secondaryTabsByPrimary[activePrimaryId] ?? [];
   }, [activePrimaryId]);
 
-  const activeSecondary = useMemo(() => {
-    return (
-      secondaryTabs.find((tab) => tab.id === activeSecondaryId) ??
-      secondaryTabs[0] ??
-      null
-    );
-  }, [secondaryTabs, activeSecondaryId]);
+  useEffect(() => {
+    // Secondary tab is intentionally reset on primary change to prevent cross-primary leakage.
+    const validSecondaryIds = secondaryTabs.map((tab) => tab.id);
+    if (secondaryTabs.length === 0) {
+      setActiveSecondaryId(null);
+      return;
+    }
+    if (!activeSecondaryId || !validSecondaryIds.includes(activeSecondaryId)) {
+      setActiveSecondaryId(secondaryTabs[0].id);
+    }
+  }, [activePrimaryId, secondaryTabs, activeSecondaryId]);
 
   useEffect(() => {
     // Secondary tab is intentionally reset on primary change to prevent cross-primary leakage.
@@ -850,7 +854,7 @@ const AppShell = () => {
                 {secondaryTabs.length > 0 ? (
                   <SecondaryNav
                     tabs={secondaryTabs}
-                    activeId={activeSecondary?.id ?? ""}
+                    activeId={activeSecondaryId ?? ""}
                     onChange={setActiveSecondaryId}
                   />
                 ) : null}
