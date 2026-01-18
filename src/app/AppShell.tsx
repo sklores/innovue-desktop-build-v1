@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 
 import PrimaryNav from "../navigation/PrimaryNav";
@@ -481,6 +481,7 @@ const AppShell = () => {
   const [openBudgetCategoryId, setOpenBudgetCategoryId] = useState<string | null>(
     null,
   );
+  const prevPrimaryId = useRef(activePrimaryId);
   const [forecastGrowth, setForecastGrowth] = useState(4);
   const [forecastWeather, setForecastWeather] = useState(2);
   const [forecastEvents, setForecastEvents] = useState(3);
@@ -592,9 +593,11 @@ const AppShell = () => {
   }, [activePrimaryId, secondaryTabs, activeSecondaryId]);
 
   useEffect(() => {
-    // Secondary tab is intentionally reset on primary change to prevent cross-primary leakage.
-    setActiveSecondaryId(secondaryTabsByPrimary[activePrimaryId]?.[0]?.id ?? null);
-  }, [activePrimaryId]);
+    if (prevPrimaryId.current === "expenses" && activePrimaryId !== "expenses") {
+      setActiveSecondaryId(secondaryTabs[0]?.id ?? null);
+    }
+    prevPrimaryId.current = activePrimaryId;
+  }, [activePrimaryId, secondaryTabs]);
 
   useEffect(() => {
     setActiveTime(timeOptions[7]);
