@@ -2459,7 +2459,7 @@ const AppShell = () => {
                           {formatCurrency(netProfitValue)}
                         </span>
                       </div>
-                    </div>
+                    )}
                   </div>
                 );
               })()
