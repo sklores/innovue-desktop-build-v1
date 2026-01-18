@@ -854,6 +854,7 @@ const AppShell = () => {
               <div className="truth-card__header">
                 <h2 className="truth-card__title">{activePrimary.label}</h2>
                 {/* Secondary tabs are intentionally rendered from a single source to prevent cross-primary leakage. */}
+                {/* SecondaryNav is intentionally rendered once at the top of the content area. */}
                 {secondaryTabs.length > 0 ? (
                   <SecondaryNav
                     tabs={secondaryTabs}
