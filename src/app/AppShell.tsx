@@ -488,9 +488,7 @@ const AppShell = () => {
   const [forecastPricing, setForecastPricing] = useState(1);
   const [forecastMomentum, setForecastMomentum] = useState(2);
   const [cashflowView, setCashflowView] = useState<"Month" | "Week">("Month");
-  const [profitLossView, setProfitLossView] = useState<
-    "summary" | "sales" | "expenses"
-  >("summary");
+  const [profitLossOpenRows, setProfitLossOpenRows] = useState<string[]>([]);
   const [cashflowDetail, setCashflowDetail] = useState<{
     label: string;
     sales: number;
@@ -2232,19 +2230,16 @@ const AppShell = () => {
                 const chemicalsTotal = parseCurrency(
                   expensesCategoryMetrics.Month?.Chemicals ?? "$0",
                 );
-                const laborBreakdown = [
-                  { label: "FOH Labor", value: laborTotal * 0.38 },
-                  { label: "BOH Labor", value: laborTotal * 0.42 },
-                  { label: "Management", value: laborTotal * 0.2 },
-                ];
-                const cogsBreakdown = [
-                  { label: "Food", value: cogsTotal * 0.6 },
-                  { label: "Beverage", value: cogsTotal * 0.4 },
-                ];
-                const occupancyBreakdown = [
-                  { label: "Rent", value: fixedCostsTotal * 0.65 },
-                  { label: "CAM / Fixed", value: fixedCostsTotal * 0.35 },
-                ];
+                const operatingTotal =
+                  fixedCostsTotal + utilitiesTotal + linenTotal + chemicalsTotal;
+                const netProfitValue = salesValue - (cogsTotal + laborTotal + operatingTotal);
+                const toggleRow = (id: string) => {
+                  setProfitLossOpenRows((prev) =>
+                    prev.includes(id)
+                      ? prev.filter((rowId) => rowId !== id)
+                      : [...prev, id],
+                  );
+                };
 
                 return (
                   <div className="truth-section__content">
@@ -2266,223 +2261,145 @@ const AppShell = () => {
                         </button>
                       ))}
                     </div>
-                    <div className="time-selector" role="tablist">
+                    <div className="breakdown-table" role="table">
+                      <div className="breakdown-row breakdown-row--header" role="row">
+                        <span className="breakdown-row__label" role="columnheader">
+                          GL Code
+                        </span>
+                        <span className="breakdown-row__label" role="columnheader">
+                          Line item
+                        </span>
+                        <span className="breakdown-row__value" role="columnheader">
+                          Amount
+                        </span>
+                      </div>
                       {[
-                        { id: "summary", label: "Summary" },
-                        { id: "sales", label: "Sales Detail" },
-                        { id: "expenses", label: "Expense Detail" },
-                      ].map((tab) => (
-                        <button
-                          key={tab.id}
-                          type="button"
-                          className={`time-pill${
-                            profitLossView === tab.id ? " time-pill--active" : ""
-                          }`}
-                          onClick={() =>
-                            setProfitLossView(
-                              tab.id as "summary" | "sales" | "expenses",
-                            )
-                          }
-                        >
-                          {tab.label}
-                        </button>
-                      ))}
-                    </div>
-                    {profitLossView === "summary" ? (
-                      <div className="breakdown-table" role="table">
-                        <div className="breakdown-row breakdown-row--header" role="row">
-                          <span className="breakdown-row__label" role="columnheader">
-                            Line item
-                          </span>
-                          <span className="breakdown-row__value" role="columnheader">
-                            Amount
-                          </span>
-                          <span className="breakdown-row__percent" role="columnheader">
-                            % of Sales
-                          </span>
-                        </div>
-                        <div className="breakdown-row" role="row">
-                          <span className="breakdown-row__label" role="cell">
-                            Sales
-                          </span>
-                          <span className="breakdown-row__value" role="cell">
-                            {formatCurrency(salesValue)}
-                          </span>
-                          <span className="breakdown-row__percent" role="cell">
-                            100%
-                          </span>
-                        </div>
-                        <div className="breakdown-row" role="row">
-                          <span className="breakdown-row__label" role="cell">
-                            Expenses
-                          </span>
-                          <span className="breakdown-row__value" role="cell">
-                            {formatCurrency(expensesValue)}
-                          </span>
-                          <span className="breakdown-row__percent" role="cell">
-                            {expensePercent}%
-                          </span>
-                        </div>
-                        <div className="breakdown-row" role="row">
-                          <span className="breakdown-row__label" role="cell">
-                            Profit
-                          </span>
-                          <span className="breakdown-row__value" role="cell">
-                            {formatCurrency(profitValue)}
-                          </span>
-                          <span className="breakdown-row__percent" role="cell">
-                            {profitPercent}%
-                          </span>
-                        </div>
-                      </div>
-                    ) : profitLossView === "sales" ? (
-                      <div className="breakdown-table" role="table">
-                        <div className="breakdown-row breakdown-row--header" role="row">
-                          <span className="breakdown-row__label" role="columnheader">
-                            Sales Detail
-                          </span>
-                          <span className="breakdown-row__value" role="columnheader">
-                            Amount
-                          </span>
-                          <span className="breakdown-row__percent" role="columnheader">
-                            —
-                          </span>
-                        </div>
-                        {[
-                          { label: "In-store Sales", value: salesBreakdown["In-store"] },
-                          { label: "Takeout Sales", value: salesBreakdown.Takeout },
-                          { label: "Delivery Sales", value: salesBreakdown.Delivery },
-                          {
-                            label: "3rd-party Marketplace Sales",
-                            value: salesBreakdown["3rd-party sales"],
-                          },
-                          { label: "Tips (non-revenue)", value: salesBreakdown.Tips },
-                        ].map((row) => (
-                          <div key={row.label} className="breakdown-row" role="row">
-                            <span className="breakdown-row__label" role="cell">
-                              {row.label}
-                            </span>
-                            <span className="breakdown-row__value" role="cell">
-                              {row.value}
-                            </span>
-                            <span className="breakdown-row__percent" role="cell">
-                              —
-                            </span>
+                        {
+                          id: "sales",
+                          code: "4000",
+                          label: "Total Sales",
+                          value: formatCurrency(salesValue),
+                          details: [
+                            { code: "4010", label: "In-Store Sales", value: salesBreakdown["In-store"] },
+                            { code: "4020", label: "Takeout Sales", value: salesBreakdown.Takeout },
+                            { code: "4030", label: "Delivery Sales", value: salesBreakdown.Delivery },
+                            {
+                              code: "4040",
+                              label: "3rd-Party Marketplace Sales",
+                              value: salesBreakdown["3rd-party sales"],
+                            },
+                            { code: "4050", label: "Tips (Non-Revenue)", value: salesBreakdown.Tips },
+                          ],
+                        },
+                        {
+                          id: "cogs",
+                          code: "5000",
+                          label: "Cost of Goods Sold",
+                          value: formatCurrency(cogsTotal),
+                          details: [
+                            { code: "5010", label: "Food COGS", value: formatCurrency(cogsTotal * 0.6) },
+                            {
+                              code: "5020",
+                              label: "Beverage COGS",
+                              value: formatCurrency(cogsTotal * 0.4),
+                            },
+                          ],
+                        },
+                        {
+                          id: "labor",
+                          code: "6000",
+                          label: "Labor",
+                          value: formatCurrency(laborTotal),
+                          details: [
+                            { code: "6010", label: "FOH Labor", value: formatCurrency(laborTotal * 0.38) },
+                            { code: "6020", label: "BOH Labor", value: formatCurrency(laborTotal * 0.42) },
+                            { code: "6030", label: "Management", value: formatCurrency(laborTotal * 0.2) },
+                          ],
+                        },
+                        {
+                          id: "operating",
+                          code: "7000",
+                          label: "Operating Expenses",
+                          value: formatCurrency(operatingTotal),
+                          details: [
+                            { code: "7010", label: "Rent", value: formatCurrency(fixedCostsTotal * 0.65) },
+                            {
+                              code: "7020",
+                              label: "CAM / Fixed",
+                              value: formatCurrency(fixedCostsTotal * 0.35),
+                            },
+                            { code: "7030", label: "Utilities", value: formatCurrency(utilitiesTotal) },
+                            { code: "7040", label: "Linen", value: formatCurrency(linenTotal) },
+                            {
+                              code: "7050",
+                              label: "Chemicals & Supplies",
+                              value: formatCurrency(chemicalsTotal),
+                            },
+                          ],
+                        },
+                      ].map((row) => {
+                        const isOpen = profitLossOpenRows.includes(row.id);
+                        return (
+                          <div key={row.id}>
+                            <div
+                              className="breakdown-row"
+                              role="button"
+                              tabIndex={0}
+                              aria-expanded={isOpen}
+                              onClick={() => toggleRow(row.id)}
+                              onKeyDown={(event) => {
+                                if (event.key === "Enter" || event.key === " ") {
+                                  event.preventDefault();
+                                  toggleRow(row.id);
+                                }
+                              }}
+                            >
+                              <span className="breakdown-row__label" role="cell">
+                                {row.code}
+                              </span>
+                              <span className="breakdown-row__label" role="cell">
+                                {row.label}
+                              </span>
+                              <span className="breakdown-row__value" role="cell">
+                                {row.value}
+                              </span>
+                            </div>
+                            {isOpen
+                              ? row.details.map((detail) => (
+                                  <div key={detail.code} className="breakdown-row" role="row">
+                                    <span
+                                      className="breakdown-row__label"
+                                      role="cell"
+                                      style={{ paddingLeft: "24px" }}
+                                    >
+                                      {detail.code}
+                                    </span>
+                                    <span
+                                      className="breakdown-row__label"
+                                      role="cell"
+                                      style={{ paddingLeft: "24px" }}
+                                    >
+                                      {detail.label}
+                                    </span>
+                                    <span className="breakdown-row__value" role="cell">
+                                      {detail.value}
+                                    </span>
+                                  </div>
+                                ))
+                              : null}
                           </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="breakdown-table" role="table">
-                        <div className="breakdown-row breakdown-row--header" role="row">
-                          <span className="breakdown-row__label" role="columnheader">
-                            Expense Detail
-                          </span>
-                          <span className="breakdown-row__value" role="columnheader">
-                            Amount
-                          </span>
-                          <span className="breakdown-row__percent" role="columnheader">
-                            —
-                          </span>
-                        </div>
-                        <div className="breakdown-row" role="row">
-                          <span className="breakdown-row__label" role="cell">
-                            Labor
-                          </span>
-                          <span className="breakdown-row__value" role="cell">
-                            {formatCurrency(laborTotal)}
-                          </span>
-                          <span className="breakdown-row__percent" role="cell">
-                            —
-                          </span>
-                        </div>
-                        {laborBreakdown.map((row) => (
-                          <div key={row.label} className="breakdown-row" role="row">
-                            <span className="breakdown-row__label" role="cell">
-                              {row.label}
-                            </span>
-                            <span className="breakdown-row__value" role="cell">
-                              {formatCurrency(row.value)}
-                            </span>
-                            <span className="breakdown-row__percent" role="cell">
-                              —
-                            </span>
-                          </div>
-                        ))}
-                        <div className="breakdown-row" role="row">
-                          <span className="breakdown-row__label" role="cell">
-                            Cost of Goods
-                          </span>
-                          <span className="breakdown-row__value" role="cell">
-                            {formatCurrency(cogsTotal)}
-                          </span>
-                          <span className="breakdown-row__percent" role="cell">
-                            —
-                          </span>
-                        </div>
-                        {cogsBreakdown.map((row) => (
-                          <div key={row.label} className="breakdown-row" role="row">
-                            <span className="breakdown-row__label" role="cell">
-                              {row.label}
-                            </span>
-                            <span className="breakdown-row__value" role="cell">
-                              {formatCurrency(row.value)}
-                            </span>
-                            <span className="breakdown-row__percent" role="cell">
-                              —
-                            </span>
-                          </div>
-                        ))}
-                        <div className="breakdown-row" role="row">
-                          <span className="breakdown-row__label" role="cell">
-                            Occupancy
-                          </span>
-                          <span className="breakdown-row__value" role="cell">
-                            {formatCurrency(fixedCostsTotal)}
-                          </span>
-                          <span className="breakdown-row__percent" role="cell">
-                            —
-                          </span>
-                        </div>
-                        {occupancyBreakdown.map((row) => (
-                          <div key={row.label} className="breakdown-row" role="row">
-                            <span className="breakdown-row__label" role="cell">
-                              {row.label}
-                            </span>
-                            <span className="breakdown-row__value" role="cell">
-                              {formatCurrency(row.value)}
-                            </span>
-                            <span className="breakdown-row__percent" role="cell">
-                              —
-                            </span>
-                          </div>
-                        ))}
-                        {[
-                          {
-                            label: "Utilities",
-                            value: formatCurrency(utilitiesTotal),
-                          },
-                          { label: "Linen", value: formatCurrency(linenTotal) },
-                          {
-                            label: "Chemicals / Supplies",
-                            value: formatCurrency(chemicalsTotal),
-                          },
-                          {
-                            label: "Other Fixed Costs",
-                            value: formatCurrency(fixedCostsTotal * 0.2),
-                          },
-                        ].map((row) => (
-                          <div key={row.label} className="breakdown-row" role="row">
-                            <span className="breakdown-row__label" role="cell">
-                              {row.label}
-                            </span>
-                            <span className="breakdown-row__value" role="cell">
-                              {row.value}
-                            </span>
-                            <span className="breakdown-row__percent" role="cell">
-                              —
-                            </span>
-                          </div>
-                        ))}
+                        );
+                      })}
+                      <div className="breakdown-row" role="row">
+                        <span className="breakdown-row__label" role="cell">
+                          9000
+                        </span>
+                        <span className="breakdown-row__label" role="cell">
+                          Net Profit
+                        </span>
+                        <span className="breakdown-row__value" role="cell">
+                          {formatCurrency(netProfitValue)}
+                        </span>
                       </div>
                     )}
                   </div>
