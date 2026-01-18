@@ -1,9 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 
 import PrimaryNav from "../navigation/PrimaryNav";
 import SecondaryNav from "../navigation/SecondaryNav";
 import { primaryTabs, secondaryTabsByPrimary } from "../navigation/navConfig";
+import SalesTrends from "../components/sales/SalesTrends";
+import ExpensesBreakdown from "../components/expenses/ExpensesBreakdown";
+import ExpensesInvoices from "../components/expenses/ExpensesInvoices";
 
 const timeOptions = [
   "Mon",
@@ -20,7 +23,6 @@ const timeOptions = [
 
 const financialsTimeOptions = ["Week", "Month", "Quarter", "Year"];
 const budgetsTimeOptions = ["Week", "Month", "Quarter", "Year"];
-const trendsTimeOptions = ["Week", "Month", "Quarter", "Year"];
 
 const salesOverviewMetrics: Record<string, { gross: string; net: string }> = {
   Mon: { gross: "$128,400", net: "$121,050" },
@@ -320,109 +322,6 @@ const salesForecastBase: Record<string, number> = {
   Year: 40850000,
 };
 
-const salesForecastSeries: Record<
-  string,
-  {
-    today: number[];
-    past: number[];
-    projected: number[];
-  }
-> = {
-  Mon: {
-    today: [24, 32, 28, 36, 42, 38, 44],
-    past: [18, 26, 24, 30, 36, 33, 37],
-    projected: [24, 32, 30, 35, 40, 42, 45],
-  },
-  Tue: {
-    today: [26, 34, 30, 38, 44, 40, 46],
-    past: [20, 28, 26, 32, 38, 35, 39],
-    projected: [26, 34, 32, 37, 42, 44, 47],
-  },
-  Wed: {
-    today: [28, 36, 32, 40, 46, 42, 48],
-    past: [22, 30, 28, 34, 40, 37, 41],
-    projected: [28, 36, 34, 39, 44, 46, 49],
-  },
-  Thu: {
-    today: [27, 35, 31, 39, 45, 41, 47],
-    past: [21, 29, 27, 33, 39, 36, 40],
-    projected: [27, 35, 33, 38, 43, 45, 48],
-  },
-  Fri: {
-    today: [30, 40, 36, 45, 52, 48, 54],
-    past: [24, 34, 31, 39, 45, 42, 47],
-    projected: [30, 40, 38, 44, 50, 52, 56],
-  },
-  Sat: {
-    today: [20, 28, 26, 32, 36, 34, 38],
-    past: [16, 22, 21, 26, 30, 28, 32],
-    projected: [20, 28, 27, 31, 35, 37, 39],
-  },
-  Sun: {
-    today: [18, 24, 22, 28, 32, 30, 34],
-    past: [14, 20, 19, 24, 28, 26, 30],
-    projected: [18, 24, 23, 27, 31, 33, 35],
-  },
-  Week: {
-    today: [24, 30, 28, 36, 42, 40, 46],
-    past: [20, 26, 24, 31, 36, 34, 38],
-    projected: [24, 30, 29, 35, 40, 42, 45],
-  },
-  Month: {
-    today: [22, 26, 24, 28, 32, 30, 34],
-    past: [18, 22, 20, 24, 28, 26, 30],
-    projected: [22, 26, 25, 29, 33, 35, 37],
-  },
-  Year: {
-    today: [18, 22, 20, 24, 28, 26, 30],
-    past: [14, 18, 16, 20, 24, 22, 26],
-    projected: [18, 22, 21, 25, 29, 31, 33],
-  },
-};
-
-const salesTrendsChanges: Record<string, Record<string, number>> = {
-  Week: {
-    "Total Sales": 4.2,
-    "In-store": 3.1,
-    Takeout: -1.8,
-    Delivery: 2.6,
-    "3rd-party sales": 1.2,
-    Tips: 0,
-    "Check average": 1.4,
-    Covers: -0.6,
-  },
-  Month: {
-    "Total Sales": 6.3,
-    "In-store": 5.2,
-    Takeout: 2.8,
-    Delivery: -1.2,
-    "3rd-party sales": 0.8,
-    Tips: 0.4,
-    "Check average": 1.1,
-    Covers: 3.6,
-  },
-  Quarter: {
-    "Total Sales": 3.8,
-    "In-store": 4.5,
-    Takeout: 1.9,
-    Delivery: 0,
-    "3rd-party sales": -0.4,
-    Tips: -0.7,
-    "Check average": 2.2,
-    Covers: 1.4,
-  },
-  Year: {
-    "Total Sales": 7.5,
-    "In-store": 6.2,
-    Takeout: 4.1,
-    Delivery: 3.4,
-    "3rd-party sales": 2.1,
-    Tips: 0.9,
-    "Check average": 2.8,
-    Covers: 4.6,
-  },
-};
-
 const salesProductMix: Record<string, { name: string; units: number }[]> = {
   Mon: [
     { name: "Signature Burger", units: 84 },
@@ -557,41 +456,6 @@ const breakdownRows = [
   "Covers",
 ];
 
-const trendsRows = [
-  "Total Sales",
-  "In-store",
-  "Takeout",
-  "Delivery (3rd-party sales)",
-  "Tips",
-  "Check average",
-  "Covers",
-];
-
-const expensesCategoryRows = [
-  "Labor",
-  "COGS",
-  "Fixed costs",
-  "Utilities",
-  "Chemicals",
-  "Linen",
-];
-
-const buildPath = (values: number[], width = 520, height = 180) => {
-  if (values.length === 0) {
-    return "";
-  }
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min || 1;
-  const step = width / (values.length - 1);
-  const points = values.map((value, index) => {
-    const x = index * step;
-    const y = height - ((value - min) / range) * height;
-    return `${x},${y}`;
-  });
-  return `M ${points[0]} ${points.slice(1).map((point) => `L ${point}`).join(" ")}`;
-};
-
 const AppShell = () => {
   const primaryNavItems = useMemo(() => {
     const settingsTab = primaryTabs.find((tab) => tab.id === "settings");
@@ -604,23 +468,20 @@ const AppShell = () => {
   }, []);
 
   const [activePrimaryId, setActivePrimaryId] = useState(primaryNavItems[0].id);
-  const [activeSecondaryId, setActiveSecondaryId] = useState(
-    secondaryTabsByPrimary[primaryNavItems[0].id][0].id,
+  const [activeSecondaryId, setActiveSecondaryId] = useState<string | null>(
+    secondaryTabsByPrimary[primaryNavItems[0].id]?.[0]?.id ?? null,
   );
   const [activeTime, setActiveTime] = useState(timeOptions[7]);
-  const [trendsTime, setTrendsTime] = useState(trendsTimeOptions[0]);
   const [financialsTime, setFinancialsTime] = useState(
     financialsTimeOptions[1],
   );
   const [openVendorId, setOpenVendorId] = useState<string | null>(null);
   const [openOrderGuideId, setOpenOrderGuideId] = useState<string | null>(null);
   const [openTrafficId, setOpenTrafficId] = useState<string | null>(null);
-  const [openExpenseCategoryId, setOpenExpenseCategoryId] = useState<string | null>(
-    null,
-  );
   const [openBudgetCategoryId, setOpenBudgetCategoryId] = useState<string | null>(
     null,
   );
+  const prevPrimaryId = useRef(activePrimaryId);
   const [forecastGrowth, setForecastGrowth] = useState(4);
   const [forecastWeather, setForecastWeather] = useState(2);
   const [forecastEvents, setForecastEvents] = useState(3);
@@ -716,62 +577,131 @@ const AppShell = () => {
   }, [activePrimaryId, primaryNavItems]);
 
   const secondaryTabs = useMemo(() => {
-    return secondaryTabsByPrimary[activePrimaryId] ?? secondaryTabsByPrimary.sales;
+    return secondaryTabsByPrimary[activePrimaryId] ?? [];
   }, [activePrimaryId]);
 
-  const activeSecondary = useMemo(() => {
-    return secondaryTabs.find((tab) => tab.id === activeSecondaryId) ?? secondaryTabs[0];
-  }, [secondaryTabs, activeSecondaryId]);
+  useEffect(() => {
+    // Secondary tab is intentionally reset on primary change to prevent cross-primary leakage.
+    const validSecondaryIds = secondaryTabs.map((tab) => tab.id);
+    if (secondaryTabs.length === 0) {
+      setActiveSecondaryId(null);
+      return;
+    }
+    if (!activeSecondaryId || !validSecondaryIds.includes(activeSecondaryId)) {
+      setActiveSecondaryId(secondaryTabs[0].id);
+    }
+  }, [activePrimaryId, secondaryTabs, activeSecondaryId]);
+
+  useEffect(() => {
+    if (prevPrimaryId.current === "expenses" && activePrimaryId !== "expenses") {
+      setActiveSecondaryId(secondaryTabs[0]?.id ?? null);
+    }
+    prevPrimaryId.current = activePrimaryId;
+  }, [activePrimaryId, secondaryTabs]);
 
   useEffect(() => {
     setActiveTime(timeOptions[7]);
   }, [activePrimaryId, activeSecondaryId]);
 
-  const isExpensesOverview =
-    activePrimaryId === "expenses" && activeSecondaryId === "overview";
-  const isExpensesCategories =
-    activePrimaryId === "expenses" && activeSecondaryId === "categories";
+  const hasValidSecondary =
+    !!activeSecondaryId &&
+    secondaryTabs.some((tab) => tab.id === activeSecondaryId);
+  const isSalesBreakdown =
+    hasValidSecondary &&
+    activePrimaryId === "sales" &&
+    activeSecondaryId === "breakdown";
+  const isSalesForecast =
+    hasValidSecondary &&
+    activePrimaryId === "sales" &&
+    activeSecondaryId === "forecast";
+  const isSalesProduct =
+    hasValidSecondary &&
+    activePrimaryId === "sales" &&
+    activeSecondaryId === "product";
+  const isSalesTrends =
+    hasValidSecondary &&
+    activePrimaryId === "sales" &&
+    activeSecondaryId === "trends";
+  const isExpensesBreakdown =
+    hasValidSecondary &&
+    activePrimaryId === "expenses" &&
+    activeSecondaryId === "breakdown";
   const isExpensesVendors =
-    activePrimaryId === "expenses" && activeSecondaryId === "vendors";
+    hasValidSecondary &&
+    activePrimaryId === "expenses" &&
+    activeSecondaryId === "vendors";
+  const isExpensesInvoices =
+    hasValidSecondary &&
+    activePrimaryId === "expenses" &&
+    activeSecondaryId === "invoices";
   const isExpensesBudgets =
-    activePrimaryId === "expenses" && activeSecondaryId === "budgets";
+    hasValidSecondary &&
+    activePrimaryId === "expenses" &&
+    activeSecondaryId === "budgets";
   const isFinancialsCashflow =
-    activePrimaryId === "financials" && activeSecondaryId === "cashflow";
+    hasValidSecondary &&
+    activePrimaryId === "financials" &&
+    activeSecondaryId === "cashflow";
   const isFinancialsProForma =
-    activePrimaryId === "financials" && activeSecondaryId === "pro-forma";
+    hasValidSecondary &&
+    activePrimaryId === "financials" &&
+    activeSecondaryId === "pro-forma";
   const isFinancialsProfitLoss =
-    activePrimaryId === "financials" && activeSecondaryId === "profit-loss";
+    hasValidSecondary &&
+    activePrimaryId === "financials" &&
+    activeSecondaryId === "profit-loss";
   const isFinancialsKpis =
-    activePrimaryId === "financials" && activeSecondaryId === "kpis";
+    hasValidSecondary &&
+    activePrimaryId === "financials" &&
+    activeSecondaryId === "kpis";
   const isPresenceReviews =
-    activePrimaryId === "presence" && activeSecondaryId === "reviews";
+    hasValidSecondary &&
+    activePrimaryId === "presence" &&
+    activeSecondaryId === "reviews";
   const isPresenceTraffic =
-    activePrimaryId === "presence" && activeSecondaryId === "traffic";
+    hasValidSecondary &&
+    activePrimaryId === "presence" &&
+    activeSecondaryId === "traffic";
   const isPresenceSocial =
-    activePrimaryId === "presence" && activeSecondaryId === "social";
+    hasValidSecondary &&
+    activePrimaryId === "presence" &&
+    activeSecondaryId === "social";
   const isPresenceSeo =
-    activePrimaryId === "presence" && activeSecondaryId === "seo";
+    hasValidSecondary &&
+    activePrimaryId === "presence" &&
+    activeSecondaryId === "seo";
   const isReporting = activePrimaryId === "reporting";
   const isReportingEmailReports =
-    activePrimaryId === "reporting" && activeSecondaryId === "email-reports";
+    hasValidSecondary &&
+    activePrimaryId === "reporting" &&
+    activeSecondaryId === "email-reports";
   const isReportingNotifications =
-    activePrimaryId === "reporting" && activeSecondaryId === "notifications";
+    hasValidSecondary &&
+    activePrimaryId === "reporting" &&
+    activeSecondaryId === "notifications";
   const isSettingsBusiness =
-    activePrimaryId === "settings" && activeSecondaryId === "business";
+    hasValidSecondary &&
+    activePrimaryId === "settings" &&
+    activeSecondaryId === "business";
   const isSettingsOperations =
-    activePrimaryId === "settings" && activeSecondaryId === "operations";
+    hasValidSecondary &&
+    activePrimaryId === "settings" &&
+    activeSecondaryId === "operations";
   const isSettingsFinancialAssumptions =
+    hasValidSecondary &&
     activePrimaryId === "settings" &&
     activeSecondaryId === "financial-assumptions";
   const isSettingsAlerts =
-    activePrimaryId === "settings" && activeSecondaryId === "alerts";
+    hasValidSecondary &&
+    activePrimaryId === "settings" &&
+    activeSecondaryId === "alerts";
   const isSettingsDisplay =
-    activePrimaryId === "settings" && activeSecondaryId === "display";
+    hasValidSecondary &&
+    activePrimaryId === "settings" &&
+    activeSecondaryId === "display";
 
   const activeBreakdown =
     salesBreakdownMetrics[activeTime] ?? salesBreakdownMetrics.Week;
-  const activeForecast =
-    salesForecastSeries[activeTime] ?? salesForecastSeries.Week;
   const activeProductMix = salesProductMix[activeTime] ?? salesProductMix.Week;
   const activeExpensesTotal =
     expensesOverviewTotals[activeTime] ?? expensesOverviewTotals.Week;
@@ -803,20 +733,6 @@ const AppShell = () => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       handleOrderGuideToggle(id);
-    }
-  };
-
-  const handleExpenseCategoryToggle = (id: string) => {
-    setOpenExpenseCategoryId((prev) => (prev === id ? null : id));
-  };
-
-  const handleExpenseCategoryKeyDown = (
-    event: KeyboardEvent<HTMLDivElement>,
-    id: string,
-  ) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleExpenseCategoryToggle(id);
     }
   };
 
@@ -896,10 +812,10 @@ const AppShell = () => {
   };
 
   const isTimeBasedView =
-    (activePrimaryId === "sales" && activeSecondaryId === "breakdown") ||
-    (activePrimaryId === "sales" && activeSecondaryId === "product") ||
-    isExpensesOverview ||
-    isExpensesCategories ||
+    isSalesBreakdown ||
+    isSalesForecast ||
+    isSalesProduct ||
+    isExpensesBreakdown ||
     isExpensesBudgets;
 
   return (
@@ -937,17 +853,27 @@ const AppShell = () => {
             <section className="truth-card truth-card--lead">
               <div className="truth-card__header">
                 <h2 className="truth-card__title">{activePrimary.label}</h2>
-                <SecondaryNav
-                  tabs={secondaryTabs}
-                  activeId={activeSecondary.id}
-                  onChange={setActiveSecondaryId}
-                />
+                {/* Secondary tabs are intentionally rendered from a single source to prevent cross-primary leakage. */}
+                {/* SecondaryNav is intentionally rendered once at the top of the content area. */}
+                {secondaryTabs.length > 0 ? (
+                  <SecondaryNav
+                    key={activePrimaryId}
+                    tabs={secondaryTabs}
+                    activeId={activeSecondaryId ?? ""}
+                    onChange={setActiveSecondaryId}
+                  />
+                ) : null}
               </div>
             </section>
 
-            {isFinancialsProForma ? (
-              <>
-                <section className="truth-section">
+            {(() => {
+              if (isSalesTrends) {
+                return <SalesTrends />;
+              }
+
+              return isFinancialsProForma ? (
+                <>
+                  <section className="truth-section">
                   {(() => {
                     const formatCurrency = (value: number) =>
                       `$${Math.round(value).toLocaleString()}`;
@@ -1196,573 +1122,331 @@ const AppShell = () => {
                       )}
                     </div>
 
-                {activePrimaryId === "sales" ? (
-                  (() => {
-                    switch (activeSecondaryId) {
-                      case "breakdown":
-                        return (
-                          <div className="breakdown-table" role="table">
-                            {(() => {
-                              const parseCurrency = (value: string) => {
-                                const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
-                                return Number.isNaN(numeric) ? 0 : numeric;
-                              };
-                              const formatCurrency = (value: number) =>
-                                `$${Math.round(value).toLocaleString()}`;
-                              const salesKeys = [
-                                "In-store",
-                                "Takeout",
-                                "Delivery",
-                                "3rd-party sales",
-                              ];
-                              const tipValue = parseCurrency(
-                                activeBreakdown.Tips ?? "$0",
-                              );
-                              const totalSales = salesKeys.reduce((sum, key) => {
-                                return sum + parseCurrency(activeBreakdown[key] ?? "$0");
-                              }, 0);
-                              const percentFor = (label: string) => {
-                                if (label === "Total Sales") return "100%";
-                                if (label === "Tips") {
-                                  return totalSales
-                                    ? `${Math.round((tipValue / totalSales) * 100)}%`
-                                    : "0%";
-                                }
-                                if (salesKeys.includes(label)) {
-                                  const value = parseCurrency(
-                                    activeBreakdown[label] ?? "$0",
-                                  );
-                                  return totalSales
-                                    ? `${Math.round((value / totalSales) * 100)}%`
-                                    : "0%";
-                                }
-                                return "—";
-                              };
-                              const valueFor = (label: string) => {
-                                if (label === "Total Sales") {
-                                  return formatCurrency(totalSales);
-                                }
-                                return activeBreakdown[label];
-                              };
+                {isSalesBreakdown ? (
+                  <div className="breakdown-table" role="table">
+                    {(() => {
+                      const parseCurrency = (value: string) => {
+                        const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
+                        return Number.isNaN(numeric) ? 0 : numeric;
+                      };
+                      const formatCurrency = (value: number) =>
+                        `$${Math.round(value).toLocaleString()}`;
+                      const salesKeys = [
+                        "In-store",
+                        "Takeout",
+                        "Delivery",
+                        "3rd-party sales",
+                      ];
+                      const tipValue = parseCurrency(activeBreakdown.Tips ?? "$0");
+                      const totalSales = salesKeys.reduce((sum, key) => {
+                        return sum + parseCurrency(activeBreakdown[key] ?? "$0");
+                      }, 0);
+                      const percentFor = (label: string) => {
+                        if (label === "Total Sales") return "100%";
+                        if (label === "Tips") {
+                          return totalSales
+                            ? `${Math.round((tipValue / totalSales) * 100)}%`
+                            : "0%";
+                        }
+                        if (salesKeys.includes(label)) {
+                          const value = parseCurrency(activeBreakdown[label] ?? "$0");
+                          return totalSales
+                            ? `${Math.round((value / totalSales) * 100)}%`
+                            : "0%";
+                        }
+                        return "—";
+                      };
+                      const valueFor = (label: string) => {
+                        if (label === "Total Sales") return formatCurrency(totalSales);
+                        return activeBreakdown[label];
+                      };
 
-                              return (
-                                <>
-                                  <div
-                                    className="breakdown-row breakdown-row--header"
-                                    role="row"
-                                  >
-                                    <span
-                                      className="breakdown-row__label"
-                                      role="columnheader"
-                                    >
-                                      Category
-                                    </span>
-                                    <span
-                                      className="breakdown-row__value"
-                                      role="columnheader"
-                                    >
-                                      Amount
-                                    </span>
-                                    <span
-                                      className="breakdown-row__percent"
-                                      role="columnheader"
-                                    >
-                                      % of Total
-                                    </span>
-                                  </div>
-                                  {breakdownRows.map((label) => (
-                                    <div key={label} className="breakdown-row" role="row">
-                                      <span
-                                        className="breakdown-row__label"
-                                        role="cell"
-                                      >
-                                        {label}
-                                      </span>
-                                      <span
-                                        className="breakdown-row__value"
-                                        role="cell"
-                                      >
-                                        {valueFor(label)}
-                                      </span>
-                                      <span
-                                        className="breakdown-row__percent"
-                                        role="cell"
-                                      >
-                                        {percentFor(label)}
-                                      </span>
-                                    </div>
-                                  ))}
-                                </>
-                              );
-                            })()}
+                      return (
+                        <>
+                          <div className="breakdown-row breakdown-row--header" role="row">
+                            <span className="breakdown-row__label" role="columnheader">
+                              Category
+                            </span>
+                            <span className="breakdown-row__value" role="columnheader">
+                              Amount
+                            </span>
+                            <span className="breakdown-row__percent" role="columnheader">
+                              % of Total
+                            </span>
                           </div>
-                        );
-                      case "forecast":
-                        return (() => {
-                          const baseValue =
-                            salesForecastBase[activeTime] ?? salesForecastBase.Week;
-                          const projectedValue = Math.round(baseValue * 1.04);
-                          const formatCurrency = (value: number) =>
-                            `$${value.toLocaleString()}`;
-                          const inputItems = [
-                            "Historical sales",
-                            "Year-over-year trend",
-                            "Weather",
-                            "Events",
-                            "Price changes",
-                          ];
-
-                          return (
-                            <div className="forecast-panel">
-                              <div className="forecast-primary">
-                                <p className="metric__label">Projected Sales</p>
-                                <p className="forecast-primary__value">
-                                  {formatCurrency(projectedValue)}
-                                </p>
-                              </div>
-                              <div
-                                className="forecast-chart"
-                                role="img"
-                                aria-label="Sales forecast"
-                              >
-                                <svg viewBox="0 0 520 180" aria-hidden="true">
-                                  <path
-                                    className="forecast-line forecast-line--today"
-                                    d={buildPath(activeForecast.today)}
-                                  />
-                                  <path
-                                    className="forecast-line forecast-line--projected"
-                                    d={buildPath(activeForecast.past)}
-                                  />
-                                </svg>
-                              </div>
-                              <div>
-                                <p className="metric__label">Forecast Inputs</p>
-                                <ul className="truth-section__body">
-                                  {inputItems.map((item) => (
-                                    <li key={item}>{item}</li>
-                                  ))}
-                                </ul>
-                              </div>
+                          {breakdownRows.map((label) => (
+                            <div key={label} className="breakdown-row" role="row">
+                              <span className="breakdown-row__label" role="cell">
+                                {label}
+                              </span>
+                              <span className="breakdown-row__value" role="cell">
+                                {valueFor(label)}
+                              </span>
+                              <span className="breakdown-row__percent" role="cell">
+                                {percentFor(label)}
+                              </span>
                             </div>
-                          );
-                        })();
-                      case "trends":
-                        return (() => {
-                          const comparisonByTime: Record<string, string> = {
-                            Week: "vs prior week",
-                            Month: "vs same month last year",
-                            Quarter: "vs same quarter last year",
-                            Year: "YTD vs last year YTD",
-                          };
-                          const trendValues =
-                            salesTrendsChanges[trendsTime] ?? salesTrendsChanges.Week;
-                          const parseCurrency = (value: string) => {
-                            const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
-                            return Number.isNaN(numeric) ? 0 : numeric;
-                          };
-                          const formatCurrency = (value: number) =>
-                            `$${Math.round(value).toLocaleString()}`;
-                          const salesKeys = [
-                            "In-store",
-                            "Takeout",
-                            "Delivery",
-                            "3rd-party sales",
-                          ];
-                          const tipValue = parseCurrency(
-                            activeBreakdown.Tips ?? "$0",
-                          );
-                          const totalSales = salesKeys.reduce((sum, key) => {
-                            return sum + parseCurrency(activeBreakdown[key] ?? "$0");
-                          }, 0);
-                          const trendClass = (value: number) => {
-                            if (value > 0) return "trend-value--up";
-                            if (value < 0) return "trend-value--down";
-                            return "trend-value--flat";
-                          };
-                          const trendArrow = (value: number) => {
-                            if (value > 0) return "↑";
-                            if (value < 0) return "↓";
-                            return "→";
-                          };
-                          const formatDelta = (value: number) =>
-                            `${trendArrow(value)} ${value > 0 ? "+" : value < 0 ? "−" : ""}${Math.abs(
-                              value,
-                            ).toFixed(1)}%`;
-                          const amountFor = (label: string) => {
-                            if (label === "Total Sales") {
-                              return formatCurrency(totalSales);
-                            }
-                            return activeBreakdown[label];
-                          };
-                          const deltaFor = (label: string) => trendValues[label] ?? 0;
-                          const trendTableRows = [
-                            "Total Sales",
-                            "In-store",
-                            "Takeout",
-                            "Delivery",
-                            "3rd-party sales",
-                            "Tips",
-                          ];
-
-                          return (
-                            <div className="forecast-panel">
-                              <div className="time-selector" role="tablist">
-                                {trendsTimeOptions.map((option) => (
-                                  <button
-                                    key={option}
-                                    type="button"
-                                    className={`time-pill${
-                                      trendsTime === option ? " time-pill--active" : ""
-                                    }`}
-                                    onClick={() => setTrendsTime(option)}
-                                  >
-                                    {option}
-                                  </button>
-                                ))}
-                              </div>
-                              <p className="trend-note">
-                                Change {comparisonByTime[trendsTime]}
-                              </p>
-                              <div className="breakdown-table" role="table">
-                                <div
-                                  className="breakdown-row breakdown-row--header"
-                                  role="row"
-                                >
-                                  <span
-                                    className="breakdown-row__label"
-                                    role="columnheader"
-                                  >
-                                    Category
-                                  </span>
-                                  <span
-                                    className="breakdown-row__value"
-                                    role="columnheader"
-                                  >
-                                    Amount
-                                  </span>
-                                  <span
-                                    className="breakdown-row__percent"
-                                    role="columnheader"
-                                  >
-                                    % Change
-                                  </span>
-                                </div>
-                                {trendTableRows.map((label) => {
-                                  const delta = deltaFor(label);
-                                  const valueClass = trendClass(delta);
-                                  return (
-                                    <div key={label} className="breakdown-row" role="row">
-                                      <span
-                                        className="breakdown-row__label"
-                                        role="cell"
-                                      >
-                                        {label}
-                                      </span>
-                                      <span
-                                        className="breakdown-row__value"
-                                        role="cell"
-                                      >
-                                        {amountFor(label)}
-                                      </span>
-                                      <span
-                                        className={`breakdown-row__percent trend-value ${valueClass}`}
-                                        role="cell"
-                                      >
-                                        {formatDelta(delta)}
-                                      </span>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          );
-                        })();
-                      case "product":
-                        return (
-                          (() => {
-                            const totalUnits = activeProductMix.reduce(
-                              (sum, item) => sum + item.units,
-                              0,
-                            );
-                            const topSellers = [...activeProductMix]
-                              .sort((a, b) => b.units - a.units)
-                              .slice(0, 5);
-                            const bottomSellers = [...activeProductMix]
-                              .sort((a, b) => a.units - b.units)
-                              .slice(0, 5);
-
-                            return (
-                              <div className="vendor-section">
-                                <div className="vendor-section">
-                                  <p className="metric__label">Top 5 Products</p>
-                                  <div className="breakdown-table" role="table">
-                                    <div
-                                      className="breakdown-row breakdown-row--header"
-                                      role="row"
-                                    >
-                                      <span
-                                        className="breakdown-row__label"
-                                        role="columnheader"
-                                      >
-                                        Product
-                                      </span>
-                                      <span
-                                        className="breakdown-row__value"
-                                        role="columnheader"
-                                      >
-                                        Units
-                                      </span>
-                                      <span
-                                        className="breakdown-row__percent"
-                                        role="columnheader"
-                                      >
-                                        % of Total
-                                      </span>
-                                    </div>
-                                    {topSellers.map((item) => {
-                                      const percent = totalUnits
-                                        ? Math.round((item.units / totalUnits) * 100)
-                                        : 0;
-                                      return (
-                                        <div
-                                          key={item.name}
-                                          className="breakdown-row"
-                                          role="row"
-                                        >
-                                          <span
-                                            className="breakdown-row__label"
-                                            role="cell"
-                                          >
-                                            {item.name}
-                                          </span>
-                                          <span
-                                            className="breakdown-row__value"
-                                            role="cell"
-                                          >
-                                            {item.units}
-                                          </span>
-                                          <span
-                                            className="breakdown-row__percent"
-                                            role="cell"
-                                          >
-                                            {percent}%
-                                          </span>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                                <div className="vendor-section">
-                                  <p className="metric__label">Bottom 5 Products</p>
-                                  <div className="breakdown-table" role="table">
-                                    <div
-                                      className="breakdown-row breakdown-row--header"
-                                      role="row"
-                                    >
-                                      <span
-                                        className="breakdown-row__label"
-                                        role="columnheader"
-                                      >
-                                        Product
-                                      </span>
-                                      <span
-                                        className="breakdown-row__value"
-                                        role="columnheader"
-                                      >
-                                        Units
-                                      </span>
-                                      <span
-                                        className="breakdown-row__percent"
-                                        role="columnheader"
-                                      >
-                                        % of Total
-                                      </span>
-                                    </div>
-                                    {bottomSellers.map((item) => {
-                                      const percent = totalUnits
-                                        ? Math.round((item.units / totalUnits) * 100)
-                                        : 0;
-                                      return (
-                                        <div
-                                          key={item.name}
-                                          className="breakdown-row"
-                                          role="row"
-                                        >
-                                          <span
-                                            className="breakdown-row__label"
-                                            role="cell"
-                                          >
-                                            {item.name}
-                                          </span>
-                                          <span
-                                            className="breakdown-row__value"
-                                            role="cell"
-                                          >
-                                            {item.units}
-                                          </span>
-                                          <span
-                                            className="breakdown-row__percent"
-                                            role="cell"
-                                          >
-                                            {percent}%
-                                          </span>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })()
-                        );
-                      default:
-                        return null;
-                    }
-                  })()
-                ) : null}
-
-                {isExpensesOverview ? (
-                  <div className="metrics">
-                    <div className="metric">
-                      <p className="metric__label">Total Expenses</p>
-                      <p className="metric__value">{activeExpensesTotal}</p>
-                    </div>
+                          ))}
+                        </>
+                      );
+                    })()}
                   </div>
                 ) : null}
 
-                {isExpensesCategories ? (
+                {isSalesForecast ? (
                   (() => {
-                    const parseCurrency = (value: string) => {
-                      const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
-                      return Number.isNaN(numeric) ? 0 : numeric;
-                    };
-
+                    const baseValue =
+                      salesForecastBase[activeTime] ?? salesForecastBase.Week;
+                    const totalImpact =
+                      (forecastGrowth +
+                        forecastWeather +
+                        forecastEvents +
+                        forecastPricing +
+                        forecastMomentum) /
+                      100;
+                    const projected = Math.round(baseValue * (1 + totalImpact));
                     const formatCurrency = (value: number) =>
-                      `$${Math.round(value).toLocaleString()}`;
-
-                    const lineItemsByCategory: Record<
-                      string,
-                      { label: string; share: number }[]
-                    > = {
-                      Labor: [
-                        { label: "Cook", share: 0.45 },
-                        { label: "Manager", share: 0.35 },
-                        { label: "Cashier", share: 0.2 },
-                      ],
-                      COGS: [
-                        { label: "Food", share: 0.55 },
-                        { label: "Beverage", share: 0.25 },
-                        { label: "Alcohol", share: 0.2 },
-                      ],
-                      "Fixed costs": [
-                        { label: "Rent", share: 0.5 },
-                        { label: "Insurance", share: 0.2 },
-                        { label: "Accounting", share: 0.2 },
-                        { label: "Bookkeeping", share: 0.1 },
-                      ],
-                      Utilities: [
-                        { label: "Electric", share: 0.35 },
-                        { label: "Gas", share: 0.25 },
-                        { label: "Water", share: 0.2 },
-                        { label: "Internet", share: 0.2 },
-                      ],
-                      Chemicals: [
-                        { label: "Cleaning supplies", share: 0.6 },
-                        { label: "Sanitizer", share: 0.4 },
-                      ],
-                      Linen: [
-                        { label: "Linen service", share: 0.65 },
-                        { label: "Towels", share: 0.35 },
-                      ],
+                      `$${value.toLocaleString()}`;
+                    const signalDirection = (value: number) => {
+                      if (value > 1) return "signal--positive";
+                      if (value < -1) return "signal--negative";
+                      return "signal--neutral";
                     };
+                    const signals = [
+                      {
+                        label: "Historical sales (WoW / YoY)",
+                        value: forecastGrowth,
+                      },
+                      { label: "Weather", value: forecastWeather },
+                      { label: "Local events", value: forecastEvents },
+                      { label: "Holidays", value: 0 },
+                      { label: "Price increases", value: forecastPricing },
+                      { label: "Recent trend momentum", value: forecastMomentum },
+                    ];
 
                     return (
-                      <div className="breakdown-table" role="table">
-                        <div
-                          className="breakdown-row breakdown-row--header budget-row"
-                          role="row"
-                        >
-                          <span className="breakdown-row__label" role="columnheader">
-                            Category
-                          </span>
-                          <span className="breakdown-row__value" role="columnheader">
-                            Amount
-                          </span>
-                          <span className="breakdown-row__percent" role="columnheader">
-                            % of Total
-                          </span>
-                          <span
-                            className="breakdown-row__percent"
-                            role="columnheader"
-                          />
+                      <div className="forecast-panel">
+                        <div className="forecast-primary">
+                          <p className="metric__label">Projected Sales</p>
+                          <p className="forecast-primary__value">
+                            {formatCurrency(projected)}
+                          </p>
                         </div>
-                        {expensesCategoryRows.map((label) => {
-                          const isOpen = openExpenseCategoryId === label;
-                          const total = parseCurrency(activeExpensesCategories[label]);
-                          const items = lineItemsByCategory[label] ?? [];
-                          return (
-                            <div key={label} className="expense-accordion__item">
-                              <div
-                                className="breakdown-row expense-accordion__row"
-                                role="button"
-                                tabIndex={0}
-                                aria-expanded={isOpen}
-                                onClick={() => handleExpenseCategoryToggle(label)}
-                                onKeyDown={(event) =>
-                                  handleExpenseCategoryKeyDown(event, label)
-                                }
+                        <div className="forecast-signals">
+                          {signals.map((signal) => (
+                            <div key={signal.label} className="forecast-signal">
+                              <span className="forecast-signal__label">
+                                {signal.label}
+                              </span>
+                              <span
+                                className={`forecast-signal__status ${signalDirection(
+                                  signal.value,
+                                )}`}
                               >
-                                <span className="breakdown-row__label" role="cell">
-                                  {label}
-                                </span>
-                                <span className="breakdown-row__value" role="cell">
-                                  {activeExpensesCategories[label]}
-                                </span>
-                                <span className="breakdown-row__percent" role="cell">
-                                  {activeExpensesPercents[label]}
-                                </span>
-                                <span className="expense-accordion__chevron" aria-hidden>
-                                  {isOpen ? "−" : "+"}
-                                </span>
-                              </div>
-                              <div
-                                className={`expense-accordion__panel${
-                                  isOpen ? " expense-accordion__panel--open" : ""
-                                }`}
-                              >
-                                <div className="expense-accordion__details">
-                                  {items.map((item) => {
-                                    const amount = total * item.share;
-                                    const percent = total
-                                      ? Math.round((amount / total) * 100)
-                                      : 0;
-                                    return (
-                                      <div
-                                        key={item.label}
-                                        className="expense-accordion__detail"
-                                      >
-                                        <span className="expense-accordion__detail-label">
-                                          {item.label}
-                                        </span>
-                                        <span className="expense-accordion__detail-value">
-                                          {formatCurrency(amount)}
-                                        </span>
-                                        <span className="expense-accordion__detail-percent">
-                                          {percent}%
-                                        </span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
+                                {signal.value > 1
+                                  ? "Positive"
+                                  : signal.value < -1
+                                    ? "Negative"
+                                    : "Neutral"}
+                              </span>
                             </div>
-                          );
-                        })}
+                          ))}
+                        </div>
+                        <div className="forecast-controls">
+                          <label className="forecast-control">
+                            <span className="forecast-control__label">
+                              Historical growth factor
+                            </span>
+                            <input
+                              type="range"
+                              min="-8"
+                              max="12"
+                              step="1"
+                              value={forecastGrowth}
+                              onChange={(event) =>
+                                setForecastGrowth(Number(event.target.value))
+                              }
+                            />
+                            <span className="forecast-control__value">
+                              {forecastGrowth}%
+                            </span>
+                          </label>
+                          <label className="forecast-control">
+                            <span className="forecast-control__label">
+                              Weather impact
+                            </span>
+                            <input
+                              type="range"
+                              min="-6"
+                              max="8"
+                              step="1"
+                              value={forecastWeather}
+                              onChange={(event) =>
+                                setForecastWeather(Number(event.target.value))
+                              }
+                            />
+                            <span className="forecast-control__value">
+                              {forecastWeather}%
+                            </span>
+                          </label>
+                          <label className="forecast-control">
+                            <span className="forecast-control__label">Event impact</span>
+                            <input
+                              type="range"
+                              min="-5"
+                              max="10"
+                              step="1"
+                              value={forecastEvents}
+                              onChange={(event) =>
+                                setForecastEvents(Number(event.target.value))
+                              }
+                            />
+                            <span className="forecast-control__value">
+                              {forecastEvents}%
+                            </span>
+                          </label>
+                          <label className="forecast-control">
+                            <span className="forecast-control__label">
+                              Price increase impact
+                            </span>
+                            <input
+                              type="range"
+                              min="-4"
+                              max="6"
+                              step="1"
+                              value={forecastPricing}
+                              onChange={(event) =>
+                                setForecastPricing(Number(event.target.value))
+                              }
+                            />
+                            <span className="forecast-control__value">
+                              {forecastPricing}%
+                            </span>
+                          </label>
+                          <label className="forecast-control">
+                            <span className="forecast-control__label">
+                              Momentum bias
+                            </span>
+                            <input
+                              type="range"
+                              min="-6"
+                              max="8"
+                              step="1"
+                              value={forecastMomentum}
+                              onChange={(event) =>
+                                setForecastMomentum(Number(event.target.value))
+                              }
+                            />
+                            <span className="forecast-control__value">
+                              {forecastMomentum}%
+                            </span>
+                          </label>
+                        </div>
+                        <p className="forecast-disclaimer">
+                          Forecasts are directional estimates based on historical
+                          performance and external signals.
+                        </p>
                       </div>
                     );
                   })()
                 ) : null}
+
+                {isSalesProduct ? (
+                  (() => {
+                    const totalUnits = activeProductMix.reduce(
+                      (sum, item) => sum + item.units,
+                      0,
+                    );
+                    const topSellers = [...activeProductMix]
+                      .sort((a, b) => b.units - a.units)
+                      .slice(0, 5);
+                    const bottomSellers = [...activeProductMix]
+                      .sort((a, b) => a.units - b.units)
+                      .slice(0, 5);
+
+                    return (
+                      <div className="vendor-section">
+                        <div className="vendor-section">
+                          <p className="metric__label">Top 5 Products</p>
+                          <div className="breakdown-table" role="table">
+                            <div className="breakdown-row breakdown-row--header" role="row">
+                              <span className="breakdown-row__label" role="columnheader">
+                                Product
+                              </span>
+                              <span className="breakdown-row__value" role="columnheader">
+                                Units
+                              </span>
+                              <span className="breakdown-row__percent" role="columnheader">
+                                % of Total
+                              </span>
+                            </div>
+                            {topSellers.map((item) => {
+                              const percent = totalUnits
+                                ? Math.round((item.units / totalUnits) * 100)
+                                : 0;
+                              return (
+                                <div key={item.name} className="breakdown-row" role="row">
+                                  <span className="breakdown-row__label" role="cell">
+                                    {item.name}
+                                  </span>
+                                  <span className="breakdown-row__value" role="cell">
+                                    {item.units}
+                                  </span>
+                                  <span className="breakdown-row__percent" role="cell">
+                                    {percent}%
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        <div className="vendor-section">
+                          <p className="metric__label">Bottom 5 Products</p>
+                          <div className="breakdown-table" role="table">
+                            <div className="breakdown-row breakdown-row--header" role="row">
+                              <span className="breakdown-row__label" role="columnheader">
+                                Product
+                              </span>
+                              <span className="breakdown-row__value" role="columnheader">
+                                Units
+                              </span>
+                              <span className="breakdown-row__percent" role="columnheader">
+                                % of Total
+                              </span>
+                            </div>
+                            {bottomSellers.map((item) => {
+                              const percent = totalUnits
+                                ? Math.round((item.units / totalUnits) * 100)
+                                : 0;
+                              return (
+                                <div key={item.name} className="breakdown-row" role="row">
+                                  <span className="breakdown-row__label" role="cell">
+                                    {item.name}
+                                  </span>
+                                  <span className="breakdown-row__value" role="cell">
+                                    {item.units}
+                                  </span>
+                                  <span className="breakdown-row__percent" role="cell">
+                                    {percent}%
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()
+                ) : null}
+
+                {isExpensesBreakdown ? (
+                  <ExpensesBreakdown
+                    total={activeExpensesTotal}
+                    categories={activeExpensesCategories}
+                    percents={activeExpensesPercents}
+                  />
+                ) : null}
+
 
                 {isExpensesBudgets ? (
                   (() => {
@@ -2197,6 +1881,8 @@ const AppShell = () => {
                   </div>
                 );
               })()
+            ) : isExpensesInvoices ? (
+              <ExpensesInvoices />
             ) : isFinancialsCashflow ? (
               (() => {
                 const cashflowMonth = "September 2024";
@@ -3359,11 +3045,12 @@ const AppShell = () => {
                   </div>
                 </div>
               </div>
-              ) : activePrimaryId === "sales" ? null : (
+              ) : (
                 <p className="truth-section__body">Placeholder summary</p>
               )}
             </section>
-          )}
+              );
+            })()}
           </div>
         </main>
       </div>
