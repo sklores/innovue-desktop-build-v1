@@ -1078,16 +1078,21 @@ const AppShell = () => {
             ) : isFinancialsKpis ? (
               <section className="truth-section">
                 <div className="truth-section__content">
-                  <div className="kpi-grid" role="list">
+                  <div
+                    className="kpi-grid"
+                    role="list"
+                    style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}
+                  >
                     {[
-                      { label: "Prime Cost", value: "--%" },
-                      { label: "Sales per Labor Hour", value: "$--" },
-                      { label: "Worked vs Scheduled Hours", value: "--%" },
-                      { label: "Sales per Sq Ft", value: "$--" },
-                      { label: "Net Profit %", value: "--%" },
-                      { label: "Rent as % of Sales", value: "--%" },
-                      { label: "Average Weekly Sales", value: "$--" },
-                      { label: "Average Employee Hourly Wage", value: "$-- / hr" },
+                      { label: "Prime Cost", value: "62%" },
+                      { label: "Sales per Labor Hour", value: "$78" },
+                      { label: "Worked vs Scheduled Hours", value: "104%" },
+                      { label: "Sales per Sq Ft", value: "$1,240" },
+                      { label: "Net Profit %", value: "18%" },
+                      { label: "Rent as % of Sales", value: "7%" },
+                      { label: "Average Weekly Sales", value: "$874,700" },
+                      { label: "Average Employee Hourly Wage", value: "$22 / hr" },
+                      { label: "EBITDA Margin", value: "22%" },
                     ].map((item) => (
                       <div key={item.label} className="kpi-tile" role="listitem">
                         <p className="kpi-tile__value">{item.value}</p>
