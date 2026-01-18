@@ -857,6 +857,7 @@ const AppShell = () => {
                 {/* SecondaryNav is intentionally rendered once at the top of the content area. */}
                 {secondaryTabs.length > 0 ? (
                   <SecondaryNav
+                    key={activePrimaryId}
                     tabs={secondaryTabs}
                     activeId={activeSecondaryId ?? ""}
                     onChange={setActiveSecondaryId}
