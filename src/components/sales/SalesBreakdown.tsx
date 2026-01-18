@@ -1,68 +1,60 @@
 import { useState } from "react";
 import type { KeyboardEvent } from "react";
 
-type ExpensesBreakdownProps = {
-  total: string;
-  categories: Record<string, string>;
-  percents: Record<string, string>;
-};
-
 const breakdownRows = [
   {
-    key: "Labor",
-    label: "Labor",
+    id: "in-store",
+    label: "In-store",
+    value: "$347,700",
+    percent: "40%",
     details: [
-      { label: "Kitchen", value: "$62,400" },
-      { label: "FOH", value: "$44,800" },
-      { label: "Management", value: "$21,700" },
+      { label: "Lunch", value: "$198,400" },
+      { label: "Dinner", value: "$149,300" },
     ],
   },
   {
-    key: "COGS",
-    label: "COGS",
+    id: "takeout",
+    label: "Takeout",
+    value: "$229,900",
+    percent: "26%",
     details: [
-      { label: "Food", value: "$41,600" },
-      { label: "Beverage", value: "$24,300" },
-      { label: "Alcohol", value: "$13,800" },
+      { label: "Online orders", value: "$138,500" },
+      { label: "Phone orders", value: "$91,400" },
     ],
   },
   {
-    key: "Fixed costs",
-    label: "Fixed Costs",
+    id: "delivery",
+    label: "Delivery",
+    value: "$201,300",
+    percent: "23%",
     details: [
-      { label: "Rent", value: "$23,100" },
-      { label: "Insurance", value: "$9,800" },
-      { label: "Accounting", value: "$8,900" },
+      { label: "Uber Eats", value: "$112,600" },
+      { label: "DoorDash", value: "$88,700" },
     ],
   },
   {
-    key: "Utilities",
-    label: "Utilities",
+    id: "third-party",
+    label: "3rd-party sales",
+    value: "$95,800",
+    percent: "11%",
     details: [
-      { label: "Electric", value: "$5,200" },
-      { label: "Gas", value: "$4,100" },
-      { label: "Water", value: "$3,200" },
+      { label: "Catering partners", value: "$58,200" },
+      { label: "Marketplace", value: "$37,600" },
     ],
   },
   {
-    key: "Chemicals",
-    label: "Chemicals",
+    id: "tips",
+    label: "Tips",
+    value: "$24,600",
+    percent: "3%",
     details: [
-      { label: "Cleaning supplies", value: "$3,700" },
-      { label: "Sanitizer", value: "$2,650" },
-    ],
-  },
-  {
-    key: "Linen",
-    label: "Linen",
-    details: [
-      { label: "Linen service", value: "$1,800" },
-      { label: "Towels", value: "$960" },
+      { label: "Card tips", value: "$19,100" },
+      { label: "Cash tips", value: "$5,500" },
     ],
   },
 ] as const;
 
-const ExpensesBreakdown = ({ total, categories, percents }: ExpensesBreakdownProps) => {
+const SalesBreakdown = () => {
   const [openRow, setOpenRow] = useState<string | null>(null);
 
   const handleToggle = (id: string) => {
@@ -89,42 +81,31 @@ const ExpensesBreakdown = ({ total, categories, percents }: ExpensesBreakdownPro
           % of Total
         </span>
       </div>
-      <div className="breakdown-row expense-breakdown__row--total" role="row">
-        <span className="breakdown-row__label" role="cell">
-          Total Expenses
-        </span>
-        <span className="breakdown-row__value" role="cell">
-          {total}
-        </span>
-        <span className="breakdown-row__percent" role="cell">
-          100%
-        </span>
-      </div>
       {breakdownRows.map((row) => {
-        const isOpen = openRow === row.key;
+        const isOpen = openRow === row.id;
         return (
-          <div key={row.key}>
+          <div key={row.id}>
             <div
               className="breakdown-row"
               role="button"
               tabIndex={0}
               aria-expanded={isOpen}
-              onClick={() => handleToggle(row.key)}
-              onKeyDown={(event) => handleKeyDown(event, row.key)}
+              onClick={() => handleToggle(row.id)}
+              onKeyDown={(event) => handleKeyDown(event, row.id)}
             >
               <span className="breakdown-row__label" role="cell">
                 {row.label}
               </span>
               <span className="breakdown-row__value" role="cell">
-                {categories[row.key]}
+                {row.value}
               </span>
               <span className="breakdown-row__percent" role="cell">
-                {percents[row.key]}
+                {row.percent}
               </span>
             </div>
             <div
               style={{
-                maxHeight: isOpen ? "160px" : "0px",
+                maxHeight: isOpen ? "120px" : "0px",
                 opacity: isOpen ? 1 : 0,
                 overflow: "hidden",
                 transition: "max-height 0.25s ease, opacity 0.2s ease",
@@ -158,4 +139,4 @@ const ExpensesBreakdown = ({ total, categories, percents }: ExpensesBreakdownPro
   );
 };
 
-export default ExpensesBreakdown;
+export default SalesBreakdown;
