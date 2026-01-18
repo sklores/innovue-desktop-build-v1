@@ -488,6 +488,9 @@ const AppShell = () => {
   const [forecastPricing, setForecastPricing] = useState(1);
   const [forecastMomentum, setForecastMomentum] = useState(2);
   const [cashflowView, setCashflowView] = useState<"Month" | "Week">("Month");
+  const [profitLossView, setProfitLossView] = useState<
+    "summary" | "sales" | "expenses"
+  >("summary");
   const [cashflowDetail, setCashflowDetail] = useState<{
     label: string;
     sales: number;
@@ -2209,6 +2212,39 @@ const AppShell = () => {
                   salesValue > 0
                     ? Math.round((profitValue / salesValue) * 100)
                     : 0;
+                const salesBreakdown =
+                  salesBreakdownMetrics.Month ?? salesBreakdownMetrics.Week;
+                const laborTotal = parseCurrency(
+                  expensesCategoryMetrics.Month?.Labor ?? "$0",
+                );
+                const cogsTotal = parseCurrency(
+                  expensesCategoryMetrics.Month?.COGS ?? "$0",
+                );
+                const fixedCostsTotal = parseCurrency(
+                  expensesCategoryMetrics.Month?.["Fixed costs"] ?? "$0",
+                );
+                const utilitiesTotal = parseCurrency(
+                  expensesCategoryMetrics.Month?.Utilities ?? "$0",
+                );
+                const linenTotal = parseCurrency(
+                  expensesCategoryMetrics.Month?.Linen ?? "$0",
+                );
+                const chemicalsTotal = parseCurrency(
+                  expensesCategoryMetrics.Month?.Chemicals ?? "$0",
+                );
+                const laborBreakdown = [
+                  { label: "FOH Labor", value: laborTotal * 0.38 },
+                  { label: "BOH Labor", value: laborTotal * 0.42 },
+                  { label: "Management", value: laborTotal * 0.2 },
+                ];
+                const cogsBreakdown = [
+                  { label: "Food", value: cogsTotal * 0.6 },
+                  { label: "Beverage", value: cogsTotal * 0.4 },
+                ];
+                const occupancyBreakdown = [
+                  { label: "Rent", value: fixedCostsTotal * 0.65 },
+                  { label: "CAM / Fixed", value: fixedCostsTotal * 0.35 },
+                ];
 
                 return (
                   <div className="truth-section__content">
@@ -2230,52 +2266,225 @@ const AppShell = () => {
                         </button>
                       ))}
                     </div>
-                    <div className="breakdown-table" role="table">
-                      <div className="breakdown-row breakdown-row--header" role="row">
-                        <span className="breakdown-row__label" role="columnheader">
-                          Line item
-                        </span>
-                        <span className="breakdown-row__value" role="columnheader">
-                          Amount
-                        </span>
-                        <span className="breakdown-row__percent" role="columnheader">
-                          % of Sales
-                        </span>
-                      </div>
-                      <div className="breakdown-row" role="row">
-                        <span className="breakdown-row__label" role="cell">
-                          Sales
-                        </span>
-                        <span className="breakdown-row__value" role="cell">
-                          {formatCurrency(salesValue)}
-                        </span>
-                        <span className="breakdown-row__percent" role="cell">
-                          100%
-                        </span>
-                      </div>
-                      <div className="breakdown-row" role="row">
-                        <span className="breakdown-row__label" role="cell">
-                          Expenses
-                        </span>
-                        <span className="breakdown-row__value" role="cell">
-                          {formatCurrency(expensesValue)}
-                        </span>
-                        <span className="breakdown-row__percent" role="cell">
-                          {expensePercent}%
-                        </span>
-                      </div>
-                      <div className="breakdown-row" role="row">
-                        <span className="breakdown-row__label" role="cell">
-                          Profit
-                        </span>
-                        <span className="breakdown-row__value" role="cell">
-                          {formatCurrency(profitValue)}
-                        </span>
-                        <span className="breakdown-row__percent" role="cell">
-                          {profitPercent}%
-                        </span>
-                      </div>
+                    <div className="time-selector" role="tablist">
+                      {[
+                        { id: "summary", label: "Summary" },
+                        { id: "sales", label: "Sales Detail" },
+                        { id: "expenses", label: "Expense Detail" },
+                      ].map((tab) => (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          className={`time-pill${
+                            profitLossView === tab.id ? " time-pill--active" : ""
+                          }`}
+                          onClick={() =>
+                            setProfitLossView(
+                              tab.id as "summary" | "sales" | "expenses",
+                            )
+                          }
+                        >
+                          {tab.label}
+                        </button>
+                      ))}
                     </div>
+                    {profitLossView === "summary" ? (
+                      <div className="breakdown-table" role="table">
+                        <div className="breakdown-row breakdown-row--header" role="row">
+                          <span className="breakdown-row__label" role="columnheader">
+                            Line item
+                          </span>
+                          <span className="breakdown-row__value" role="columnheader">
+                            Amount
+                          </span>
+                          <span className="breakdown-row__percent" role="columnheader">
+                            % of Sales
+                          </span>
+                        </div>
+                        <div className="breakdown-row" role="row">
+                          <span className="breakdown-row__label" role="cell">
+                            Sales
+                          </span>
+                          <span className="breakdown-row__value" role="cell">
+                            {formatCurrency(salesValue)}
+                          </span>
+                          <span className="breakdown-row__percent" role="cell">
+                            100%
+                          </span>
+                        </div>
+                        <div className="breakdown-row" role="row">
+                          <span className="breakdown-row__label" role="cell">
+                            Expenses
+                          </span>
+                          <span className="breakdown-row__value" role="cell">
+                            {formatCurrency(expensesValue)}
+                          </span>
+                          <span className="breakdown-row__percent" role="cell">
+                            {expensePercent}%
+                          </span>
+                        </div>
+                        <div className="breakdown-row" role="row">
+                          <span className="breakdown-row__label" role="cell">
+                            Profit
+                          </span>
+                          <span className="breakdown-row__value" role="cell">
+                            {formatCurrency(profitValue)}
+                          </span>
+                          <span className="breakdown-row__percent" role="cell">
+                            {profitPercent}%
+                          </span>
+                        </div>
+                      </div>
+                    ) : profitLossView === "sales" ? (
+                      <div className="breakdown-table" role="table">
+                        <div className="breakdown-row breakdown-row--header" role="row">
+                          <span className="breakdown-row__label" role="columnheader">
+                            Sales Detail
+                          </span>
+                          <span className="breakdown-row__value" role="columnheader">
+                            Amount
+                          </span>
+                          <span className="breakdown-row__percent" role="columnheader">
+                            —
+                          </span>
+                        </div>
+                        {[
+                          { label: "In-store Sales", value: salesBreakdown["In-store"] },
+                          { label: "Takeout Sales", value: salesBreakdown.Takeout },
+                          { label: "Delivery Sales", value: salesBreakdown.Delivery },
+                          {
+                            label: "3rd-party Marketplace Sales",
+                            value: salesBreakdown["3rd-party sales"],
+                          },
+                          { label: "Tips (non-revenue)", value: salesBreakdown.Tips },
+                        ].map((row) => (
+                          <div key={row.label} className="breakdown-row" role="row">
+                            <span className="breakdown-row__label" role="cell">
+                              {row.label}
+                            </span>
+                            <span className="breakdown-row__value" role="cell">
+                              {row.value}
+                            </span>
+                            <span className="breakdown-row__percent" role="cell">
+                              —
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="breakdown-table" role="table">
+                        <div className="breakdown-row breakdown-row--header" role="row">
+                          <span className="breakdown-row__label" role="columnheader">
+                            Expense Detail
+                          </span>
+                          <span className="breakdown-row__value" role="columnheader">
+                            Amount
+                          </span>
+                          <span className="breakdown-row__percent" role="columnheader">
+                            —
+                          </span>
+                        </div>
+                        <div className="breakdown-row" role="row">
+                          <span className="breakdown-row__label" role="cell">
+                            Labor
+                          </span>
+                          <span className="breakdown-row__value" role="cell">
+                            {formatCurrency(laborTotal)}
+                          </span>
+                          <span className="breakdown-row__percent" role="cell">
+                            —
+                          </span>
+                        </div>
+                        {laborBreakdown.map((row) => (
+                          <div key={row.label} className="breakdown-row" role="row">
+                            <span className="breakdown-row__label" role="cell">
+                              {row.label}
+                            </span>
+                            <span className="breakdown-row__value" role="cell">
+                              {formatCurrency(row.value)}
+                            </span>
+                            <span className="breakdown-row__percent" role="cell">
+                              —
+                            </span>
+                          </div>
+                        ))}
+                        <div className="breakdown-row" role="row">
+                          <span className="breakdown-row__label" role="cell">
+                            Cost of Goods
+                          </span>
+                          <span className="breakdown-row__value" role="cell">
+                            {formatCurrency(cogsTotal)}
+                          </span>
+                          <span className="breakdown-row__percent" role="cell">
+                            —
+                          </span>
+                        </div>
+                        {cogsBreakdown.map((row) => (
+                          <div key={row.label} className="breakdown-row" role="row">
+                            <span className="breakdown-row__label" role="cell">
+                              {row.label}
+                            </span>
+                            <span className="breakdown-row__value" role="cell">
+                              {formatCurrency(row.value)}
+                            </span>
+                            <span className="breakdown-row__percent" role="cell">
+                              —
+                            </span>
+                          </div>
+                        ))}
+                        <div className="breakdown-row" role="row">
+                          <span className="breakdown-row__label" role="cell">
+                            Occupancy
+                          </span>
+                          <span className="breakdown-row__value" role="cell">
+                            {formatCurrency(fixedCostsTotal)}
+                          </span>
+                          <span className="breakdown-row__percent" role="cell">
+                            —
+                          </span>
+                        </div>
+                        {occupancyBreakdown.map((row) => (
+                          <div key={row.label} className="breakdown-row" role="row">
+                            <span className="breakdown-row__label" role="cell">
+                              {row.label}
+                            </span>
+                            <span className="breakdown-row__value" role="cell">
+                              {formatCurrency(row.value)}
+                            </span>
+                            <span className="breakdown-row__percent" role="cell">
+                              —
+                            </span>
+                          </div>
+                        ))}
+                        {[
+                          {
+                            label: "Utilities",
+                            value: formatCurrency(utilitiesTotal),
+                          },
+                          { label: "Linen", value: formatCurrency(linenTotal) },
+                          {
+                            label: "Chemicals / Supplies",
+                            value: formatCurrency(chemicalsTotal),
+                          },
+                          {
+                            label: "Other Fixed Costs",
+                            value: formatCurrency(fixedCostsTotal * 0.2),
+                          },
+                        ].map((row) => (
+                          <div key={row.label} className="breakdown-row" role="row">
+                            <span className="breakdown-row__label" role="cell">
+                              {row.label}
+                            </span>
+                            <span className="breakdown-row__value" role="cell">
+                              {row.value}
+                            </span>
+                            <span className="breakdown-row__percent" role="cell">
+                              —
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })()
