@@ -3183,6 +3183,7 @@ const AppShell = () => {
               );
             })()}
           </div>
+          </div>
         </main>
       </div>
     </div>
