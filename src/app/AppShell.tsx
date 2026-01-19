@@ -2273,7 +2273,7 @@ const AppShell = () => {
                           Amount
                         </span>
                       </div>
-                      {[
+                      {([
                         {
                           id: "sales",
                           code: "4000",
@@ -2389,7 +2389,7 @@ const AppShell = () => {
                               : null}
                           </div>
                         );
-                      })}
+                      ))}
                       <div className="breakdown-row" role="row">
                         <span className="breakdown-row__label" role="cell">
                           9000
