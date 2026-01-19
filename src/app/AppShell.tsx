@@ -1593,7 +1593,7 @@ const AppShell = () => {
                     const formatVariance = (value: number) => {
                       if (value === 0) {
                         return formatCurrency(0);
-                      }
+                      })}
                       const sign = value > 0 ? "+" : "−";
                       return `${sign}${formatCurrency(Math.abs(value))}`;
                     };
