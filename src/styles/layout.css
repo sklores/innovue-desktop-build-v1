@@ -307,7 +307,7 @@
 
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   width: 100%;
 }
@@ -315,13 +315,29 @@
 .kpi-tile {
   background: var(--card-bg);
   border: 1px solid var(--border-soft);
-  border-radius: 999px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
   padding: 18px 20px;
   min-height: 96px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 6px;
+}
+
+.kpi-tile--positive {
+  background: rgba(78, 153, 111, 0.12);
+  border-color: rgba(78, 153, 111, 0.22);
+}
+
+.kpi-tile--negative {
+  background: rgba(199, 91, 83, 0.12);
+  border-color: rgba(199, 91, 83, 0.22);
+}
+
+.kpi-tile--neutral {
+  background: rgba(148, 163, 184, 0.16);
+  border-color: rgba(148, 163, 184, 0.24);
 }
 
 .kpi-tile__value {
