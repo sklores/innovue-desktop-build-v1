@@ -159,6 +159,386 @@ const AppShell = () => {
       activePrimaryId === "expenses" &&
       ["breakdown", "budgets"].includes(activeSecondaryId));
 
+  const isExpensesVendors =
+    hasValidSecondary &&
+    activePrimaryId === "expenses" &&
+    activeSecondaryId === "vendors";
+
+  let content = null;
+
+  if (activePrimaryId === "sales" && activeSecondaryId === "trends") {
+    content = (
+      <SalesView activeSecondaryId={activeSecondaryId ?? ""} activeTime={activeTime} />
+    );
+  } else if (
+    activePrimaryId === "expenses" &&
+    ["vendors", "invoices"].includes(activeSecondaryId ?? "")
+  ) {
+    content = (
+      <ExpensesView
+        activeSecondaryId={activeSecondaryId ?? ""}
+        activeTime={activeTime}
+      />
+    );
+  } else if (activePrimaryId === "financials") {
+    content = (
+      <FinancialsView
+        activeSecondaryId={activeSecondaryId}
+        activeTime={activeTime}
+        financialsTime={financialsTime}
+        cashflowView={cashflowView}
+        setCashflowView={setCashflowView}
+      />
+    );
+  } else {
+    let sectionContent = null;
+
+    if (isTimeBasedView) {
+      sectionContent = (
+        <div className="truth-section__content">
+          <div className="time-selector" role="tablist" aria-label="Time range">
+            {((activePrimaryId === "expenses" && activeSecondaryId === "budgets")
+              ? budgetsTimeOptions
+              : timeOptions
+            ).map((option) => (
+              <button
+                key={option}
+                type="button"
+                className={`time-pill${activeTime === option ? " time-pill--active" : ""}`}
+                onClick={() => setActiveTime(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+
+          {activePrimaryId === "sales" ? (
+            <SalesView
+              activeSecondaryId={activeSecondaryId ?? ""}
+              activeTime={activeTime}
+            />
+          ) : null}
+        </div>
+      );
+    } else if (isExpensesVendors) {
+      const vendorRows = [
+        {
+          id: "northern-provisions",
+          name: "Northern Provisions",
+          accountsPayable: "$48,900",
+          email: "orders@northernprovisions.com",
+          phone: "(202) 555-0132",
+          paymentTerms: "Net 14",
+          accountNumber: "•••• 4821",
+          deliveryDays: "Mon / Wed / Fri",
+          deliveryMinimum: "$250",
+          orderGuide: ["Seasonal produce", "Protein cuts", "Dry goods"],
+        },
+        {
+          id: "harbor-supply",
+          name: "Harbor Supply Co.",
+          accountsPayable: "$37,450",
+          email: "billing@harborsupply.co",
+          phone: "(202) 555-0194",
+          paymentTerms: "Net 21",
+          accountNumber: "•••• 7754",
+          deliveryDays: "Tue / Thu",
+          deliveryMinimum: "$300",
+          orderGuide: ["Packaging", "Paper products", "Cleaning supplies"],
+        },
+        {
+          id: "capital-farms",
+          name: "Capital Farms",
+          accountsPayable: "$29,120",
+          email: "support@capitalfarms.com",
+          phone: "(202) 555-0178",
+          paymentTerms: "Net 30",
+          accountNumber: "•••• 2146",
+          deliveryDays: "Mon / Thu",
+          deliveryMinimum: "$200",
+          orderGuide: ["Dairy", "Eggs", "Specialty greens"],
+        },
+        {
+          id: "district-utilities",
+          name: "District Utilities",
+          accountsPayable: "$18,760",
+          email: "account@districtutilities.com",
+          phone: "(202) 555-0109",
+          paymentTerms: "Net 15",
+          accountNumber: "•••• 0913",
+          deliveryDays: "Monthly",
+          deliveryMinimum: "$0",
+          orderGuide: ["Electric", "Water", "Gas"],
+        },
+      ];
+      void vendorRows;
+
+      sectionContent = (
+        <div className="truth-section__content">
+          {activePrimaryId === "expenses" ? (
+            <ExpensesView
+              activeSecondaryId={activeSecondaryId ?? ""}
+              activeTime={activeTime}
+            />
+          ) : null}
+        </div>
+      );
+    } else if (isPresence) {
+      sectionContent = <OnlineView activeSecondaryId={activeSecondaryId} />;
+    } else if (isReporting) {
+      sectionContent = (
+        <ReportingView
+          activeSecondaryId={activeSecondaryId}
+          notificationPreferences={notificationPreferences}
+          handleNotificationToggle={handleNotificationToggle}
+          handleNotificationChange={handleNotificationChange}
+        />
+      );
+    } else if (isSettingsBusiness) {
+      sectionContent = (
+        <div className="truth-section__content">
+          <div className="settings-section">
+            <div className="settings-section__header">
+              <p className="settings-section__subtitle">
+                Core business details used across reporting and profiles.
+              </p>
+            </div>
+            <div className="settings-card">
+              <div className="settings-form">
+                <label className="settings-field">
+                  <span className="settings-field__label">Business name</span>
+                  <input
+                    className="settings-input"
+                    type="text"
+                    placeholder="Business name"
+                  />
+                </label>
+                <label className="settings-field">
+                  <span className="settings-field__label">Address</span>
+                  <input
+                    className="settings-input"
+                    type="text"
+                    placeholder="Street address"
+                  />
+                </label>
+                <div className="settings-grid">
+                  <label className="settings-field">
+                    <span className="settings-field__label">Zip code</span>
+                    <input
+                      className="settings-input"
+                      type="text"
+                      placeholder="Zip code"
+                    />
+                  </label>
+                  <label className="settings-field">
+                    <span className="settings-field__label">Website URL</span>
+                    <input
+                      className="settings-input"
+                      type="text"
+                      placeholder="https://example.com"
+                    />
+                  </label>
+                </div>
+                <label className="settings-field">
+                  <span className="settings-field__label">Time zone</span>
+                  <select className="settings-input">
+                    <option>Eastern (ET)</option>
+                    <option>Central (CT)</option>
+                    <option>Mountain (MT)</option>
+                    <option>Pacific (PT)</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (isSettingsOperations) {
+      sectionContent = (
+        <div className="truth-section__content">
+          <div className="settings-section">
+            <div className="settings-section__header">
+              <p className="settings-section__subtitle">
+                Day-to-day defaults used by ordering and operations.
+              </p>
+            </div>
+            <div className="settings-card">
+              <div className="settings-form">
+                <label className="settings-field">
+                  <span className="settings-field__label">Default delivery days</span>
+                  <input
+                    className="settings-input"
+                    type="text"
+                    placeholder="e.g. Mon / Wed / Fri"
+                  />
+                </label>
+                <label className="settings-field">
+                  <span className="settings-field__label">
+                    Default delivery minimum
+                  </span>
+                  <input
+                    className="settings-input"
+                    type="text"
+                    placeholder="$0.00"
+                  />
+                </label>
+                <label className="settings-field">
+                  <span className="settings-field__label">Cash deposit day(s)</span>
+                  <input
+                    className="settings-input"
+                    type="text"
+                    placeholder="e.g. Tue / Thu"
+                  />
+                </label>
+                <div className="settings-toggle-row">
+                  <span className="settings-field__label">Tax handling</span>
+                  <label className="toggle">
+                    <input type="checkbox" />
+                    <span className="toggle__track" />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (isSettingsFinancialAssumptions) {
+      sectionContent = (
+        <div className="truth-section__content">
+          <div className="settings-section">
+            <div className="settings-section__header">
+              <p className="settings-section__subtitle">
+                Default assumptions applied to forecasts and summaries.
+              </p>
+            </div>
+            <div className="settings-card">
+              <div className="settings-form">
+                <label className="settings-field">
+                  <span className="settings-field__label">Sales tax %</span>
+                  <input
+                    className="settings-input"
+                    type="text"
+                    placeholder="e.g. 8%"
+                  />
+                </label>
+                <label className="settings-field">
+                  <span className="settings-field__label">Tip %</span>
+                  <input
+                    className="settings-input"
+                    type="text"
+                    placeholder="e.g. 18%"
+                  />
+                </label>
+                <label className="settings-field">
+                  <span className="settings-field__label">Payroll burden %</span>
+                  <input
+                    className="settings-input"
+                    type="text"
+                    placeholder="e.g. 12%"
+                  />
+                </label>
+                <label className="settings-field">
+                  <span className="settings-field__label">Default labor %</span>
+                  <input
+                    className="settings-input"
+                    type="text"
+                    placeholder="e.g. 30%"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (isSettingsAlerts) {
+      sectionContent = (
+        <div className="truth-section__content">
+          <div className="settings-section">
+            <div className="settings-section__header">
+              <p className="settings-section__subtitle">
+                Alert toggles and sensitivity levels for key signals.
+              </p>
+            </div>
+            <div className="settings-card">
+              <div className="settings-list" role="list">
+                {notificationPreferences.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className="settings-row"
+                    role="listitem"
+                  >
+                    <span className="settings-row__label">{notification.label}</span>
+                    <label className="toggle">
+                      <input
+                        type="checkbox"
+                        checked={notification.enabled}
+                        onChange={() => handleNotificationToggle(notification.id)}
+                      />
+                      <span className="toggle__track" />
+                    </label>
+                    <select
+                      className="settings-input settings-input--compact"
+                      value={notification.sensitivity}
+                      onChange={(event) =>
+                        handleNotificationChange(notification.id, event.target.value)
+                      }
+                    >
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (isSettingsDisplay) {
+      sectionContent = (
+        <div className="truth-section__content">
+          <div className="settings-section">
+            <div className="settings-section__header">
+              <p className="settings-section__subtitle">
+                Display and formatting preferences for the desktop view.
+              </p>
+            </div>
+            <div className="settings-card">
+              <div className="settings-form">
+                <label className="settings-field">
+                  <span className="settings-field__label">Currency format</span>
+                  <select className="settings-input">
+                    <option>USD ($)</option>
+                    <option>EUR (€)</option>
+                    <option>GBP (£)</option>
+                  </select>
+                </label>
+                <label className="settings-field">
+                  <span className="settings-field__label">Week start day</span>
+                  <select className="settings-input">
+                    <option>Mon</option>
+                    <option>Sun</option>
+                  </select>
+                </label>
+                <div className="settings-toggle-row">
+                  <span className="settings-field__label">Light / dark mode</span>
+                  <label className="toggle">
+                    <input type="checkbox" />
+                    <span className="toggle__track" />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      sectionContent = <p className="truth-section__body">Placeholder summary</p>;
+    }
+
+    content = <section className="truth-section">{sectionContent}</section>;
+  }
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -206,383 +586,7 @@ const AppShell = () => {
                 ) : null}
               </div>
             </section>
-
-            {(() => {
-              if (activePrimaryId === "sales" && activeSecondaryId === "trends") {
-                return (
-                  <SalesView
-                    activeSecondaryId={activeSecondaryId ?? ""}
-                    activeTime={activeTime}
-                  />
-                );
-              }
-
-              if (
-                activePrimaryId === "expenses" &&
-                ["vendors", "invoices"].includes(activeSecondaryId ?? "")
-              ) {
-                return (
-                  <ExpensesView
-                    activeSecondaryId={activeSecondaryId ?? ""}
-                    activeTime={activeTime}
-                  />
-                );
-              }
-
-              return activePrimaryId === "financials" ? (
-                <FinancialsView
-                  activeSecondaryId={activeSecondaryId}
-                  activeTime={activeTime}
-                  financialsTime={financialsTime}
-                  cashflowView={cashflowView}
-                  setCashflowView={setCashflowView}
-                />
-              ) : (
-              <section className="truth-section">
-                {isTimeBasedView ? (
-                  <div className="truth-section__content">
-                    <div
-                      className="time-selector"
-                      role="tablist"
-                      aria-label="Time range"
-                    >
-                      {((activePrimaryId === "expenses" &&
-                        activeSecondaryId === "budgets")
-                        ? budgetsTimeOptions
-                        : timeOptions
-                      ).map(
-                        (option) => (
-                        <button
-                          key={option}
-                          type="button"
-                          className={`time-pill${
-                            activeTime === option ? " time-pill--active" : ""
-                          }`}
-                          onClick={() => setActiveTime(option)}
-                        >
-                          {option}
-                        </button>
-                        ),
-                      )}
-                    </div>
-
-                {activePrimaryId === "sales" ? (
-                  <SalesView
-                    activeSecondaryId={activeSecondaryId ?? ""}
-                    activeTime={activeTime}
-                  />
-                ) : null}
-              </div>
-            ) : isExpensesVendors ? (
-              (() => {
-                const vendorRows = [
-                  {
-                    id: "northern-provisions",
-                    name: "Northern Provisions",
-                    accountsPayable: "$48,900",
-                    email: "orders@northernprovisions.com",
-                    phone: "(202) 555-0132",
-                    paymentTerms: "Net 14",
-                    accountNumber: "•••• 4821",
-                    deliveryDays: "Mon / Wed / Fri",
-                    deliveryMinimum: "$250",
-                    orderGuide: ["Seasonal produce", "Protein cuts", "Dry goods"],
-                  },
-                  {
-                    id: "harbor-supply",
-                    name: "Harbor Supply Co.",
-                    accountsPayable: "$37,450",
-                    email: "billing@harborsupply.co",
-                    phone: "(202) 555-0194",
-                    paymentTerms: "Net 21",
-                    accountNumber: "•••• 7754",
-                    deliveryDays: "Tue / Thu",
-                    deliveryMinimum: "$300",
-                    orderGuide: ["Packaging", "Paper products", "Cleaning supplies"],
-                  },
-                  {
-                    id: "capital-farms",
-                    name: "Capital Farms",
-                    accountsPayable: "$29,120",
-                    email: "support@capitalfarms.com",
-                    phone: "(202) 555-0178",
-                    paymentTerms: "Net 30",
-                    accountNumber: "•••• 2146",
-                    deliveryDays: "Mon / Thu",
-                    deliveryMinimum: "$200",
-                    orderGuide: ["Dairy", "Eggs", "Specialty greens"],
-                  },
-                  {
-                    id: "district-utilities",
-                    name: "District Utilities",
-                    accountsPayable: "$18,760",
-                    email: "account@districtutilities.com",
-                    phone: "(202) 555-0109",
-                    paymentTerms: "Net 15",
-                    accountNumber: "•••• 0913",
-                    deliveryDays: "Monthly",
-                    deliveryMinimum: "$0",
-                    orderGuide: ["Electric", "Water", "Gas"],
-                  },
-                ];
-
-                {activePrimaryId === "expenses" ? (
-                  <ExpensesView
-                    activeSecondaryId={activeSecondaryId ?? ""}
-                    activeTime={activeTime}
-                  />
-                ) : null}
-              </div>
-            ) : isPresence ? (
-              <OnlineView activeSecondaryId={activeSecondaryId} />
-            ) : isReporting ? (
-              <ReportingView
-                activeSecondaryId={activeSecondaryId}
-                notificationPreferences={notificationPreferences}
-                handleNotificationToggle={handleNotificationToggle}
-                handleNotificationChange={handleNotificationChange}
-              />
-            ) : isSettingsBusiness ? (
-              <div className="truth-section__content">
-                <div className="settings-section">
-                  <div className="settings-section__header">
-                    <p className="settings-section__subtitle">
-                      Core business details used across reporting and profiles.
-                    </p>
-                  </div>
-                  <div className="settings-card">
-                    <div className="settings-form">
-                      <label className="settings-field">
-                        <span className="settings-field__label">Business name</span>
-                        <input
-                          className="settings-input"
-                          type="text"
-                          placeholder="Business name"
-                        />
-                      </label>
-                      <label className="settings-field">
-                        <span className="settings-field__label">Address</span>
-                        <input
-                          className="settings-input"
-                          type="text"
-                          placeholder="Street address"
-                        />
-                      </label>
-                      <div className="settings-grid">
-                        <label className="settings-field">
-                          <span className="settings-field__label">Zip code</span>
-                          <input
-                            className="settings-input"
-                            type="text"
-                            placeholder="Zip code"
-                          />
-                        </label>
-                        <label className="settings-field">
-                          <span className="settings-field__label">Website URL</span>
-                          <input
-                            className="settings-input"
-                            type="text"
-                            placeholder="https://example.com"
-                          />
-                        </label>
-                      </div>
-                      <label className="settings-field">
-                        <span className="settings-field__label">Time zone</span>
-                        <select className="settings-input">
-                          <option>Eastern (ET)</option>
-                          <option>Central (CT)</option>
-                          <option>Mountain (MT)</option>
-                          <option>Pacific (PT)</option>
-                        </select>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : isSettingsOperations ? (
-              <div className="truth-section__content">
-                <div className="settings-section">
-                  <div className="settings-section__header">
-                    <p className="settings-section__subtitle">
-                      Day-to-day defaults used by ordering and operations.
-                    </p>
-                  </div>
-                  <div className="settings-card">
-                    <div className="settings-form">
-                      <label className="settings-field">
-                        <span className="settings-field__label">
-                          Default delivery days
-                        </span>
-                        <input
-                          className="settings-input"
-                          type="text"
-                          placeholder="e.g. Mon / Wed / Fri"
-                        />
-                      </label>
-                      <label className="settings-field">
-                        <span className="settings-field__label">
-                          Default delivery minimum
-                        </span>
-                        <input
-                          className="settings-input"
-                          type="text"
-                          placeholder="$0.00"
-                        />
-                      </label>
-                      <label className="settings-field">
-                        <span className="settings-field__label">Cash deposit day(s)</span>
-                        <input
-                          className="settings-input"
-                          type="text"
-                          placeholder="e.g. Tue / Thu"
-                        />
-                      </label>
-                      <div className="settings-toggle-row">
-                        <span className="settings-field__label">Tax handling</span>
-                        <label className="toggle">
-                          <input type="checkbox" />
-                          <span className="toggle__track" />
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : isSettingsFinancialAssumptions ? (
-              <div className="truth-section__content">
-                <div className="settings-section">
-                  <div className="settings-section__header">
-                    <p className="settings-section__subtitle">
-                      Default assumptions applied to forecasts and summaries.
-                    </p>
-                  </div>
-                  <div className="settings-card">
-                    <div className="settings-form">
-                      <label className="settings-field">
-                        <span className="settings-field__label">Sales tax %</span>
-                        <input
-                          className="settings-input"
-                          type="text"
-                          placeholder="e.g. 8%"
-                        />
-                      </label>
-                      <label className="settings-field">
-                        <span className="settings-field__label">Tip %</span>
-                        <input
-                          className="settings-input"
-                          type="text"
-                          placeholder="e.g. 18%"
-                        />
-                      </label>
-                      <label className="settings-field">
-                        <span className="settings-field__label">Payroll burden %</span>
-                        <input
-                          className="settings-input"
-                          type="text"
-                          placeholder="e.g. 12%"
-                        />
-                      </label>
-                      <label className="settings-field">
-                        <span className="settings-field__label">Default labor %</span>
-                        <input
-                          className="settings-input"
-                          type="text"
-                          placeholder="e.g. 30%"
-                        />
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : isSettingsAlerts ? (
-              <div className="truth-section__content">
-                <div className="settings-section">
-                  <div className="settings-section__header">
-                    <p className="settings-section__subtitle">
-                      Alert toggles and sensitivity levels for key signals.
-                    </p>
-                  </div>
-                  <div className="settings-card">
-                    <div className="settings-list" role="list">
-                      {notificationPreferences.map((notification) => (
-                        <div
-                          key={notification.id}
-                          className="settings-row"
-                          role="listitem"
-                        >
-                          <span className="settings-row__label">
-                            {notification.label}
-                          </span>
-                          <label className="toggle">
-                            <input
-                              type="checkbox"
-                              checked={notification.enabled}
-                              onChange={() => handleNotificationToggle(notification.id)}
-                            />
-                            <span className="toggle__track" />
-                          </label>
-                          <select
-                            className="settings-input settings-input--compact"
-                            value={notification.sensitivity}
-                            onChange={(event) =>
-                              handleNotificationChange(
-                                notification.id,
-                                event.target.value,
-                              )
-                            }
-                          >
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                          </select>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : isSettingsDisplay ? (
-              <div className="truth-section__content">
-                <div className="settings-section">
-                  <div className="settings-section__header">
-                    <p className="settings-section__subtitle">
-                      Display and formatting preferences for the desktop view.
-                    </p>
-                  </div>
-                  <div className="settings-card">
-                    <div className="settings-form">
-                      <label className="settings-field">
-                        <span className="settings-field__label">Currency format</span>
-                        <select className="settings-input">
-                          <option>USD ($)</option>
-                          <option>EUR (€)</option>
-                          <option>GBP (£)</option>
-                        </select>
-                      </label>
-                      <label className="settings-field">
-                        <span className="settings-field__label">Week start day</span>
-                        <select className="settings-input">
-                          <option>Mon</option>
-                          <option>Sun</option>
-                        </select>
-                      </label>
-                      <div className="settings-toggle-row">
-                        <span className="settings-field__label">Light / dark mode</span>
-                        <label className="toggle">
-                          <input type="checkbox" />
-                          <span className="toggle__track" />
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              ) : (
-                <p className="truth-section__body">Placeholder summary</p>
-              )}
-            </section>
-              );
-            })()}
+            {content}
           </div>
         </main>
       </div>
