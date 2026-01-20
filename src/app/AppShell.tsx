@@ -557,6 +557,59 @@ const AppShell = () => {
                     activeTime={activeTime}
                   />
                 ) : null}
+              </div>
+            ) : isExpensesVendors ? (
+              (() => {
+                const vendorRows = [
+                  {
+                    id: "northern-provisions",
+                    name: "Northern Provisions",
+                    accountsPayable: "$48,900",
+                    email: "orders@northernprovisions.com",
+                    phone: "(202) 555-0132",
+                    paymentTerms: "Net 14",
+                    accountNumber: "•••• 4821",
+                    deliveryDays: "Mon / Wed / Fri",
+                    deliveryMinimum: "$250",
+                    orderGuide: ["Seasonal produce", "Protein cuts", "Dry goods"],
+                  },
+                  {
+                    id: "harbor-supply",
+                    name: "Harbor Supply Co.",
+                    accountsPayable: "$37,450",
+                    email: "billing@harborsupply.co",
+                    phone: "(202) 555-0194",
+                    paymentTerms: "Net 21",
+                    accountNumber: "•••• 7754",
+                    deliveryDays: "Tue / Thu",
+                    deliveryMinimum: "$300",
+                    orderGuide: ["Packaging", "Paper products", "Cleaning supplies"],
+                  },
+                  {
+                    id: "capital-farms",
+                    name: "Capital Farms",
+                    accountsPayable: "$29,120",
+                    email: "support@capitalfarms.com",
+                    phone: "(202) 555-0178",
+                    paymentTerms: "Net 30",
+                    accountNumber: "•••• 2146",
+                    deliveryDays: "Mon / Thu",
+                    deliveryMinimum: "$200",
+                    orderGuide: ["Dairy", "Eggs", "Specialty greens"],
+                  },
+                  {
+                    id: "district-utilities",
+                    name: "District Utilities",
+                    accountsPayable: "$18,760",
+                    email: "account@districtutilities.com",
+                    phone: "(202) 555-0109",
+                    paymentTerms: "Net 15",
+                    accountNumber: "•••• 0913",
+                    deliveryDays: "Monthly",
+                    deliveryMinimum: "$0",
+                    orderGuide: ["Electric", "Water", "Gas"],
+                  },
+                ];
 
                 {activePrimaryId === "expenses" ? (
                   <ExpensesView
