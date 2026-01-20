@@ -1697,6 +1697,7 @@ const formatVariance = (value: number) => {
                   })()
                 ) : null}
               </div>
+                ) : null}
             ) : isExpensesVendors ? (
               (() => {
                 const vendorRows = [
