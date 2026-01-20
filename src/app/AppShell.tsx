@@ -224,10 +224,10 @@ const AppShell = () => {
             />
           ) : activePrimaryId === "expenses" &&
             activeSecondaryId === "breakdown" ? (
-            <ExpensesBreakdown />
+            <ExpensesBreakdown activeTime={activeTime} />
           ) : activePrimaryId === "expenses" &&
             activeSecondaryId === "budgets" ? (
-            <ExpensesBudgets />
+            <ExpensesBudgets activeTime={activeTime} />
           ) : null}
         </div>
       );
