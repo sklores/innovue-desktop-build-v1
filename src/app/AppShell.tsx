@@ -8,6 +8,7 @@ import SalesTrends from "../components/sales/SalesTrends";
 import ExpensesBreakdown from "../components/expenses/ExpensesBreakdown";
 import ExpensesInvoices from "../components/expenses/ExpensesInvoices";
 import OnlineView from "../pages/OnlineView";
+import ReportingView from "../pages/ReportingView";
 
 const timeOptions = [
   "Mon",
@@ -497,106 +498,6 @@ const AppShell = () => {
   const [proFormaCogsPercent, setProFormaCogsPercent] = useState(34);
   const [proFormaLaborPercent, setProFormaLaborPercent] = useState(30);
   const [proFormaOperatingPercent, setProFormaOperatingPercent] = useState(26);
-  const [reportPreferences, setReportPreferences] = useState([
-    {
-      id: "daily-sales-summary",
-      label: "Daily Sales Summary",
-      enabled: true,
-      frequency: "Daily",
-      recipient: "Owner",
-      email: "",
-    },
-    {
-      id: "weekly-financial-snapshot",
-      label: "Weekly Financial Snapshot",
-      enabled: true,
-      frequency: "Weekly",
-      recipient: "Managers",
-      email: "",
-    },
-    {
-      id: "monthly-pl",
-      label: "Monthly P&L",
-      enabled: false,
-      frequency: "Monthly",
-      recipient: "Owner",
-      email: "",
-    },
-    {
-      id: "weekly-reviews-digest",
-      label: "Weekly Reviews Digest",
-      enabled: true,
-      frequency: "Weekly",
-      recipient: "Managers",
-      email: "",
-    },
-    {
-      id: "weekly-traffic-summary",
-      label: "Weekly Traffic Summary",
-      enabled: false,
-      frequency: "Weekly",
-      recipient: "Custom email",
-      email: "ops@gcdc.co",
-    },
-  ]);
-  const reviews = [
-    {
-      id: "review-1",
-      source: "Yelp",
-      rating: "4.6",
-      date: "Sep 3, 2024",
-      reviewer: "Mia Torres",
-      text: "Warm service and a beautifully balanced menu. The roasted chicken was perfectly seasoned and the sides felt thoughtful without being fussy.",
-    },
-    {
-      id: "review-2",
-      source: "Google",
-      rating: "5.0",
-      date: "Aug 28, 2024",
-      reviewer: "Liam Chen",
-      text: "Stopped in after work and the staff made it effortless. Cocktails were sharp, food came quickly, and the dining room felt calm and polished.",
-    },
-    {
-      id: "review-3",
-      source: "TripAdvisor",
-      rating: "4.2",
-      date: "Aug 22, 2024",
-      reviewer: "Priya Patel",
-      text: "Everything tasted fresh and the pacing was just right. A great spot for a quiet dinner with friends when you want something consistent.",
-    },
-    {
-      id: "review-4",
-      source: "Uber Eats",
-      rating: "4.8",
-      date: "Aug 20, 2024",
-      reviewer: "Jamal Rivers",
-      text: "Delivery arrived early, packaging was tidy, and the portions were generous. The grain bowl held up perfectly and still tasted bright.",
-    },
-    {
-      id: "review-5",
-      source: "Google",
-      rating: "4.4",
-      date: "Aug 15, 2024",
-      reviewer: "Sofia Alvarez",
-      text: "Loved the atmosphere and the staff recommendations. Desserts were the highlight, especially the citrus tart with a crisp crust.",
-    },
-    {
-      id: "review-6",
-      source: "Yelp",
-      rating: "4.1",
-      date: "Aug 11, 2024",
-      reviewer: "Noah Bennett",
-      text: "Solid neighborhood staple. The seasonal salad was balanced and the service team checked in without interrupting conversation.",
-    },
-    {
-      id: "review-7",
-      source: "TripAdvisor",
-      rating: "4.7",
-      date: "Aug 5, 2024",
-      reviewer: "Harper Scott",
-      text: "We had a great lunch here. The menu was easy to navigate and everything felt thoughtfully prepared with a nice finish.",
-    },
-  ];
   const [notificationPreferences, setNotificationPreferences] = useState([
     {
       id: "sales-low",
@@ -714,14 +615,6 @@ const AppShell = () => {
     activeSecondaryId === "kpis";
   const isPresence = activePrimaryId === "presence";
   const isReporting = activePrimaryId === "reporting";
-  const isReportingEmailReports =
-    hasValidSecondary &&
-    activePrimaryId === "reporting" &&
-    activeSecondaryId === "email-reports";
-  const isReportingNotifications =
-    hasValidSecondary &&
-    activePrimaryId === "reporting" &&
-    activeSecondaryId === "notifications";
   const isSettingsBusiness =
     hasValidSecondary &&
     activePrimaryId === "settings" &&
@@ -803,26 +696,6 @@ const AppShell = () => {
 
   const handleCashflowDetailClose = () => {
     setCashflowDetail(null);
-  };
-
-  const handleReportToggle = (id: string) => {
-    setReportPreferences((prev) =>
-      prev.map((report) =>
-        report.id === id ? { ...report, enabled: !report.enabled } : report,
-      ),
-    );
-  };
-
-  const handleReportChange = (
-    id: string,
-    field: "frequency" | "recipient" | "email",
-    value: string,
-  ) => {
-    setReportPreferences((prev) =>
-      prev.map((report) =>
-        report.id === id ? { ...report, [field]: value } : report,
-      ),
-    );
   };
 
   const handleNotificationToggle = (id: string) => {
@@ -2308,103 +2181,13 @@ const AppShell = () => {
               })()
             ) : isPresence ? (
               <OnlineView activeSecondaryId={activeSecondaryId} />
-            ) : isReportingEmailReports ? (
-              <div className="truth-section__content">
-                <div className="reporting-section">
-                  <div className="reporting-section__header">
-                    <p className="reporting-section__subtitle">
-                      Configure delivery preferences for scheduled reporting.
-                    </p>
-                  </div>
-                  <div className="reporting-list" role="list">
-                    {reportPreferences.map((report) => (
-                      <div key={report.id} className="reporting-row" role="listitem">
-                        <div className="reporting-row__label">{report.label}</div>
-                        <label className="toggle">
-                          <input
-                            type="checkbox"
-                            checked={report.enabled}
-                            onChange={() => handleReportToggle(report.id)}
-                          />
-                          <span className="toggle__track" />
-                        </label>
-                        <select
-                          className="reporting-select"
-                          value={report.frequency}
-                          onChange={(event) =>
-                            handleReportChange(report.id, "frequency", event.target.value)
-                          }
-                        >
-                          <option value="Daily">Daily</option>
-                          <option value="Weekly">Weekly</option>
-                          <option value="Monthly">Monthly</option>
-                        </select>
-                        <select
-                          className="reporting-select"
-                          value={report.recipient}
-                          onChange={(event) =>
-                            handleReportChange(report.id, "recipient", event.target.value)
-                          }
-                        >
-                          <option value="Owner">Owner</option>
-                          <option value="Managers">Managers</option>
-                          <option value="Custom email">Custom email</option>
-                        </select>
-                        <input
-                          className="reporting-input"
-                          type="text"
-                          placeholder="custom@email.com"
-                          value={report.email}
-                          onChange={(event) =>
-                            handleReportChange(report.id, "email", event.target.value)
-                          }
-                          disabled={report.recipient !== "Custom email"}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ) : isReportingNotifications ? (
-              <div className="truth-section__content">
-                <div className="reporting-section">
-                  <div className="reporting-section__header">
-                    <p className="reporting-section__subtitle">
-                      Set alert sensitivity for key operating signals.
-                    </p>
-                  </div>
-                  <div className="reporting-list" role="list">
-                    {notificationPreferences.map((notification) => (
-                      <div
-                        key={notification.id}
-                        className="reporting-row reporting-row--compact"
-                        role="listitem"
-                      >
-                        <div className="reporting-row__label">{notification.label}</div>
-                        <label className="toggle">
-                          <input
-                            type="checkbox"
-                            checked={notification.enabled}
-                            onChange={() => handleNotificationToggle(notification.id)}
-                          />
-                          <span className="toggle__track" />
-                        </label>
-                        <select
-                          className="reporting-select"
-                          value={notification.sensitivity}
-                          onChange={(event) =>
-                            handleNotificationChange(notification.id, event.target.value)
-                          }
-                        >
-                          <option value="Low">Low</option>
-                          <option value="Medium">Medium</option>
-                          <option value="High">High</option>
-                        </select>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+            ) : isReporting ? (
+              <ReportingView
+                activeSecondaryId={activeSecondaryId}
+                notificationPreferences={notificationPreferences}
+                handleNotificationToggle={handleNotificationToggle}
+                handleNotificationChange={handleNotificationChange}
+              />
             ) : isSettingsBusiness ? (
               <div className="truth-section__content">
                 <div className="settings-section">
