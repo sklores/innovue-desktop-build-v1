@@ -409,6 +409,54 @@
   color: var(--text-soft);
 }
 
+.expenses-budgets {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.expenses-budgets__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.expenses-budgets__row--header {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+  border-bottom: 1px solid var(--border);
+  padding-top: 0;
+}
+
+.expenses-budgets__row--total {
+  font-weight: 600;
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+  padding-top: 14px;
+}
+
+.expenses-budgets__cell--number {
+  text-align: right;
+  color: var(--text-strong);
+}
+
+.expenses-budgets__variance--positive {
+  color: #4b7a60;
+}
+
+.expenses-budgets__variance--negative {
+  color: #c75b53;
+}
+
+.expenses-budgets__variance--neutral {
+  color: var(--text-muted);
+}
+
 .time-pill {
   padding: 6px 12px;
   border-radius: 999px;

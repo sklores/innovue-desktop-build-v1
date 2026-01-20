@@ -10,6 +10,7 @@ import SalesView from "../pages/SalesView";
 import FinancialsView from "../components/financials/FinancialsView";
 import FinancialsKpisView from "../components/financials/FinancialsKpisView";
 import ExpensesBreakdown from "../components/expenses/ExpensesBreakdown";
+import ExpensesBudgets from "../components/expenses/ExpensesBudgets";
 
 const timeOptions = [
   "Mon",
@@ -224,6 +225,9 @@ const AppShell = () => {
           ) : activePrimaryId === "expenses" &&
             activeSecondaryId === "breakdown" ? (
             <ExpensesBreakdown />
+          ) : activePrimaryId === "expenses" &&
+            activeSecondaryId === "budgets" ? (
+            <ExpensesBudgets />
           ) : null}
         </div>
       );
