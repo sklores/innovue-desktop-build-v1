@@ -1590,10 +1590,14 @@ const AppShell = () => {
                       { budget: 0, actual: 0 },
                     );
                     const totalVariance = totals.actual - totals.budget;
-                    const formatVariance = (value: number) => {
-                      if (value === 0) {
-                        return formatCurrency(0);
-                      })}
+                    const totalVariance = totals.actual - totals.budget;
+const formatVariance = (value: number) => {
+  if (value === 0) {
+    return formatCurrency(0);
+  }
+  const sign = value > 0 ? "+" : "−";
+  return `${sign}${formatCurrency(Math.abs(value))}`;
+};
                       const sign = value > 0 ? "+" : "−";
                       return `${sign}${formatCurrency(Math.abs(value))}`;
                     };
