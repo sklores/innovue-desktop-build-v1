@@ -539,6 +539,64 @@ const AppShell = () => {
       email: "ops@gcdc.co",
     },
   ]);
+  const reviews = [
+    {
+      id: "review-1",
+      source: "Yelp",
+      rating: "4.6",
+      date: "Sep 3, 2024",
+      reviewer: "Mia Torres",
+      text: "Warm service and a beautifully balanced menu. The roasted chicken was perfectly seasoned and the sides felt thoughtful without being fussy.",
+    },
+    {
+      id: "review-2",
+      source: "Google",
+      rating: "5.0",
+      date: "Aug 28, 2024",
+      reviewer: "Liam Chen",
+      text: "Stopped in after work and the staff made it effortless. Cocktails were sharp, food came quickly, and the dining room felt calm and polished.",
+    },
+    {
+      id: "review-3",
+      source: "TripAdvisor",
+      rating: "4.2",
+      date: "Aug 22, 2024",
+      reviewer: "Priya Patel",
+      text: "Everything tasted fresh and the pacing was just right. A great spot for a quiet dinner with friends when you want something consistent.",
+    },
+    {
+      id: "review-4",
+      source: "Uber Eats",
+      rating: "4.8",
+      date: "Aug 20, 2024",
+      reviewer: "Jamal Rivers",
+      text: "Delivery arrived early, packaging was tidy, and the portions were generous. The grain bowl held up perfectly and still tasted bright.",
+    },
+    {
+      id: "review-5",
+      source: "Google",
+      rating: "4.4",
+      date: "Aug 15, 2024",
+      reviewer: "Sofia Alvarez",
+      text: "Loved the atmosphere and the staff recommendations. Desserts were the highlight, especially the citrus tart with a crisp crust.",
+    },
+    {
+      id: "review-6",
+      source: "Yelp",
+      rating: "4.1",
+      date: "Aug 11, 2024",
+      reviewer: "Noah Bennett",
+      text: "Solid neighborhood staple. The seasonal salad was balanced and the service team checked in without interrupting conversation.",
+    },
+    {
+      id: "review-7",
+      source: "TripAdvisor",
+      rating: "4.7",
+      date: "Aug 5, 2024",
+      reviewer: "Harper Scott",
+      text: "We had a great lunch here. The menu was easy to navigate and everything felt thoughtfully prepared with a nice finish.",
+    },
+  ];
   const [notificationPreferences, setNotificationPreferences] = useState([
     {
       id: "sales-low",
