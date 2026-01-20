@@ -351,6 +351,64 @@
   color: var(--text-muted);
 }
 
+.expenses-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.expenses-breakdown__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px 80px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+}
+
+.expenses-breakdown__row--total {
+  background: var(--surface-raised);
+  border-color: var(--border);
+  font-weight: 500;
+}
+
+.expenses-breakdown__row--parent {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  background: var(--surface);
+}
+
+.expenses-breakdown__children {
+  margin-top: 8px;
+  padding-left: 18px;
+  border-top: 1px solid var(--border-soft);
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.expenses-breakdown__row--child {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 10px;
+  color: var(--text-muted);
+}
+
+.expenses-breakdown__amount,
+.expenses-breakdown__percent {
+  text-align: right;
+  color: var(--text-strong);
+}
+
+.expenses-breakdown__row--child .expenses-breakdown__amount,
+.expenses-breakdown__row--child .expenses-breakdown__percent {
+  color: var(--text-soft);
+}
+
 .time-pill {
   padding: 6px 12px;
   border-radius: 999px;
