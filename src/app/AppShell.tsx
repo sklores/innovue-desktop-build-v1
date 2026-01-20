@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { KeyboardEvent } from "react";
 
 import PrimaryNav from "../navigation/PrimaryNav";
 import SecondaryNav from "../navigation/SecondaryNav";
 import { primaryTabs, secondaryTabsByPrimary } from "../navigation/navConfig";
-import SalesTrends from "../components/sales/SalesTrends";
-import ExpensesBreakdown from "../components/expenses/ExpensesBreakdown";
-import ExpensesBudgets from "../components/expenses/ExpensesBudgets";
-import ExpensesInvoices from "../components/expenses/ExpensesInvoices";
+import OnlineView from "../pages/OnlineView";
+import ReportingView from "../pages/ReportingView";
+import ExpensesView from "../pages/ExpensesView";
+import SalesView from "../pages/SalesView";
 
 const timeOptions = [
   "Mon",
@@ -51,411 +50,7 @@ const expensesOverviewTotals: Record<string, string> = {
   Year: "$14,402,800",
 };
 
-const expensesCategoryMetrics: Record<string, Record<string, string>> = {
-  Mon: {
-    Labor: "$18,900",
-    COGS: "$11,400",
-    "Fixed costs": "$6,200",
-    Utilities: "$2,300",
-    Chemicals: "$1,100",
-    Linen: "$480",
-  },
-  Tue: {
-    Labor: "$19,700",
-    COGS: "$12,100",
-    "Fixed costs": "$6,300",
-    Utilities: "$2,260",
-    Chemicals: "$1,140",
-    Linen: "$490",
-  },
-  Wed: {
-    Labor: "$20,200",
-    COGS: "$12,700",
-    "Fixed costs": "$6,400",
-    Utilities: "$2,280",
-    Chemicals: "$1,160",
-    Linen: "$520",
-  },
-  Thu: {
-    Labor: "$19,900",
-    COGS: "$12,300",
-    "Fixed costs": "$6,350",
-    Utilities: "$2,240",
-    Chemicals: "$1,120",
-    Linen: "$510",
-  },
-  Fri: {
-    Labor: "$21,600",
-    COGS: "$13,500",
-    "Fixed costs": "$6,600",
-    Utilities: "$2,460",
-    Chemicals: "$1,180",
-    Linen: "$520",
-  },
-  Sat: {
-    Labor: "$14,200",
-    COGS: "$9,100",
-    "Fixed costs": "$5,100",
-    Utilities: "$1,760",
-    Chemicals: "$840",
-    Linen: "$360",
-  },
-  Sun: {
-    Labor: "$13,400",
-    COGS: "$8,600",
-    "Fixed costs": "$4,900",
-    Utilities: "$1,640",
-    Chemicals: "$810",
-    Linen: "$330",
-  },
-  Week: {
-    Labor: "$128,900",
-    COGS: "$79,700",
-    "Fixed costs": "$41,800",
-    Utilities: "$13,940",
-    Chemicals: "$6,350",
-    Linen: "$2,760",
-  },
-  Month: {
-    Labor: "$528,400",
-    COGS: "$326,300",
-    "Fixed costs": "$171,200",
-    Utilities: "$56,900",
-    Chemicals: "$26,100",
-    Linen: "$11,300",
-  },
-  Year: {
-    Labor: "$6,410,000",
-    COGS: "$3,946,000",
-    "Fixed costs": "$2,080,000",
-    Utilities: "$676,000",
-    Chemicals: "$312,000",
-    Linen: "$136,000",
-  },
-};
 
-const expensesCategoryPercentages: Record<string, Record<string, string>> = {
-  Mon: {
-    Labor: "45%",
-    COGS: "27%",
-    "Fixed costs": "15%",
-    Utilities: "5%",
-    Chemicals: "3%",
-    Linen: "1%",
-  },
-  Tue: {
-    Labor: "44%",
-    COGS: "27%",
-    "Fixed costs": "14%",
-    Utilities: "5%",
-    Chemicals: "3%",
-    Linen: "1%",
-  },
-  Wed: {
-    Labor: "44%",
-    COGS: "28%",
-    "Fixed costs": "14%",
-    Utilities: "5%",
-    Chemicals: "3%",
-    Linen: "1%",
-  },
-  Thu: {
-    Labor: "44%",
-    COGS: "27%",
-    "Fixed costs": "14%",
-    Utilities: "5%",
-    Chemicals: "3%",
-    Linen: "1%",
-  },
-  Fri: {
-    Labor: "43%",
-    COGS: "27%",
-    "Fixed costs": "13%",
-    Utilities: "5%",
-    Chemicals: "2%",
-    Linen: "1%",
-  },
-  Sat: {
-    Labor: "45%",
-    COGS: "29%",
-    "Fixed costs": "16%",
-    Utilities: "6%",
-    Chemicals: "3%",
-    Linen: "1%",
-  },
-  Sun: {
-    Labor: "46%",
-    COGS: "30%",
-    "Fixed costs": "15%",
-    Utilities: "6%",
-    Chemicals: "3%",
-    Linen: "1%",
-  },
-  Week: {
-    Labor: "45%",
-    COGS: "28%",
-    "Fixed costs": "14%",
-    Utilities: "5%",
-    Chemicals: "2%",
-    Linen: "1%",
-  },
-  Month: {
-    Labor: "45%",
-    COGS: "28%",
-    "Fixed costs": "14%",
-    Utilities: "5%",
-    Chemicals: "2%",
-    Linen: "1%",
-  },
-  Year: {
-    Labor: "44%",
-    COGS: "28%",
-    "Fixed costs": "14%",
-    Utilities: "5%",
-    Chemicals: "2%",
-    Linen: "1%",
-  },
-};
-
-const salesBreakdownMetrics: Record<string, Record<string, string>> = {
-  Mon: {
-    "In-store": "$48,200",
-    Takeout: "$31,400",
-    Delivery: "$28,100",
-    "3rd-party sales": "$12,400",
-    Tips: "$3,600",
-    "Check average": "$42.10",
-    Covers: "1,142",
-  },
-  Tue: {
-    "In-store": "$52,900",
-    Takeout: "$34,200",
-    Delivery: "$29,500",
-    "3rd-party sales": "$13,200",
-    Tips: "$3,900",
-    "Check average": "$41.80",
-    Covers: "1,208",
-  },
-  Wed: {
-    "In-store": "$56,300",
-    Takeout: "$36,900",
-    Delivery: "$31,400",
-    "3rd-party sales": "$14,100",
-    Tips: "$4,100",
-    "Check average": "$43.20",
-    Covers: "1,274",
-  },
-  Thu: {
-    "In-store": "$54,100",
-    Takeout: "$35,400",
-    Delivery: "$30,600",
-    "3rd-party sales": "$13,600",
-    Tips: "$3,800",
-    "Check average": "$42.60",
-    Covers: "1,236",
-  },
-  Fri: {
-    "In-store": "$62,800",
-    Takeout: "$40,200",
-    Delivery: "$34,900",
-    "3rd-party sales": "$16,200",
-    Tips: "$4,700",
-    "Check average": "$45.10",
-    Covers: "1,412",
-  },
-  Sat: {
-    "In-store": "$38,900",
-    Takeout: "$27,100",
-    Delivery: "$24,200",
-    "3rd-party sales": "$10,400",
-    Tips: "$2,400",
-    "Check average": "$39.70",
-    Covers: "986",
-  },
-  Sun: {
-    "In-store": "$34,500",
-    Takeout: "$24,800",
-    Delivery: "$22,600",
-    "3rd-party sales": "$9,200",
-    Tips: "$2,100",
-    "Check average": "$38.90",
-    Covers: "912",
-  },
-  Week: {
-    "In-store": "$347,700",
-    Takeout: "$229,900",
-    Delivery: "$201,300",
-    "3rd-party sales": "$95,800",
-    Tips: "$24,600",
-    "Check average": "$42.20",
-    Covers: "8,170",
-  },
-  Month: {
-    "In-store": "$1,362,400",
-    Takeout: "$936,800",
-    Delivery: "$799,300",
-    "3rd-party sales": "$372,600",
-    Tips: "$95,700",
-    "Check average": "$42.70",
-    Covers: "32,580",
-  },
-  Year: {
-    "In-store": "$16,204,000",
-    Takeout: "$11,402,000",
-    Delivery: "$9,286,000",
-    "3rd-party sales": "$4,512,000",
-    Tips: "$1,192,000",
-    "Check average": "$43.10",
-    Covers: "382,400",
-  },
-};
-
-const salesForecastBase: Record<string, number> = {
-  Mon: 124000,
-  Tue: 132500,
-  Wed: 138800,
-  Thu: 134200,
-  Fri: 152400,
-  Sat: 98000,
-  Sun: 90500,
-  Week: 870000,
-  Month: 3360000,
-  Year: 40850000,
-};
-
-const salesProductMix: Record<string, { name: string; units: number }[]> = {
-  Mon: [
-    { name: "Signature Burger", units: 84 },
-    { name: "Citrus Kale Salad", units: 66 },
-    { name: "Smoked Brisket Plate", units: 58 },
-    { name: "Truffle Fries", units: 52 },
-    { name: "Roasted Chicken", units: 48 },
-    { name: "Seasonal Veg Bowl", units: 44 },
-    { name: "Shrimp Tacos", units: 41 },
-    { name: "Mushroom Risotto", units: 36 },
-    { name: "House Lemonade", units: 32 },
-    { name: "Chocolate Tart", units: 28 },
-  ],
-  Tue: [
-    { name: "Signature Burger", units: 78 },
-    { name: "Citrus Kale Salad", units: 62 },
-    { name: "Smoked Brisket Plate", units: 55 },
-    { name: "Truffle Fries", units: 50 },
-    { name: "Roasted Chicken", units: 46 },
-    { name: "Seasonal Veg Bowl", units: 42 },
-    { name: "Shrimp Tacos", units: 38 },
-    { name: "Mushroom Risotto", units: 34 },
-    { name: "House Lemonade", units: 30 },
-    { name: "Chocolate Tart", units: 26 },
-  ],
-  Wed: [
-    { name: "Signature Burger", units: 92 },
-    { name: "Citrus Kale Salad", units: 70 },
-    { name: "Smoked Brisket Plate", units: 63 },
-    { name: "Truffle Fries", units: 58 },
-    { name: "Roasted Chicken", units: 54 },
-    { name: "Seasonal Veg Bowl", units: 49 },
-    { name: "Shrimp Tacos", units: 45 },
-    { name: "Mushroom Risotto", units: 40 },
-    { name: "House Lemonade", units: 36 },
-    { name: "Chocolate Tart", units: 31 },
-  ],
-  Thu: [
-    { name: "Signature Burger", units: 88 },
-    { name: "Citrus Kale Salad", units: 68 },
-    { name: "Smoked Brisket Plate", units: 60 },
-    { name: "Truffle Fries", units: 56 },
-    { name: "Roasted Chicken", units: 52 },
-    { name: "Seasonal Veg Bowl", units: 48 },
-    { name: "Shrimp Tacos", units: 43 },
-    { name: "Mushroom Risotto", units: 39 },
-    { name: "House Lemonade", units: 34 },
-    { name: "Chocolate Tart", units: 29 },
-  ],
-  Fri: [
-    { name: "Signature Burger", units: 104 },
-    { name: "Citrus Kale Salad", units: 82 },
-    { name: "Smoked Brisket Plate", units: 74 },
-    { name: "Truffle Fries", units: 69 },
-    { name: "Roasted Chicken", units: 62 },
-    { name: "Seasonal Veg Bowl", units: 57 },
-    { name: "Shrimp Tacos", units: 53 },
-    { name: "Mushroom Risotto", units: 47 },
-    { name: "House Lemonade", units: 41 },
-    { name: "Chocolate Tart", units: 35 },
-  ],
-  Sat: [
-    { name: "Signature Burger", units: 96 },
-    { name: "Citrus Kale Salad", units: 78 },
-    { name: "Smoked Brisket Plate", units: 68 },
-    { name: "Truffle Fries", units: 64 },
-    { name: "Roasted Chicken", units: 58 },
-    { name: "Seasonal Veg Bowl", units: 54 },
-    { name: "Shrimp Tacos", units: 49 },
-    { name: "Mushroom Risotto", units: 43 },
-    { name: "House Lemonade", units: 38 },
-    { name: "Chocolate Tart", units: 33 },
-  ],
-  Sun: [
-    { name: "Signature Burger", units: 72 },
-    { name: "Citrus Kale Salad", units: 58 },
-    { name: "Smoked Brisket Plate", units: 52 },
-    { name: "Truffle Fries", units: 48 },
-    { name: "Roasted Chicken", units: 44 },
-    { name: "Seasonal Veg Bowl", units: 40 },
-    { name: "Shrimp Tacos", units: 36 },
-    { name: "Mushroom Risotto", units: 32 },
-    { name: "House Lemonade", units: 28 },
-    { name: "Chocolate Tart", units: 24 },
-  ],
-  Week: [
-    { name: "Signature Burger", units: 620 },
-    { name: "Citrus Kale Salad", units: 480 },
-    { name: "Smoked Brisket Plate", units: 420 },
-    { name: "Truffle Fries", units: 390 },
-    { name: "Roasted Chicken", units: 340 },
-    { name: "Seasonal Veg Bowl", units: 310 },
-    { name: "Shrimp Tacos", units: 285 },
-    { name: "Mushroom Risotto", units: 240 },
-    { name: "House Lemonade", units: 210 },
-    { name: "Chocolate Tart", units: 180 },
-  ],
-  Month: [
-    { name: "Signature Burger", units: 2480 },
-    { name: "Citrus Kale Salad", units: 1940 },
-    { name: "Smoked Brisket Plate", units: 1680 },
-    { name: "Truffle Fries", units: 1540 },
-    { name: "Roasted Chicken", units: 1380 },
-    { name: "Seasonal Veg Bowl", units: 1280 },
-    { name: "Shrimp Tacos", units: 1140 },
-    { name: "Mushroom Risotto", units: 980 },
-    { name: "House Lemonade", units: 860 },
-    { name: "Chocolate Tart", units: 720 },
-  ],
-  Year: [
-    { name: "Signature Burger", units: 29800 },
-    { name: "Citrus Kale Salad", units: 23600 },
-    { name: "Smoked Brisket Plate", units: 20400 },
-    { name: "Truffle Fries", units: 18900 },
-    { name: "Roasted Chicken", units: 17200 },
-    { name: "Seasonal Veg Bowl", units: 16000 },
-    { name: "Shrimp Tacos", units: 14600 },
-    { name: "Mushroom Risotto", units: 12800 },
-    { name: "House Lemonade", units: 11200 },
-    { name: "Chocolate Tart", units: 9800 },
-  ],
-};
-
-const breakdownRows = [
-  "Total Sales",
-  "In-store",
-  "Takeout",
-  "Delivery",
-  "3rd-party sales",
-  "Tips",
-  "Check average",
-  "Covers",
-];
 
 const AppShell = () => {
   const primaryNavItems = useMemo(() => {
@@ -476,20 +71,8 @@ const AppShell = () => {
   const [financialsTime, setFinancialsTime] = useState(
     financialsTimeOptions[1],
   );
-  const [openVendorId, setOpenVendorId] = useState<string | null>(null);
-  const [openOrderGuideId, setOpenOrderGuideId] = useState<string | null>(null);
-  const [openTrafficId, setOpenTrafficId] = useState<string | null>(null);
-  const [openBudgetCategoryId, setOpenBudgetCategoryId] = useState<string | null>(
-    null,
-  );
   const prevPrimaryId = useRef(activePrimaryId);
-  const [forecastGrowth, setForecastGrowth] = useState(4);
-  const [forecastWeather, setForecastWeather] = useState(2);
-  const [forecastEvents, setForecastEvents] = useState(3);
-  const [forecastPricing, setForecastPricing] = useState(1);
-  const [forecastMomentum, setForecastMomentum] = useState(2);
   const [cashflowView, setCashflowView] = useState<"Month" | "Week">("Month");
-  const [profitLossOpenRows, setProfitLossOpenRows] = useState<string[]>([]);
   const [cashflowDetail, setCashflowDetail] = useState<{
     label: string;
     sales: number;
@@ -499,48 +82,6 @@ const AppShell = () => {
   const [proFormaCogsPercent, setProFormaCogsPercent] = useState(34);
   const [proFormaLaborPercent, setProFormaLaborPercent] = useState(30);
   const [proFormaOperatingPercent, setProFormaOperatingPercent] = useState(26);
-  const [reportPreferences, setReportPreferences] = useState([
-    {
-      id: "daily-sales-summary",
-      label: "Daily Sales Summary",
-      enabled: true,
-      frequency: "Daily",
-      recipient: "Owner",
-      email: "",
-    },
-    {
-      id: "weekly-financial-snapshot",
-      label: "Weekly Financial Snapshot",
-      enabled: true,
-      frequency: "Weekly",
-      recipient: "Managers",
-      email: "",
-    },
-    {
-      id: "monthly-pl",
-      label: "Monthly P&L",
-      enabled: false,
-      frequency: "Monthly",
-      recipient: "Owner",
-      email: "",
-    },
-    {
-      id: "weekly-reviews-digest",
-      label: "Weekly Reviews Digest",
-      enabled: true,
-      frequency: "Weekly",
-      recipient: "Managers",
-      email: "",
-    },
-    {
-      id: "weekly-traffic-summary",
-      label: "Weekly Traffic Summary",
-      enabled: false,
-      frequency: "Weekly",
-      recipient: "Custom email",
-      email: "ops@gcdc.co",
-    },
-  ]);
   const [notificationPreferences, setNotificationPreferences] = useState([
     {
       id: "sales-low",
@@ -608,38 +149,6 @@ const AppShell = () => {
   const hasValidSecondary =
     !!activeSecondaryId &&
     secondaryTabs.some((tab) => tab.id === activeSecondaryId);
-  const isSalesBreakdown =
-    hasValidSecondary &&
-    activePrimaryId === "sales" &&
-    activeSecondaryId === "breakdown";
-  const isSalesForecast =
-    hasValidSecondary &&
-    activePrimaryId === "sales" &&
-    activeSecondaryId === "forecast";
-  const isSalesProduct =
-    hasValidSecondary &&
-    activePrimaryId === "sales" &&
-    activeSecondaryId === "product";
-  const isSalesTrends =
-    hasValidSecondary &&
-    activePrimaryId === "sales" &&
-    activeSecondaryId === "trends";
-  const isExpensesBreakdown =
-    hasValidSecondary &&
-    activePrimaryId === "expenses" &&
-    activeSecondaryId === "breakdown";
-  const isExpensesVendors =
-    hasValidSecondary &&
-    activePrimaryId === "expenses" &&
-    activeSecondaryId === "vendors";
-  const isExpensesInvoices =
-    hasValidSecondary &&
-    activePrimaryId === "expenses" &&
-    activeSecondaryId === "invoices";
-  const isExpensesBudgets =
-    hasValidSecondary &&
-    activePrimaryId === "expenses" &&
-    activeSecondaryId === "budgets";
   const isFinancialsCashflow =
     hasValidSecondary &&
     activePrimaryId === "financials" &&
@@ -656,31 +165,8 @@ const AppShell = () => {
     hasValidSecondary &&
     activePrimaryId === "financials" &&
     activeSecondaryId === "kpis";
-  const isPresenceReviews =
-    hasValidSecondary &&
-    activePrimaryId === "presence" &&
-    activeSecondaryId === "reviews";
-  const isPresenceTraffic =
-    hasValidSecondary &&
-    activePrimaryId === "presence" &&
-    activeSecondaryId === "traffic";
-  const isPresenceSocial =
-    hasValidSecondary &&
-    activePrimaryId === "presence" &&
-    activeSecondaryId === "social";
-  const isPresenceSeo =
-    hasValidSecondary &&
-    activePrimaryId === "presence" &&
-    activeSecondaryId === "seo";
+  const isPresence = activePrimaryId === "presence";
   const isReporting = activePrimaryId === "reporting";
-  const isReportingEmailReports =
-    hasValidSecondary &&
-    activePrimaryId === "reporting" &&
-    activeSecondaryId === "email-reports";
-  const isReportingNotifications =
-    hasValidSecondary &&
-    activePrimaryId === "reporting" &&
-    activeSecondaryId === "notifications";
   const isSettingsBusiness =
     hasValidSecondary &&
     activePrimaryId === "settings" &&
@@ -702,67 +188,6 @@ const AppShell = () => {
     activePrimaryId === "settings" &&
     activeSecondaryId === "display";
 
-  const activeBreakdown =
-    salesBreakdownMetrics[activeTime] ?? salesBreakdownMetrics.Week;
-  const activeProductMix = salesProductMix[activeTime] ?? salesProductMix.Week;
-  const activeExpensesTotal =
-    expensesOverviewTotals[activeTime] ?? expensesOverviewTotals.Week;
-  const activeExpensesCategories =
-    expensesCategoryMetrics[activeTime] ?? expensesCategoryMetrics.Week;
-  const activeExpensesPercents =
-    expensesCategoryPercentages[activeTime] ?? expensesCategoryPercentages.Week;
-
-  const handleVendorToggle = (id: string) => {
-    setOpenVendorId((prev) => (prev === id ? null : id));
-    setOpenOrderGuideId(null);
-  };
-
-  const handleVendorKeyDown = (event: KeyboardEvent<HTMLDivElement>, id: string) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleVendorToggle(id);
-    }
-  };
-
-  const handleOrderGuideToggle = (id: string) => {
-    setOpenOrderGuideId((prev) => (prev === id ? null : id));
-  };
-
-  const handleOrderGuideKeyDown = (
-    event: KeyboardEvent<HTMLDivElement>,
-    id: string,
-  ) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleOrderGuideToggle(id);
-    }
-  };
-
-  const handleBudgetCategoryToggle = (id: string) => {
-    setOpenBudgetCategoryId((prev) => (prev === id ? null : id));
-  };
-
-  const handleBudgetCategoryKeyDown = (
-    event: KeyboardEvent<HTMLDivElement>,
-    id: string,
-  ) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleBudgetCategoryToggle(id);
-    }
-  };
-
-  const handleTrafficToggle = (id: string) => {
-    setOpenTrafficId((prev) => (prev === id ? null : id));
-  };
-
-  const handleTrafficKeyDown = (event: KeyboardEvent<HTMLDivElement>, id: string) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleTrafficToggle(id);
-    }
-  };
-
   const handleCashflowDetailOpen = (entry: {
     label: string;
     sales: number;
@@ -773,26 +198,6 @@ const AppShell = () => {
 
   const handleCashflowDetailClose = () => {
     setCashflowDetail(null);
-  };
-
-  const handleReportToggle = (id: string) => {
-    setReportPreferences((prev) =>
-      prev.map((report) =>
-        report.id === id ? { ...report, enabled: !report.enabled } : report,
-      ),
-    );
-  };
-
-  const handleReportChange = (
-    id: string,
-    field: "frequency" | "recipient" | "email",
-    value: string,
-  ) => {
-    setReportPreferences((prev) =>
-      prev.map((report) =>
-        report.id === id ? { ...report, [field]: value } : report,
-      ),
-    );
   };
 
   const handleNotificationToggle = (id: string) => {
@@ -813,76 +218,13 @@ const AppShell = () => {
     );
   };
 
-  const vendorRows = [
-    {
-      id: "northern-provisions",
-      name: "Northern Provisions",
-      accountsPayable: "$48,900",
-      email: "orders@northernprovisions.com",
-      phone: "(202) 555-0132",
-      paymentTerms: "Net 14",
-      accountNumber: "•••• 4821",
-      deliveryDays: "Mon / Wed / Fri",
-      deliveryMinimum: "$250",
-      orderGuide: ["Seasonal produce", "Protein cuts", "Dry goods"],
-    },
-    {
-      id: "harbor-supply",
-      name: "Harbor Supply Co.",
-      accountsPayable: "$37,450",
-      email: "billing@harborsupply.co",
-      phone: "(202) 555-0194",
-      paymentTerms: "Net 21",
-      accountNumber: "•••• 7754",
-      deliveryDays: "Tue / Thu",
-      deliveryMinimum: "$300",
-      orderGuide: ["Packaging", "Paper products", "Cleaning supplies"],
-    },
-    {
-      id: "capital-farms",
-      name: "Capital Farms",
-      accountsPayable: "$29,120",
-      email: "support@capitalfarms.com",
-      phone: "(202) 555-0178",
-      paymentTerms: "Net 30",
-      accountNumber: "•••• 2146",
-      deliveryDays: "Mon / Thu",
-      deliveryMinimum: "$200",
-      orderGuide: ["Dairy", "Eggs", "Specialty greens"],
-    },
-    {
-      id: "district-utilities",
-      name: "District Utilities",
-      accountsPayable: "$18,760",
-      email: "account@districtutilities.com",
-      phone: "(202) 555-0109",
-      paymentTerms: "Net 15",
-      accountNumber: "•••• 0913",
-      deliveryDays: "Monthly",
-      deliveryMinimum: "$0",
-      orderGuide: ["Electric", "Water", "Gas"],
-    },
-  ];
-
-  const parseCurrency = (value: string) => {
-    const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
-    return Number.isNaN(numeric) ? 0 : numeric;
-  };
-
-  const sortedVendors =
-    vendorRows.length === 0
-      ? []
-      : [...vendorRows].sort(
-          (a, b) =>
-            parseCurrency(b.accountsPayable) - parseCurrency(a.accountsPayable),
-        );
-
   const isTimeBasedView =
-    isSalesBreakdown ||
-    isSalesForecast ||
-    isSalesProduct ||
-    isExpensesBreakdown ||
-    isExpensesBudgets;
+    (hasValidSecondary &&
+      activePrimaryId === "sales" &&
+      ["breakdown", "forecast", "product"].includes(activeSecondaryId)) ||
+    (hasValidSecondary &&
+      activePrimaryId === "expenses" &&
+      ["breakdown", "budgets"].includes(activeSecondaryId));
 
   return (
     <div className="app-shell">
@@ -933,8 +275,25 @@ const AppShell = () => {
             </section>
 
             {(() => {
-              if (isSalesTrends) {
-                return <SalesTrends />;
+              if (activePrimaryId === "sales" && activeSecondaryId === "trends") {
+                return (
+                  <SalesView
+                    activeSecondaryId={activeSecondaryId ?? ""}
+                    activeTime={activeTime}
+                  />
+                );
+              }
+
+              if (
+                activePrimaryId === "expenses" &&
+                ["vendors", "invoices"].includes(activeSecondaryId ?? "")
+              ) {
+                return (
+                  <ExpensesView
+                    activeSecondaryId={activeSecondaryId ?? ""}
+                    activeTime={activeTime}
+                  />
+                );
               }
 
               return isFinancialsProForma ? (
@@ -1144,21 +503,16 @@ const AppShell = () => {
             ) : isFinancialsKpis ? (
               <section className="truth-section">
                 <div className="truth-section__content">
-                  <div
-                    className="kpi-grid"
-                    role="list"
-                    style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}
-                  >
+                  <div className="kpi-grid" role="list">
                     {[
-                      { label: "Prime Cost", value: "62%" },
-                      { label: "Sales per Labor Hour", value: "$78" },
-                      { label: "Worked vs Scheduled Hours", value: "104%" },
-                      { label: "Sales per Sq Ft", value: "$1,240" },
-                      { label: "Net Profit %", value: "18%" },
-                      { label: "Rent as % of Sales", value: "7%" },
-                      { label: "Average Weekly Sales", value: "$874,700" },
-                      { label: "Average Employee Hourly Wage", value: "$22 / hr" },
-                      { label: "EBITDA Margin", value: "22%" },
+                      { label: "Prime Cost", value: "--%" },
+                      { label: "Sales per Labor Hour", value: "$--" },
+                      { label: "Worked vs Scheduled Hours", value: "--%" },
+                      { label: "Sales per Sq Ft", value: "$--" },
+                      { label: "Net Profit %", value: "--%" },
+                      { label: "Rent as % of Sales", value: "--%" },
+                      { label: "Average Weekly Sales", value: "$--" },
+                      { label: "Average Employee Hourly Wage", value: "$-- / hr" },
                     ].map((item) => (
                       <div key={item.label} className="kpi-tile" role="listitem">
                         <p className="kpi-tile__value">{item.value}</p>
@@ -1177,7 +531,11 @@ const AppShell = () => {
                       role="tablist"
                       aria-label="Time range"
                     >
-                      {(isExpensesBudgets ? budgetsTimeOptions : timeOptions).map(
+                      {((activePrimaryId === "expenses" &&
+                        activeSecondaryId === "budgets")
+                        ? budgetsTimeOptions
+                        : timeOptions
+                      ).map(
                         (option) => (
                         <button
                           key={option}
@@ -1193,462 +551,20 @@ const AppShell = () => {
                       )}
                     </div>
 
-                {isSalesBreakdown ? (
-                  <div className="breakdown-table" role="table">
-                    {(() => {
-                      const parseCurrency = (value: string) => {
-                        const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
-                        return Number.isNaN(numeric) ? 0 : numeric;
-                      };
-                      const formatCurrency = (value: number) =>
-                        `$${Math.round(value).toLocaleString()}`;
-                      const salesKeys = [
-                        "In-store",
-                        "Takeout",
-                        "Delivery",
-                        "3rd-party sales",
-                      ];
-                      const tipValue = parseCurrency(activeBreakdown.Tips ?? "$0");
-                      const totalSales = salesKeys.reduce((sum, key) => {
-                        return sum + parseCurrency(activeBreakdown[key] ?? "$0");
-                      }, 0);
-                      const percentFor = (label: string) => {
-                        if (label === "Total Sales") return "100%";
-                        if (label === "Tips") {
-                          return totalSales
-                            ? `${Math.round((tipValue / totalSales) * 100)}%`
-                            : "0%";
-                        }
-                        if (salesKeys.includes(label)) {
-                          const value = parseCurrency(activeBreakdown[label] ?? "$0");
-                          return totalSales
-                            ? `${Math.round((value / totalSales) * 100)}%`
-                            : "0%";
-                        }
-                        return "—";
-                      };
-                      const valueFor = (label: string) => {
-                        if (label === "Total Sales") return formatCurrency(totalSales);
-                        return activeBreakdown[label];
-                      };
-
-                      return (
-                        <>
-                          <div className="breakdown-row breakdown-row--header" role="row">
-                            <span className="breakdown-row__label" role="columnheader">
-                              Category
-                            </span>
-                            <span className="breakdown-row__value" role="columnheader">
-                              Amount
-                            </span>
-                            <span className="breakdown-row__percent" role="columnheader">
-                              % of Total
-                            </span>
-                          </div>
-                          {breakdownRows.map((label) => (
-                            <div key={label} className="breakdown-row" role="row">
-                              <span className="breakdown-row__label" role="cell">
-                                {label}
-                              </span>
-                              <span className="breakdown-row__value" role="cell">
-                                {valueFor(label)}
-                              </span>
-                              <span className="breakdown-row__percent" role="cell">
-                                {percentFor(label)}
-                              </span>
-                            </div>
-                          ))}
-                        </>
-                      );
-                    })()}
-                  </div>
-                ) : null}
-
-                {isSalesForecast ? (
-                  (() => {
-                    const baseValue =
-                      salesForecastBase[activeTime] ?? salesForecastBase.Week;
-                    const totalImpact =
-                      (forecastGrowth +
-                        forecastWeather +
-                        forecastEvents +
-                        forecastPricing +
-                        forecastMomentum) /
-                      100;
-                    const projected = Math.round(baseValue * (1 + totalImpact));
-                    const formatCurrency = (value: number) =>
-                      `$${value.toLocaleString()}`;
-                    const signalDirection = (value: number) => {
-                      if (value > 1) return "signal--positive";
-                      if (value < -1) return "signal--negative";
-                      return "signal--neutral";
-                    };
-                    const signals = [
-                      {
-                        label: "Historical sales (WoW / YoY)",
-                        value: forecastGrowth,
-                      },
-                      { label: "Weather", value: forecastWeather },
-                      { label: "Local events", value: forecastEvents },
-                      { label: "Holidays", value: 0 },
-                      { label: "Price increases", value: forecastPricing },
-                      { label: "Recent trend momentum", value: forecastMomentum },
-                    ];
-
-                    return (
-                      <div className="forecast-panel">
-                        <div className="forecast-primary">
-                          <p className="metric__label">Projected Sales</p>
-                          <p className="forecast-primary__value">
-                            {formatCurrency(projected)}
-                          </p>
-                        </div>
-                        <div className="forecast-signals">
-                          {signals.map((signal) => (
-                            <div key={signal.label} className="forecast-signal">
-                              <span className="forecast-signal__label">
-                                {signal.label}
-                              </span>
-                              <span
-                                className={`forecast-signal__status ${signalDirection(
-                                  signal.value,
-                                )}`}
-                              >
-                                {signal.value > 1
-                                  ? "Positive"
-                                  : signal.value < -1
-                                    ? "Negative"
-                                    : "Neutral"}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="forecast-controls">
-                          <label className="forecast-control">
-                            <span className="forecast-control__label">
-                              Historical growth factor
-                            </span>
-                            <input
-                              type="range"
-                              min="-8"
-                              max="12"
-                              step="1"
-                              value={forecastGrowth}
-                              onChange={(event) =>
-                                setForecastGrowth(Number(event.target.value))
-                              }
-                            />
-                            <span className="forecast-control__value">
-                              {forecastGrowth}%
-                            </span>
-                          </label>
-                          <label className="forecast-control">
-                            <span className="forecast-control__label">
-                              Weather impact
-                            </span>
-                            <input
-                              type="range"
-                              min="-6"
-                              max="8"
-                              step="1"
-                              value={forecastWeather}
-                              onChange={(event) =>
-                                setForecastWeather(Number(event.target.value))
-                              }
-                            />
-                            <span className="forecast-control__value">
-                              {forecastWeather}%
-                            </span>
-                          </label>
-                          <label className="forecast-control">
-                            <span className="forecast-control__label">Event impact</span>
-                            <input
-                              type="range"
-                              min="-5"
-                              max="10"
-                              step="1"
-                              value={forecastEvents}
-                              onChange={(event) =>
-                                setForecastEvents(Number(event.target.value))
-                              }
-                            />
-                            <span className="forecast-control__value">
-                              {forecastEvents}%
-                            </span>
-                          </label>
-                          <label className="forecast-control">
-                            <span className="forecast-control__label">
-                              Price increase impact
-                            </span>
-                            <input
-                              type="range"
-                              min="-4"
-                              max="6"
-                              step="1"
-                              value={forecastPricing}
-                              onChange={(event) =>
-                                setForecastPricing(Number(event.target.value))
-                              }
-                            />
-                            <span className="forecast-control__value">
-                              {forecastPricing}%
-                            </span>
-                          </label>
-                          <label className="forecast-control">
-                            <span className="forecast-control__label">
-                              Momentum bias
-                            </span>
-                            <input
-                              type="range"
-                              min="-6"
-                              max="8"
-                              step="1"
-                              value={forecastMomentum}
-                              onChange={(event) =>
-                                setForecastMomentum(Number(event.target.value))
-                              }
-                            />
-                            <span className="forecast-control__value">
-                              {forecastMomentum}%
-                            </span>
-                          </label>
-                        </div>
-                        <p className="forecast-disclaimer">
-                          Forecasts are directional estimates based on historical
-                          performance and external signals.
-                        </p>
-                      </div>
-                    );
-                  })()
-                ) : null}
-
-                {isSalesProduct ? (
-                  (() => {
-                    const totalUnits = activeProductMix.reduce(
-                      (sum, item) => sum + item.units,
-                      0,
-                    );
-                    const topSellers = [...activeProductMix]
-                      .sort((a, b) => b.units - a.units)
-                      .slice(0, 5);
-                    const bottomSellers = [...activeProductMix]
-                      .sort((a, b) => a.units - b.units)
-                      .slice(0, 5);
-
-                    return (
-                      <div className="vendor-section">
-                        <div className="vendor-section">
-                          <p className="metric__label">Top 5 Products</p>
-                          <div className="breakdown-table" role="table">
-                            <div className="breakdown-row breakdown-row--header" role="row">
-                              <span className="breakdown-row__label" role="columnheader">
-                                Product
-                              </span>
-                              <span className="breakdown-row__value" role="columnheader">
-                                Units
-                              </span>
-                              <span className="breakdown-row__percent" role="columnheader">
-                                % of Total
-                              </span>
-                            </div>
-                            {topSellers.map((item) => {
-                              const percent = totalUnits
-                                ? Math.round((item.units / totalUnits) * 100)
-                                : 0;
-                              return (
-                                <div key={item.name} className="breakdown-row" role="row">
-                                  <span className="breakdown-row__label" role="cell">
-                                    {item.name}
-                                  </span>
-                                  <span className="breakdown-row__value" role="cell">
-                                    {item.units}
-                                  </span>
-                                  <span className="breakdown-row__percent" role="cell">
-                                    {percent}%
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                        <div className="vendor-section">
-                          <p className="metric__label">Bottom 5 Products</p>
-                          <div className="breakdown-table" role="table">
-                            <div className="breakdown-row breakdown-row--header" role="row">
-                              <span className="breakdown-row__label" role="columnheader">
-                                Product
-                              </span>
-                              <span className="breakdown-row__value" role="columnheader">
-                                Units
-                              </span>
-                              <span className="breakdown-row__percent" role="columnheader">
-                                % of Total
-                              </span>
-                            </div>
-                            {bottomSellers.map((item) => {
-                              const percent = totalUnits
-                                ? Math.round((item.units / totalUnits) * 100)
-                                : 0;
-                              return (
-                                <div key={item.name} className="breakdown-row" role="row">
-                                  <span className="breakdown-row__label" role="cell">
-                                    {item.name}
-                                  </span>
-                                  <span className="breakdown-row__value" role="cell">
-                                    {item.units}
-                                  </span>
-                                  <span className="breakdown-row__percent" role="cell">
-                                    {percent}%
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()
-                ) : null}
-
-                {isExpensesBreakdown ? (
-                  <ExpensesBreakdown
-                    total={activeExpensesTotal}
-                    categories={activeExpensesCategories}
-                    percents={activeExpensesPercents}
+                {activePrimaryId === "sales" ? (
+                  <SalesView
+                    activeSecondaryId={activeSecondaryId ?? ""}
+                    activeTime={activeTime}
                   />
                 ) : null}
 
-
-                {isExpensesBudgets && <ExpensesBudgets activeTime={activeTime} />}
-              </div>
+                {activePrimaryId === "expenses" ? (
+                  <ExpensesView
+                    activeSecondaryId={activeSecondaryId ?? ""}
+                    activeTime={activeTime}
+                  />
                 ) : null}
-            ) : isExpensesVendors ? (
-              <div className="truth-section__content">
-                <div className="breakdown-table vendor-list" role="list">
-                  {sortedVendors.map((vendor) => {
-                    const isOpen = openVendorId === vendor.id;
-                    const isOrderGuideOpen = openOrderGuideId === vendor.id;
-                    return (
-                      <div key={vendor.id} role="listitem">
-                        <div
-                          className={`breakdown-row vendor-row${
-                            isOpen ? " vendor-row--open" : ""
-                          }`}
-                          role="button"
-                          tabIndex={0}
-                          aria-expanded={isOpen}
-                          onClick={() => handleVendorToggle(vendor.id)}
-                          onKeyDown={(event) =>
-                            handleVendorKeyDown(event, vendor.id)
-                          }
-                        >
-                          <span className="breakdown-row__label">{vendor.name}</span>
-                          <span className="breakdown-row__value">
-                            {vendor.accountsPayable}
-                          </span>
-                        </div>
-                        <div
-                          className={`vendor-details${
-                            isOpen ? " vendor-details--open" : ""
-                          }`}
-                          aria-hidden={!isOpen}
-                        >
-                          <div className="vendor-details__grid">
-                            <div className="vendor-section vendor-section--tight">
-                              <span className="metric__label">Identity / Contact</span>
-                              <span className="vendor-title">{vendor.name}</span>
-                              <span className="breakdown-row__label">
-                                {vendor.email}
-                              </span>
-                              <span className="breakdown-row__label">
-                                {vendor.phone}
-                              </span>
-                            </div>
-                            <div className="vendor-section">
-                              <span className="metric__label">Payment</span>
-                              <div className="vendor-row__detail">
-                                <span className="breakdown-row__label">
-                                  Accounts payable
-                                </span>
-                                <span className="breakdown-row__value">
-                                  {vendor.accountsPayable}
-                                </span>
-                              </div>
-                              <div className="vendor-row__detail">
-                                <span className="breakdown-row__label">
-                                  Payment terms
-                                </span>
-                                <span className="breakdown-row__value">
-                                  {vendor.paymentTerms}
-                                </span>
-                              </div>
-                              <div className="vendor-row__detail">
-                                <span className="breakdown-row__label">
-                                  Account number
-                                </span>
-                                <span className="breakdown-row__value">
-                                  {vendor.accountNumber}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="vendor-section">
-                              <span className="metric__label">Operations</span>
-                              <div className="vendor-row__detail">
-                                <span className="breakdown-row__label">
-                                  Delivery days
-                                </span>
-                                <span className="breakdown-row__value">
-                                  {vendor.deliveryDays}
-                                </span>
-                              </div>
-                              <div className="vendor-row__detail">
-                                <span className="breakdown-row__label">
-                                  Delivery minimum
-                                </span>
-                                <span className="breakdown-row__value">
-                                  {vendor.deliveryMinimum}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="vendor-section">
-                              <div
-                                role="button"
-                                tabIndex={0}
-                                aria-expanded={isOrderGuideOpen}
-                                onClick={() => handleOrderGuideToggle(vendor.id)}
-                                onKeyDown={(event) =>
-                                  handleOrderGuideKeyDown(event, vendor.id)
-                                }
-                                className="vendor-order-toggle"
-                              >
-                                <span className="metric__label">Order guide</span>
-                              </div>
-                              <div
-                                className={`vendor-order-details${
-                                  isOrderGuideOpen
-                                    ? " vendor-order-details--open"
-                                    : ""
-                                }`}
-                                aria-hidden={!isOrderGuideOpen}
-                              >
-                                <ul className="vendor-order-list">
-                                  {vendor.orderGuide.map((item) => (
-                                    <li key={item} className="breakdown-row__label">
-                                      {item}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
               </div>
-            ) : isExpensesInvoices ? (
-              <ExpensesInvoices />
             ) : isFinancialsCashflow ? (
               (() => {
                 const cashflowMonth = "September 2024";
@@ -1970,36 +886,6 @@ const AppShell = () => {
                   salesValue > 0
                     ? Math.round((profitValue / salesValue) * 100)
                     : 0;
-                const salesBreakdown =
-                  salesBreakdownMetrics.Month ?? salesBreakdownMetrics.Week;
-                const laborTotal = parseCurrency(
-                  expensesCategoryMetrics.Month?.Labor ?? "$0",
-                );
-                const cogsTotal = parseCurrency(
-                  expensesCategoryMetrics.Month?.COGS ?? "$0",
-                );
-                const fixedCostsTotal = parseCurrency(
-                  expensesCategoryMetrics.Month?.["Fixed costs"] ?? "$0",
-                );
-                const utilitiesTotal = parseCurrency(
-                  expensesCategoryMetrics.Month?.Utilities ?? "$0",
-                );
-                const linenTotal = parseCurrency(
-                  expensesCategoryMetrics.Month?.Linen ?? "$0",
-                );
-                const chemicalsTotal = parseCurrency(
-                  expensesCategoryMetrics.Month?.Chemicals ?? "$0",
-                );
-                const operatingTotal =
-                  fixedCostsTotal + utilitiesTotal + linenTotal + chemicalsTotal;
-                const netProfitValue = salesValue - (cogsTotal + laborTotal + operatingTotal);
-                const toggleRow = (id: string) => {
-                  setProfitLossOpenRows((prev) =>
-                    prev.includes(id)
-                      ? prev.filter((rowId) => rowId !== id)
-                      : [...prev, id],
-                  );
-                };
 
                 return (
                   <div className="truth-section__content">
@@ -2024,682 +910,61 @@ const AppShell = () => {
                     <div className="breakdown-table" role="table">
                       <div className="breakdown-row breakdown-row--header" role="row">
                         <span className="breakdown-row__label" role="columnheader">
-                          GL Code
-                        </span>
-                        <span className="breakdown-row__label" role="columnheader">
                           Line item
                         </span>
                         <span className="breakdown-row__value" role="columnheader">
                           Amount
                         </span>
+                        <span className="breakdown-row__percent" role="columnheader">
+                          % of Sales
+                        </span>
                       </div>
-                      {([
-                        {
-                          id: "sales",
-                          code: "4000",
-                          label: "Total Sales",
-                          value: formatCurrency(salesValue),
-                          details: [
-                            { code: "4010", label: "In-Store Sales", value: salesBreakdown["In-store"] },
-                            { code: "4020", label: "Takeout Sales", value: salesBreakdown.Takeout },
-                            { code: "4030", label: "Delivery Sales", value: salesBreakdown.Delivery },
-                            {
-                              code: "4040",
-                              label: "3rd-Party Marketplace Sales",
-                              value: salesBreakdown["3rd-party sales"],
-                            },
-                            { code: "4050", label: "Tips (Non-Revenue)", value: salesBreakdown.Tips },
-                          ],
-                        },
-                        {
-                          id: "cogs",
-                          code: "5000",
-                          label: "Cost of Goods Sold",
-                          value: formatCurrency(cogsTotal),
-                          details: [
-                            { code: "5010", label: "Food COGS", value: formatCurrency(cogsTotal * 0.6) },
-                            {
-                              code: "5020",
-                              label: "Beverage COGS",
-                              value: formatCurrency(cogsTotal * 0.4),
-                            },
-                          ],
-                        },
-                        {
-                          id: "labor",
-                          code: "6000",
-                          label: "Labor",
-                          value: formatCurrency(laborTotal),
-                          details: [
-                            { code: "6010", label: "FOH Labor", value: formatCurrency(laborTotal * 0.38) },
-                            { code: "6020", label: "BOH Labor", value: formatCurrency(laborTotal * 0.42) },
-                            { code: "6030", label: "Management", value: formatCurrency(laborTotal * 0.2) },
-                          ],
-                        },
-                        {
-                          id: "operating",
-                          code: "7000",
-                          label: "Operating Expenses",
-                          value: formatCurrency(operatingTotal),
-                          details: [
-                            { code: "7010", label: "Rent", value: formatCurrency(fixedCostsTotal * 0.65) },
-                            {
-                              code: "7020",
-                              label: "CAM / Fixed",
-                              value: formatCurrency(fixedCostsTotal * 0.35),
-                            },
-                            { code: "7030", label: "Utilities", value: formatCurrency(utilitiesTotal) },
-                            { code: "7040", label: "Linen", value: formatCurrency(linenTotal) },
-                            {
-                              code: "7050",
-                              label: "Chemicals & Supplies",
-                              value: formatCurrency(chemicalsTotal),
-                            },
-                          ],
-                        },
-                      ].map((row) => {
-                        const isOpen = profitLossOpenRows.includes(row.id);
-                        return (
-                          <div key={row.id}>
-                            <div
-                              className="breakdown-row"
-                              role="button"
-                              tabIndex={0}
-                              aria-expanded={isOpen}
-                              onClick={() => toggleRow(row.id)}
-                              onKeyDown={(event) => {
-                                if (event.key === "Enter" || event.key === " ") {
-                                  event.preventDefault();
-                                  toggleRow(row.id);
-                                }
-                              }}
-                            >
-                              <span className="breakdown-row__label" role="cell">
-                                {row.code}
-                              </span>
-                              <span className="breakdown-row__label" role="cell">
-                                {row.label}
-                              </span>
-                              <span className="breakdown-row__value" role="cell">
-                                {row.value}
-                              </span>
-                            </div>
-                            {isOpen
-                              ? row.details.map((detail) => (
-                                  <div key={detail.code} className="breakdown-row" role="row">
-                                    <span
-                                      className="breakdown-row__label"
-                                      role="cell"
-                                      style={{ paddingLeft: "24px" }}
-                                    >
-                                      {detail.code}
-                                    </span>
-                                    <span
-                                      className="breakdown-row__label"
-                                      role="cell"
-                                      style={{ paddingLeft: "24px" }}
-                                    >
-                                      {detail.label}
-                                    </span>
-                                    <span className="breakdown-row__value" role="cell">
-                                      {detail.value}
-                                    </span>
-                                  </div>
-                                ))
-                              : null}
-                          </div>
-                        );
-                      ))}
                       <div className="breakdown-row" role="row">
                         <span className="breakdown-row__label" role="cell">
-                          9000
-                        </span>
-                        <span className="breakdown-row__label" role="cell">
-                          Net Profit
+                          Sales
                         </span>
                         <span className="breakdown-row__value" role="cell">
-                          {formatCurrency(netProfitValue)}
+                          {formatCurrency(salesValue)}
+                        </span>
+                        <span className="breakdown-row__percent" role="cell">
+                          100%
                         </span>
                       </div>
-                  </div>
-                );
-              })()
-            ) : isPresenceReviews ? (
-              (() => {
-                const reviews = [
-                  {
-                    id: "review-1",
-                    source: "Yelp",
-                    rating: "4.6",
-                    date: "Sep 3, 2024",
-                    reviewer: "Mia Torres",
-                    text: "Warm service and a beautifully balanced menu. The roasted chicken was perfectly seasoned and the sides felt thoughtful without being fussy.",
-                  },
-                  {
-                    id: "review-2",
-                    source: "Google",
-                    rating: "5.0",
-                    date: "Aug 28, 2024",
-                    reviewer: "Liam Chen",
-                    text: "Stopped in after work and the staff made it effortless. Cocktails were sharp, food came quickly, and the dining room felt calm and polished.",
-                  },
-                  {
-                    id: "review-3",
-                    source: "TripAdvisor",
-                    rating: "4.2",
-                    date: "Aug 22, 2024",
-                    reviewer: "Priya Patel",
-                    text: "Everything tasted fresh and the pacing was just right. A great spot for a quiet dinner with friends when you want something consistent.",
-                  },
-                  {
-                    id: "review-4",
-                    source: "Uber Eats",
-                    rating: "4.8",
-                    date: "Aug 20, 2024",
-                    reviewer: "Jamal Rivers",
-                    text: "Delivery arrived early, packaging was tidy, and the portions were generous. The grain bowl held up perfectly and still tasted bright.",
-                  },
-                  {
-                    id: "review-5",
-                    source: "Google",
-                    rating: "4.4",
-                    date: "Aug 15, 2024",
-                    reviewer: "Sofia Alvarez",
-                    text: "Loved the atmosphere and the staff recommendations. Desserts were the highlight, especially the citrus tart with a crisp crust.",
-                  },
-                  {
-                    id: "review-6",
-                    source: "Yelp",
-                    rating: "4.1",
-                    date: "Aug 11, 2024",
-                    reviewer: "Noah Bennett",
-                    text: "Solid neighborhood staple. The seasonal salad was balanced and the service team checked in without interrupting conversation.",
-                  },
-                  {
-                    id: "review-7",
-                    source: "TripAdvisor",
-                    rating: "4.7",
-                    date: "Aug 5, 2024",
-                    reviewer: "Harper Scott",
-                    text: "We had a great lunch here. The menu was easy to navigate and everything felt thoughtfully prepared with a nice finish.",
-                  },
-                ];
-                const reviewTintMap: Record<string, string> = {
-                  google: "review-card--google",
-                  "google maps": "review-card--google",
-                  "google business profile": "review-card--google",
-                  yelp: "review-card--yelp",
-                  tripadvisor: "review-card--tripadvisor",
-                  "uber eats": "review-card--uber",
-                  "delivery apps": "review-card--delivery",
-                };
-
-                return (
-                  <div className="truth-section__content">
-                    <div className="reviews-feed" role="list">
-                      {reviews.map((review) => {
-                        const tintClass =
-                          reviewTintMap[review.source.toLowerCase()] ??
-                          "review-card--neutral";
-                        return (
-                        <article
-                          key={review.id}
-                          className={`review-card ${tintClass}`}
-                          role="listitem"
-                        >
-                          <div className="review-card__meta">
-                            <span className="review-card__source">
-                              {review.source}
-                            </span>
-                            <span className="review-card__rating">
-                              {review.rating}★
-                            </span>
-                          </div>
-                          <div className="review-card__details">
-                            <span className="review-card__date">{review.date}</span>
-                            <span className="review-card__reviewer">
-                              {review.reviewer}
-                            </span>
-                          </div>
-                          <p className="review-card__text">{review.text}</p>
-                        </article>
-                      );
-                      })}
-                    </div>
-                  </div>
-                );
-              })()
-            ) : isPresenceTraffic ? (
-              (() => {
-                const sources = [
-                  {
-                    id: "google-search",
-                    label: "Google Search",
-                    metric: "1,420 views",
-                    delta: "+6% WoW",
-                    comparison: "1,420 → 1,338",
-                    topAction: "Website visits",
-                    narrative: "Discovery continues to build week over week.",
-                  },
-                  {
-                    id: "google-maps",
-                    label: "Google Maps",
-                    metric: "980 views",
-                    delta: "+2% WoW",
-                    comparison: "980 → 962",
-                    topAction: "Directions",
-                    narrative: "Local intent remains steady with slight growth.",
-                  },
-                  {
-                    id: "yelp",
-                    label: "Yelp",
-                    metric: "412 views",
-                    delta: "−3% WoW",
-                    comparison: "412 → 425",
-                    topAction: "Calls",
-                    narrative: "Softer demand this week but still engaged.",
-                  },
-                  {
-                    id: "tripadvisor",
-                    label: "TripAdvisor",
-                    metric: "368 views",
-                    delta: "+4% WoW",
-                    comparison: "368 → 353",
-                    topAction: "Menu views",
-                    narrative: "Travel discovery is trending upward.",
-                  },
-                  {
-                    id: "delivery-apps",
-                    label: "Delivery Apps",
-                    metric: "1,106 views",
-                    delta: "−1% WoW",
-                    comparison: "1,106 → 1,118",
-                    topAction: "Add to cart",
-                    narrative: "Digital ordering remains consistent overall.",
-                  },
-                ];
-
-                return (
-                  <div className="truth-section__content">
-                    <div className="traffic-accordion" role="list">
-                      {sources.map((source) => {
-                        const isOpen = openTrafficId === source.id;
-                        return (
-                          <div key={source.id} className="traffic-accordion__item">
-                            <div
-                              className="traffic-accordion__row"
-                              role="button"
-                              tabIndex={0}
-                              aria-expanded={isOpen}
-                              onClick={() => handleTrafficToggle(source.id)}
-                              onKeyDown={(event) =>
-                                handleTrafficKeyDown(event, source.id)
-                              }
-                            >
-                              <span className="traffic-accordion__label">
-                                {source.label}
-                              </span>
-                              <span className="traffic-accordion__metric">
-                                {source.metric}
-                              </span>
-                              <span className="traffic-accordion__delta">
-                                {source.delta}
-                              </span>
-                              <span className="traffic-accordion__chevron" aria-hidden="true">
-                                {isOpen ? "⌃" : "⌄"}
-                              </span>
-                            </div>
-                            <div
-                              className={`traffic-accordion__panel${
-                                isOpen ? " traffic-accordion__panel--open" : ""
-                              }`}
-                              aria-hidden={!isOpen}
-                            >
-                              <div className="traffic-accordion__details">
-                                <div className="traffic-accordion__detail">
-                                  <span className="traffic-accordion__detail-label">
-                                    Last 7 days vs prior 7 days
-                                  </span>
-                                  <span className="traffic-accordion__detail-value">
-                                    {source.comparison}
-                                  </span>
-                                </div>
-                                <div className="traffic-accordion__detail">
-                                  <span className="traffic-accordion__detail-label">
-                                    Top action
-                                  </span>
-                                  <span className="traffic-accordion__detail-value">
-                                    {source.topAction}
-                                  </span>
-                                </div>
-                                <p className="traffic-accordion__narrative">
-                                  {source.narrative}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })()
-            ) : isPresenceSocial ? (
-              (() => {
-                const feedItems = [
-                  {
-                    id: "social-1",
-                    platform: "Instagram",
-                    type: "post",
-                    timestamp: "Today · 9:40 AM",
-                    postType: "Reel",
-                    caption:
-                      "Morning service highlight with the seasonal breakfast board and a quick chef walkthrough of the prep line.",
-                    likes: 482,
-                    comments: 36,
-                    views: 4200,
-                  },
-                  {
-                    id: "social-2",
-                    platform: "TikTok",
-                    type: "highlight",
-                    timestamp: "Today · 8:10 AM",
-                    message: "Reel performing above average for the week.",
-                  },
-                  {
-                    id: "social-3",
-                    platform: "Facebook",
-                    type: "post",
-                    timestamp: "Yesterday · 6:12 PM",
-                    postType: "Photo",
-                    caption:
-                      "Golden hour on the patio. Thank you for another full-house evening and the warm reviews.",
-                    likes: 214,
-                    comments: 18,
-                    views: 0,
-                  },
-                  {
-                    id: "social-4",
-                    platform: "Google Business Profile",
-                    type: "signal",
-                    timestamp: "Yesterday · 10:05 AM",
-                    message: "Engagement down vs last month.",
-                  },
-                  {
-                    id: "social-5",
-                    platform: "X",
-                    type: "post",
-                    timestamp: "Sep 12 · 3:20 PM",
-                    postType: "Text",
-                    caption:
-                      "Chef’s tasting menu returns this weekend. Limited bar seats available for walk-ins.",
-                    likes: 96,
-                    comments: 12,
-                    views: 820,
-                  },
-                  {
-                    id: "social-6",
-                    platform: "TikTok",
-                    type: "post",
-                    timestamp: "Sep 11 · 5:04 PM",
-                    postType: "Video",
-                    caption:
-                      "Behind-the-scenes of the pastry team plating tonight’s dessert trio.",
-                    likes: 318,
-                    comments: 22,
-                    views: 3100,
-                  },
-                  {
-                    id: "social-7",
-                    platform: "Instagram",
-                    type: "signal",
-                    timestamp: "Sep 10 · 9:00 AM",
-                    message: "New platform activity detected.",
-                  },
-                ];
-                const socialTintMap: Record<string, string> = {
-                  instagram: "social-card--instagram",
-                  tiktok: "social-card--tiktok",
-                  facebook: "social-card--facebook",
-                  "google business profile": "social-card--google",
-                  x: "social-card--x",
-                };
-
-                return (
-                  <div className="truth-section__content">
-                    <div className="social-feed" role="list">
-                      {feedItems.map((item) => {
-                        const tintClass =
-                          socialTintMap[item.platform.toLowerCase()] ??
-                          "social-card--neutral";
-                        return (
-                        <article
-                          key={item.id}
-                          className={`social-card ${tintClass}`}
-                          role="listitem"
-                        >
-                          <div className="social-card__header">
-                            <span className="social-card__platform">
-                              {item.platform}
-                            </span>
-                            <span className="social-card__timestamp">
-                              {item.timestamp}
-                            </span>
-                          </div>
-                          {item.type === "post" ? (
-                            <>
-                              <span className="social-card__type">
-                                {item.postType}
-                              </span>
-                              <p className="social-card__caption">{item.caption}</p>
-                              <div className="social-card__engagement">
-                                <span>Likes {item.likes}</span>
-                                <span>Comments {item.comments}</span>
-                                {item.views ? <span>Views {item.views}</span> : null}
-                              </div>
-                            </>
-                          ) : (
-                            <p className="social-card__message">{item.message}</p>
-                          )}
-                        </article>
-                      );
-                      })}
-                    </div>
-                  </div>
-                );
-              })()
-            ) : isPresenceSeo ? (
-              (() => {
-                const visibilityStats = [
-                  { label: "Indexed pages", value: "128" },
-                  { label: "Local search visibility", value: "Up" },
-                  { label: "Estimated monthly impressions", value: "48,200" },
-                  { label: "Estimated monthly clicks", value: "3,740" },
-                ];
-                const topQueries = [
-                  { query: "seasonal tasting menu", impressions: "9,200" },
-                  { query: "restaurant near union market", impressions: "8,150" },
-                  { query: "brunch in northeast dc", impressions: "6,980" },
-                  { query: "private dining dc", impressions: "5,440" },
-                  { query: "local dinner reservations", impressions: "4,860" },
-                ];
-                const topPages = [
-                  { page: "Home", traffic: "1,820" },
-                  { page: "Menu", traffic: "1,410" },
-                  { page: "Hours & Location", traffic: "1,060" },
-                  { page: "Private Dining", traffic: "780" },
-                  { page: "Reservations", traffic: "640" },
-                ];
-                const healthChecks = [
-                  { label: "Title tags present", status: "pass" },
-                  { label: "Meta descriptions present", status: "pass" },
-                  { label: "Local business schema detected", status: "unknown" },
-                  { label: "Sitemap detected", status: "pass" },
-                  { label: "Mobile-friendly", status: "issue" },
-                ];
-                const statusColor: Record<string, string> = {
-                  pass: "#4b7a60",
-                  unknown: "#9aa3af",
-                  issue: "#c98a56",
-                };
-
-                return (
-                  <div className="truth-section__content">
-                    <div className="vendor-section">
-                      <p className="metric__label">Visibility Summary</p>
-                      <div className="reporting-list seo-list">
-                        {visibilityStats.map((stat) => (
-                          <div key={stat.label} className="reporting-row reporting-row--simple">
-                            <div className="reporting-row__label">{stat.label}</div>
-                            <div className="reporting-row__value">{stat.value}</div>
-                          </div>
-                        ))}
+                      <div className="breakdown-row" role="row">
+                        <span className="breakdown-row__label" role="cell">
+                          Expenses
+                        </span>
+                        <span className="breakdown-row__value" role="cell">
+                          {formatCurrency(expensesValue)}
+                        </span>
+                        <span className="breakdown-row__percent" role="cell">
+                          {expensePercent}%
+                        </span>
                       </div>
-                    </div>
-                    <div className="vendor-section">
-                      <p className="metric__label">Top Queries</p>
-                      <div className="reporting-list seo-list">
-                        {topQueries.map((item) => (
-                          <div key={item.query} className="reporting-row reporting-row--simple">
-                            <div className="reporting-row__label">{item.query}</div>
-                            <div className="reporting-row__value">
-                              {item.impressions}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="vendor-section">
-                      <p className="metric__label">Top Landing Pages</p>
-                      <div className="reporting-list seo-list">
-                        {topPages.map((item) => (
-                          <div key={item.page} className="reporting-row reporting-row--simple">
-                            <div className="reporting-row__label">{item.page}</div>
-                            <div className="reporting-row__value">{item.traffic}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="vendor-section">
-                      <p className="metric__label">SEO Health Checks</p>
-                      <div className="reporting-list seo-list">
-                        {healthChecks.map((item) => (
-                          <div key={item.label} className="reporting-row reporting-row--simple">
-                            <div className="reporting-row__label">{item.label}</div>
-                            <div
-                              className="reporting-row__value"
-                              style={{ color: statusColor[item.status] }}
-                            >
-                              {item.status === "pass"
-                                ? "✔"
-                                : item.status === "issue"
-                                  ? "⚠"
-                                  : "—"}
-                            </div>
-                          </div>
-                        ))}
+                      <div className="breakdown-row" role="row">
+                        <span className="breakdown-row__label" role="cell">
+                          Profit
+                        </span>
+                        <span className="breakdown-row__value" role="cell">
+                          {formatCurrency(profitValue)}
+                        </span>
+                        <span className="breakdown-row__percent" role="cell">
+                          {profitPercent}%
+                        </span>
                       </div>
                     </div>
                   </div>
                 );
               })()
-            ) : isReportingEmailReports ? (
-              <div className="truth-section__content">
-                <div className="reporting-section">
-                  <div className="reporting-section__header">
-                    <p className="reporting-section__subtitle">
-                      Configure delivery preferences for scheduled reporting.
-                    </p>
-                  </div>
-                  <div className="reporting-list" role="list">
-                    {reportPreferences.map((report) => (
-                      <div key={report.id} className="reporting-row" role="listitem">
-                        <div className="reporting-row__label">{report.label}</div>
-                        <label className="toggle">
-                          <input
-                            type="checkbox"
-                            checked={report.enabled}
-                            onChange={() => handleReportToggle(report.id)}
-                          />
-                          <span className="toggle__track" />
-                        </label>
-                        <select
-                          className="reporting-select"
-                          value={report.frequency}
-                          onChange={(event) =>
-                            handleReportChange(report.id, "frequency", event.target.value)
-                          }
-                        >
-                          <option value="Daily">Daily</option>
-                          <option value="Weekly">Weekly</option>
-                          <option value="Monthly">Monthly</option>
-                        </select>
-                        <select
-                          className="reporting-select"
-                          value={report.recipient}
-                          onChange={(event) =>
-                            handleReportChange(report.id, "recipient", event.target.value)
-                          }
-                        >
-                          <option value="Owner">Owner</option>
-                          <option value="Managers">Managers</option>
-                          <option value="Custom email">Custom email</option>
-                        </select>
-                        <input
-                          className="reporting-input"
-                          type="text"
-                          placeholder="custom@email.com"
-                          value={report.email}
-                          onChange={(event) =>
-                            handleReportChange(report.id, "email", event.target.value)
-                          }
-                          disabled={report.recipient !== "Custom email"}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ) : isReportingNotifications ? (
-              <div className="truth-section__content">
-                <div className="reporting-section">
-                  <div className="reporting-section__header">
-                    <p className="reporting-section__subtitle">
-                      Set alert sensitivity for key operating signals.
-                    </p>
-                  </div>
-                  <div className="reporting-list" role="list">
-                    {notificationPreferences.map((notification) => (
-                      <div
-                        key={notification.id}
-                        className="reporting-row reporting-row--compact"
-                        role="listitem"
-                      >
-                        <div className="reporting-row__label">{notification.label}</div>
-                        <label className="toggle">
-                          <input
-                            type="checkbox"
-                            checked={notification.enabled}
-                            onChange={() => handleNotificationToggle(notification.id)}
-                          />
-                          <span className="toggle__track" />
-                        </label>
-                        <select
-                          className="reporting-select"
-                          value={notification.sensitivity}
-                          onChange={(event) =>
-                            handleNotificationChange(notification.id, event.target.value)
-                          }
-                        >
-                          <option value="Low">Low</option>
-                          <option value="Medium">Medium</option>
-                          <option value="High">High</option>
-                        </select>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+            ) : isPresence ? (
+              <OnlineView activeSecondaryId={activeSecondaryId} />
+            ) : isReporting ? (
+              <ReportingView
+                activeSecondaryId={activeSecondaryId}
+                notificationPreferences={notificationPreferences}
+                handleNotificationToggle={handleNotificationToggle}
+                handleNotificationChange={handleNotificationChange}
+              />
             ) : isSettingsBusiness ? (
               <div className="truth-section__content">
                 <div className="settings-section">
@@ -2941,7 +1206,6 @@ const AppShell = () => {
             </section>
               );
             })()}
-          </div>
           </div>
         </main>
       </div>
