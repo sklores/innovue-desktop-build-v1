@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import SalesTrends from "../components/sales/SalesTrends";
+import SalesProductTrends from "../components/sales/SalesProductTrends";
 
 const salesBreakdownMetrics: Record<string, Record<string, string>> = {
   Mon: {
@@ -570,6 +571,7 @@ const SalesView = ({ activeSecondaryId, activeTime }: SalesViewProps) => {
                   })}
                 </div>
               </div>
+              <SalesProductTrends activeTime={activeTime} />
             </div>
           );
         })()}
