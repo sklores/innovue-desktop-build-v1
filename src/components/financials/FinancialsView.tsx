@@ -138,6 +138,26 @@ const kpiItems = [
   { label: "Average Employee Hourly Wage", value: "$-- / hr" },
 ];
 
+const salesGlOptions = ["4000", "4010", "4020", "4030"];
+const expenseGlOptions = ["5000", "5100", "5110", "5200", "5300"];
+
+const salesGlRows = [
+  { id: "sales-instore", label: "In-Store Sales", amount: "$2,184,000", gl: "4000" },
+  { id: "sales-takeout", label: "Takeout Sales", amount: "$846,000", gl: "4010" },
+  { id: "sales-delivery", label: "Delivery Sales", amount: "$312,000", gl: "4020" },
+  { id: "sales-third-party", label: "3rd-Party Sales", amount: "$168,000", gl: "4030" },
+];
+
+const expenseGlRows = [
+  { id: "expense-labor", label: "Labor", amount: "$1,069,200", gl: "5000" },
+  { id: "expense-food", label: "Food COGS", amount: "$642,300", gl: "5100" },
+  { id: "expense-beverage", label: "Beverage COGS", amount: "$319,500", gl: "5110" },
+  { id: "expense-linen", label: "Linen", amount: "$108,500", gl: "5200" },
+  { id: "expense-utilities", label: "Utilities", amount: "$276,900", gl: "5300" },
+  { id: "expense-chemicals", label: "Chemicals", amount: "$145,500", gl: "5200" },
+  { id: "expense-fixed", label: "Fixed Costs", amount: "$560,700", gl: "5300" },
+];
+
 const formatCurrency = (value: number) => `$${Math.round(value).toLocaleString()}`;
 const formatCompact = (value: number) => `$${(value / 1000).toFixed(1)}k`;
 const formatMargin = (value: number) => `${Math.round(value * 100)}%`;
@@ -171,6 +191,17 @@ const FinancialsView = ({
   const [proFormaLaborPercent, setProFormaLaborPercent] = useState(30);
   const [proFormaOperatingPercent, setProFormaOperatingPercent] = useState(26);
   const [selectedFinancialsTime, setSelectedFinancialsTime] = useState(financialsTime);
+  const [expandedProfitLossRows, setExpandedProfitLossRows] = useState<string[]>([]);
+  const [glSelections, setGlSelections] = useState<Record<string, string>>(() => {
+    const selections: Record<string, string> = {};
+    salesGlRows.forEach((row) => {
+      selections[row.id] = row.gl;
+    });
+    expenseGlRows.forEach((row) => {
+      selections[row.id] = row.gl;
+    });
+    return selections;
+  });
 
   useEffect(() => {
     setSelectedFinancialsTime(financialsTime);
@@ -415,6 +446,16 @@ const FinancialsView = ({
       salesValue > 0 ? Math.round((expensesValue / salesValue) * 100) : 0;
     const profitPercent =
       salesValue > 0 ? Math.round((profitValue / salesValue) * 100) : 0;
+    const toggleProfitLossRow = (id: string) => {
+      setExpandedProfitLossRows((prev) =>
+        prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id],
+      );
+    };
+    const handleGlChange = (id: string, value: string) => {
+      setGlSelections((prev) => ({ ...prev, [id]: value }));
+    };
+    const isSalesExpanded = expandedProfitLossRows.includes("sales");
+    const isExpensesExpanded = expandedProfitLossRows.includes("expenses");
 
     return (
       <div className="truth-section__content">
@@ -469,6 +510,113 @@ const FinancialsView = ({
           <div className="breakdown-row" role="row">
             <span className="breakdown-row__label" role="cell">
               Profit
+            </span>
+            <span className="breakdown-row__value" role="cell">
+              {formatCurrency(profitValue)}
+            </span>
+            <span className="breakdown-row__percent" role="cell">
+              {profitPercent}%
+            </span>
+          </div>
+        </div>
+        <div className="breakdown-table" role="table">
+          <button
+            type="button"
+            className="breakdown-row expenses-breakdown__row--parent"
+            role="row"
+            onClick={() => toggleProfitLossRow("sales")}
+          >
+            <span className="breakdown-row__label" role="cell">
+              Sales
+            </span>
+            <span className="breakdown-row__value" role="cell">
+              {formatCurrency(salesValue)}
+            </span>
+            <span className="breakdown-row__percent" role="cell">
+              {profitPercent}%
+            </span>
+          </button>
+          {isSalesExpanded ? (
+            <div className="expenses-breakdown__children">
+              {salesGlRows.map((row) => (
+                <div
+                  key={row.id}
+                  className="breakdown-row expenses-breakdown__row--child"
+                  role="row"
+                >
+                  <span className="breakdown-row__label" role="cell">
+                    {row.label}
+                  </span>
+                  <span className="breakdown-row__value" role="cell">
+                    {row.amount}
+                  </span>
+                  <span className="breakdown-row__percent" role="cell">
+                    <select
+                      className="settings-input settings-input--compact"
+                      value={glSelections[row.id]}
+                      onChange={(event) => handleGlChange(row.id, event.target.value)}
+                    >
+                      {salesGlOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          <button
+            type="button"
+            className="breakdown-row expenses-breakdown__row--parent"
+            role="row"
+            onClick={() => toggleProfitLossRow("expenses")}
+          >
+            <span className="breakdown-row__label" role="cell">
+              Expenses
+            </span>
+            <span className="breakdown-row__value" role="cell">
+              {formatCurrency(expensesValue)}
+            </span>
+            <span className="breakdown-row__percent" role="cell">
+              {expensePercent}%
+            </span>
+          </button>
+          {isExpensesExpanded ? (
+            <div className="expenses-breakdown__children">
+              {expenseGlRows.map((row) => (
+                <div
+                  key={row.id}
+                  className="breakdown-row expenses-breakdown__row--child"
+                  role="row"
+                >
+                  <span className="breakdown-row__label" role="cell">
+                    {row.label}
+                  </span>
+                  <span className="breakdown-row__value" role="cell">
+                    {row.amount}
+                  </span>
+                  <span className="breakdown-row__percent" role="cell">
+                    <select
+                      className="settings-input settings-input--compact"
+                      value={glSelections[row.id]}
+                      onChange={(event) => handleGlChange(row.id, event.target.value)}
+                    >
+                      {expenseGlOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          <div className="breakdown-row" role="row">
+            <span className="breakdown-row__label" role="cell">
+              Net Profit
             </span>
             <span className="breakdown-row__value" role="cell">
               {formatCurrency(profitValue)}
