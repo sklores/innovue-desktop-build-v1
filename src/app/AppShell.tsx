@@ -1693,6 +1693,7 @@ const AppShell = () => {
                   })()
                 ) : null}
               </div>
+                ) : null}
             ) : isExpensesVendors ? (
               (() => {
                 const vendorRows = [
@@ -2401,7 +2402,6 @@ const AppShell = () => {
                           {formatCurrency(netProfitValue)}
                         </span>
                       </div>
-                    )}
                   </div>
                 );
               })()
@@ -3182,6 +3182,7 @@ const AppShell = () => {
             </section>
               );
             })()}
+          </div>
           </div>
         </main>
       </div>
