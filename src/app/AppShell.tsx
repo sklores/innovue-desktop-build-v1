@@ -8,6 +8,7 @@ import ReportingView from "../pages/ReportingView";
 import ExpensesView from "../pages/ExpensesView";
 import SalesView from "../pages/SalesView";
 import FinancialsView from "../components/financials/FinancialsView";
+import FinancialsKpisView from "../components/financials/FinancialsKpisView";
 
 const timeOptions = [
   "Mon",
@@ -180,6 +181,8 @@ const AppShell = () => {
         activeTime={activeTime}
       />
     );
+  } else if (activePrimaryId === "financials" && activeSecondaryId === "kpis") {
+    content = <FinancialsKpisView />;
   } else if (activePrimaryId === "financials") {
     content = (
       <FinancialsView
