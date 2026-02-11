@@ -724,10 +724,11 @@ interface ExpensesBreakdownProps {
   total: string;
   categories: Record<string, string>;
   percents: Record<string, string>;
-  activeTime?: string;
 }
 
-const ExpensesBreakdown = ({ activeTime = "Week" }: ExpensesBreakdownProps) => {
+const ExpensesBreakdown = ({
+  activeTime = "Week",
+}: ExpensesBreakdownProps & { activeTime?: string }) => {
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const timeKey = (activeTime as TimeKey) in breakdownByTime ? (activeTime as TimeKey) : "Week";
 
