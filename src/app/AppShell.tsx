@@ -12,6 +12,14 @@ import FinancialsKpisView from "../components/financials/FinancialsKpisView";
 import ExpensesBreakdown from "../components/expenses/ExpensesBreakdown";
 import ExpensesBudgets from "../components/expenses/ExpensesBudgets";
 
+type PrimaryTabKey =
+  | "sales"
+  | "expenses"
+  | "financials"
+  | "presence"
+  | "settings"
+  | "reporting";
+
 const timeOptions = [
   "Mon",
   "Tue",
@@ -27,7 +35,23 @@ const timeOptions = [
 
 const budgetsTimeOptions = ["Week", "Month", "Quarter", "Year"];
 
+const isPrimaryTab = (value: string): value is PrimaryTabKey =>
+  ["sales", "expenses", "financials", "presence", "settings", "reporting"].includes(
+    value,
+  );
+
 const AppShell = () => {
+  const secondaryTabs: Record<
+    PrimaryTabKey,
+    { id: string; label: string }[]
+  > = {
+    sales: secondaryTabsByPrimary.sales,
+    expenses: secondaryTabsByPrimary.expenses,
+    financials: secondaryTabsByPrimary.financials,
+    presence: secondaryTabsByPrimary.presence,
+    settings: secondaryTabsByPrimary.settings,
+    reporting: secondaryTabsByPrimary.reporting,
+  };
   const primaryNavItems = useMemo(() => {
     const settingsTab = primaryTabs.find((tab) => tab.id === "settings");
     const baseTabs = primaryTabs.filter((tab) => tab.id !== "settings");
@@ -38,13 +62,13 @@ const AppShell = () => {
     ];
   }, []);
 
-  const [activePrimaryId, setActivePrimaryId] = useState(primaryNavItems[0].id);
+  const [activePrimaryTab, setActivePrimaryTab] = useState<PrimaryTabKey>("sales");
   const [activeSecondaryId, setActiveSecondaryId] = useState<string | null>(
-    secondaryTabsByPrimary[primaryNavItems[0].id]?.[0]?.id ?? null,
+    secondaryTabs.sales[0]?.id ?? null,
   );
   const [activeTime, setActiveTime] = useState(timeOptions[7]);
   const [financialsTime] = useState("Month");
-  const prevPrimaryId = useRef(activePrimaryId);
+  const prevPrimaryId = useRef(activePrimaryTab);
   const [cashflowView, setCashflowView] = useState<"Month" | "Week">("Month");
   const [notificationPreferences, setNotificationPreferences] = useState([
     {
@@ -80,60 +104,62 @@ const AppShell = () => {
   ]);
 
   const activePrimary = useMemo(() => {
-    return primaryNavItems.find((tab) => tab.id === activePrimaryId) ?? primaryNavItems[0];
-  }, [activePrimaryId, primaryNavItems]);
+    return primaryNavItems.find((tab) => tab.id === activePrimaryTab) ?? primaryNavItems[0];
+  }, [activePrimaryTab, primaryNavItems]);
 
-  const secondaryTabs = useMemo(() => {
-    return secondaryTabsByPrimary[activePrimaryId] ?? [];
-  }, [activePrimaryId]);
+  const activeSecondaryTabs = useMemo(() => {
+    return secondaryTabs[activePrimaryTab] ?? [];
+  }, [activePrimaryTab, secondaryTabs]);
 
   useEffect(() => {
     // Secondary tab is intentionally reset on primary change to prevent cross-primary leakage.
-    const validSecondaryIds = secondaryTabs.map((tab) => tab.id);
-    if (secondaryTabs.length === 0) {
+    const validSecondaryIds = activeSecondaryTabs.map(
+      (tab: { id: string; label: string }) => tab.id,
+    );
+    if (activeSecondaryTabs.length === 0) {
       setActiveSecondaryId(null);
       return;
     }
     if (!activeSecondaryId || !validSecondaryIds.includes(activeSecondaryId)) {
-      setActiveSecondaryId(secondaryTabs[0].id);
+      setActiveSecondaryId(activeSecondaryTabs[0].id);
     }
-  }, [activePrimaryId, secondaryTabs, activeSecondaryId]);
+  }, [activePrimaryTab, activeSecondaryTabs, activeSecondaryId]);
 
   useEffect(() => {
-    if (prevPrimaryId.current === "expenses" && activePrimaryId !== "expenses") {
-      setActiveSecondaryId(secondaryTabs[0]?.id ?? null);
+    if (prevPrimaryId.current === "expenses" && activePrimaryTab !== "expenses") {
+      setActiveSecondaryId(activeSecondaryTabs[0]?.id ?? null);
     }
-    prevPrimaryId.current = activePrimaryId;
-  }, [activePrimaryId, secondaryTabs]);
+    prevPrimaryId.current = activePrimaryTab;
+  }, [activePrimaryTab, activeSecondaryTabs]);
 
   useEffect(() => {
     setActiveTime(timeOptions[7]);
-  }, [activePrimaryId, activeSecondaryId]);
+  }, [activePrimaryTab, activeSecondaryId]);
 
   const hasValidSecondary =
     !!activeSecondaryId &&
-    secondaryTabs.some((tab) => tab.id === activeSecondaryId);
-  const isPresence = activePrimaryId === "presence";
-  const isReporting = activePrimaryId === "reporting";
+    activeSecondaryTabs.some((tab: { id: string; label: string }) => tab.id === activeSecondaryId);
+  const isPresence = activePrimaryTab === "presence";
+  const isReporting = activePrimaryTab === "reporting";
   const isSettingsBusiness =
     hasValidSecondary &&
-    activePrimaryId === "settings" &&
+    activePrimaryTab === "settings" &&
     activeSecondaryId === "business";
   const isSettingsOperations =
     hasValidSecondary &&
-    activePrimaryId === "settings" &&
+    activePrimaryTab === "settings" &&
     activeSecondaryId === "operations";
   const isSettingsFinancialAssumptions =
     hasValidSecondary &&
-    activePrimaryId === "settings" &&
+    activePrimaryTab === "settings" &&
     activeSecondaryId === "financial-assumptions";
   const isSettingsAlerts =
     hasValidSecondary &&
-    activePrimaryId === "settings" &&
+    activePrimaryTab === "settings" &&
     activeSecondaryId === "alerts";
   const isSettingsDisplay =
     hasValidSecondary &&
-    activePrimaryId === "settings" &&
+    activePrimaryTab === "settings" &&
     activeSecondaryId === "display";
 
   const handleNotificationToggle = (id: string) => {
@@ -156,25 +182,25 @@ const AppShell = () => {
 
   const isTimeBasedView =
     (hasValidSecondary &&
-      activePrimaryId === "sales" &&
+      activePrimaryTab === "sales" &&
       ["breakdown", "forecast", "product"].includes(activeSecondaryId)) ||
     (hasValidSecondary &&
-      activePrimaryId === "expenses" &&
+      activePrimaryTab === "expenses" &&
       ["breakdown", "budgets"].includes(activeSecondaryId));
 
   const isExpensesVendors =
     hasValidSecondary &&
-    activePrimaryId === "expenses" &&
+    activePrimaryTab === "expenses" &&
     activeSecondaryId === "vendors";
 
   let content = null;
 
-  if (activePrimaryId === "sales" && activeSecondaryId === "trends") {
+  if (activePrimaryTab === "sales" && activeSecondaryId === "trends") {
     content = (
       <SalesView activeSecondaryId={activeSecondaryId ?? ""} activeTime={activeTime} />
     );
   } else if (
-    activePrimaryId === "expenses" &&
+    activePrimaryTab === "expenses" &&
     ["vendors", "invoices"].includes(activeSecondaryId ?? "")
   ) {
     content = (
@@ -183,9 +209,9 @@ const AppShell = () => {
         activeTime={activeTime}
       />
     );
-  } else if (activePrimaryId === "financials" && activeSecondaryId === "kpis") {
+  } else if (activePrimaryTab === "financials" && activeSecondaryId === "kpis") {
     content = <FinancialsKpisView />;
-  } else if (activePrimaryId === "financials") {
+  } else if (activePrimaryTab === "financials") {
     content = (
       <FinancialsView
         activeSecondaryId={activeSecondaryId}
@@ -202,7 +228,7 @@ const AppShell = () => {
       sectionContent = (
         <div className="truth-section__content">
           <div className="time-selector" role="tablist" aria-label="Time range">
-            {((activePrimaryId === "expenses" && activeSecondaryId === "budgets")
+            {((activePrimaryTab === "expenses" && activeSecondaryId === "budgets")
               ? budgetsTimeOptions
               : timeOptions
             ).map((option) => (
@@ -217,15 +243,15 @@ const AppShell = () => {
             ))}
           </div>
 
-          {activePrimaryId === "sales" ? (
+          {activePrimaryTab === "sales" ? (
             <SalesView
               activeSecondaryId={activeSecondaryId ?? ""}
               activeTime={activeTime}
             />
-          ) : activePrimaryId === "expenses" &&
+          ) : activePrimaryTab === "expenses" &&
             activeSecondaryId === "breakdown" ? (
-            <ExpensesBreakdown activeTime={activeTime} />
-          ) : activePrimaryId === "expenses" &&
+            <ExpensesBreakdown activeTime={activeTime} total="" categories={{}} percents={{}} />
+          ) : activePrimaryTab === "expenses" &&
             activeSecondaryId === "budgets" ? (
             <ExpensesBudgets activeTime={activeTime} />
           ) : null}
@@ -286,7 +312,7 @@ const AppShell = () => {
 
       sectionContent = (
         <div className="truth-section__content">
-          {activePrimaryId === "expenses" ? (
+          {activePrimaryTab === "expenses" ? (
             <ExpensesView
               activeSecondaryId={activeSecondaryId ?? ""}
               activeTime={activeTime}
@@ -576,8 +602,12 @@ const AppShell = () => {
       <div className="app-body">
         <PrimaryNav
           items={primaryNavItems}
-          activeId={activePrimaryId}
-          onChange={setActivePrimaryId}
+          activeId={activePrimaryTab}
+          onChange={(id) => {
+            if (isPrimaryTab(id)) {
+              setActivePrimaryTab(id);
+            }
+          }}
         />
 
         <main className="app-content">
@@ -587,10 +617,10 @@ const AppShell = () => {
                 <h2 className="truth-card__title">{activePrimary.label}</h2>
                 {/* Secondary tabs are intentionally rendered from a single source to prevent cross-primary leakage. */}
                 {/* SecondaryNav is intentionally rendered once at the top of the content area. */}
-                {secondaryTabs.length > 0 ? (
+                {activeSecondaryTabs.length > 0 ? (
                   <SecondaryNav
-                    key={activePrimaryId}
-                    tabs={secondaryTabs}
+                    key={activePrimaryTab}
+                    tabs={activeSecondaryTabs}
                     activeId={activeSecondaryId ?? ""}
                     onChange={setActiveSecondaryId}
                   />
