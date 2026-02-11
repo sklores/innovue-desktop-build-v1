@@ -1,11 +1,3 @@
-type PrimaryTabKey =
-  | "sales"
-  | "expenses"
-  | "financials"
-  | "presence"
-  | "settings"
-  | "reporting";
-
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import PrimaryNav from "../navigation/PrimaryNav";
@@ -35,23 +27,19 @@ const timeOptions = [
 
 const budgetsTimeOptions = ["Week", "Month", "Quarter", "Year"];
 
-const isPrimaryTab = (value: string): value is PrimaryTabKey =>
-  ["sales", "expenses", "financials", "presence", "settings", "reporting"].includes(
-    value,
-  );
-
 const AppShell = () => {
-  const secondaryTabs: Record<
-    PrimaryTabKey,
-    { id: string; label: string }[]
-  > = {
+  const secondaryTabs = {
     sales: secondaryTabsByPrimary.sales,
     expenses: secondaryTabsByPrimary.expenses,
     financials: secondaryTabsByPrimary.financials,
     presence: secondaryTabsByPrimary.presence,
     settings: secondaryTabsByPrimary.settings,
     reporting: secondaryTabsByPrimary.reporting,
-  };
+  } as const;
+
+  type PrimaryTabKey = keyof typeof secondaryTabs;
+
+  const isPrimaryTab = (value: string): value is PrimaryTabKey => value in secondaryTabs;
   const primaryNavItems: { id: PrimaryTabKey; label: string }[] = [
     { id: "sales", label: "Sales" },
     { id: "expenses", label: "Expenses" },
@@ -61,7 +49,8 @@ const AppShell = () => {
     { id: "reporting", label: "Reporting" },
   ];
 
-  const [activePrimaryTab, setActivePrimaryTab] = useState<PrimaryTabKey>("sales");
+  const [activePrimaryTab, setActivePrimaryTab] =
+    useState<PrimaryTabKey>("sales");
   const [activeSecondaryId, setActiveSecondaryId] = useState<string | null>(
     secondaryTabs.sales[0]?.id ?? null,
   );
@@ -103,7 +92,7 @@ const AppShell = () => {
   ]);
 
   const activePrimary = useMemo(() => {
-    return primaryNavItems.find((tab) => tab.id === activePrimaryTab) ?? primaryNavItems[0];
+    return primaryNavItems.find((tab: { id: PrimaryTabKey; label: string }) => tab.id === activePrimaryTab) ?? primaryNavItems[0];
   }, [activePrimaryTab, primaryNavItems]);
 
   const activeSecondaryTabs = useMemo(() => {
