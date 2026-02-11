@@ -10,7 +10,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import PrimaryNav from "../navigation/PrimaryNav";
 import SecondaryNav from "../navigation/SecondaryNav";
-import { primaryTabs, secondaryTabsByPrimary } from "../navigation/navConfig";
+import { secondaryTabsByPrimary } from "../navigation/navConfig";
 import OnlineView from "../pages/OnlineView";
 import ReportingView from "../pages/ReportingView";
 import ExpensesView from "../pages/ExpensesView";
@@ -60,15 +60,14 @@ const AppShell = () => {
     settings: secondaryTabsByPrimary.settings,
     reporting: secondaryTabsByPrimary.reporting,
   };
-  const primaryNavItems = useMemo(() => {
-    const settingsTab = primaryTabs.find((tab) => tab.id === "settings");
-    const baseTabs = primaryTabs.filter((tab) => tab.id !== "settings");
-    return [
-      ...baseTabs,
-      { id: "reporting", label: "Reporting" },
-      settingsTab ?? { id: "settings", label: "Settings" },
-    ];
-  }, []);
+  const primaryNavItems: { id: PrimaryTabKey; label: string }[] = [
+    { id: "sales", label: "Sales" },
+    { id: "expenses", label: "Expenses" },
+    { id: "financials", label: "Financials" },
+    { id: "presence", label: "Presence" },
+    { id: "settings", label: "Settings" },
+    { id: "reporting", label: "Reporting" },
+  ];
 
   const [activePrimaryTab, setActivePrimaryTab] = useState<PrimaryTabKey>("sales");
   const [activeSecondaryId, setActiveSecondaryId] = useState<string | null>(
