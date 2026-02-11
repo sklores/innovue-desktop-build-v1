@@ -191,10 +191,6 @@ const expensesCategoryPercentages: Record<string, Record<string, string>> = {
 const ExpensesView = ({ activeSecondaryId, activeTime }: ExpensesViewProps) => {
   const [openVendorId, setOpenVendorId] = useState<string | null>(null);
   const [openOrderGuideId, setOpenOrderGuideId] = useState<string | null>(null);
-  const [openBudgetCategoryId, setOpenBudgetCategoryId] = useState<string | null>(
-    null,
-  );
-
   const isExpensesBreakdown = activeSecondaryId === "breakdown";
   const isExpensesVendors = activeSecondaryId === "vendors";
   const isExpensesInvoices = activeSecondaryId === "invoices";
@@ -233,20 +229,6 @@ const ExpensesView = ({ activeSecondaryId, activeTime }: ExpensesViewProps) => {
     }
   };
 
-  const handleBudgetCategoryToggle = (id: string) => {
-    setOpenBudgetCategoryId((prev) => (prev === id ? null : id));
-  };
-
-  const handleBudgetCategoryKeyDown = (
-    event: KeyboardEvent<HTMLDivElement>,
-    id: string,
-  ) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleBudgetCategoryToggle(id);
-    }
-  };
-
   if (isExpensesBreakdown) {
     return (
       <ExpensesBreakdown
@@ -261,10 +243,6 @@ const ExpensesView = ({ activeSecondaryId, activeTime }: ExpensesViewProps) => {
     return (
       <>
         {(() => {
-          const parseCurrency = (value: string) => {
-            const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
-            return Number.isNaN(numeric) ? 0 : numeric;
-          };
           const formatCurrency = (value: number) =>
             `$${Math.round(value).toLocaleString()}`;
           const budgetsByTime: Record<string, Record<string, number>> = {
@@ -344,38 +322,6 @@ const ExpensesView = ({ activeSecondaryId, activeTime }: ExpensesViewProps) => {
             { key: "Chemicals", label: "Chemicals" },
             { key: "Linen", label: "Linen" },
           ];
-          const budgetDetails: Record<string, { label: string; share: number }[]> = {
-            Labor: [
-              { label: "Cook", share: 0.45 },
-              { label: "Manager", share: 0.33 },
-              { label: "Cashier", share: 0.22 },
-            ],
-            COGS: [
-              { label: "Food", share: 0.52 },
-              { label: "Beverage", share: 0.28 },
-              { label: "Alcohol", share: 0.2 },
-            ],
-            "Fixed costs": [
-              { label: "Rent", share: 0.5 },
-              { label: "Insurance", share: 0.2 },
-              { label: "Accounting", share: 0.18 },
-              { label: "Bookkeeping", share: 0.12 },
-            ],
-            Utilities: [
-              { label: "Electric", share: 0.4 },
-              { label: "Gas", share: 0.25 },
-              { label: "Water", share: 0.2 },
-              { label: "Internet", share: 0.15 },
-            ],
-            Chemicals: [
-              { label: "Cleaning supplies", share: 0.6 },
-              { label: "Sanitizer", share: 0.4 },
-            ],
-            Linen: [
-              { label: "Linen service", share: 0.7 },
-              { label: "Towels", share: 0.3 },
-            ],
-          };
           const totals = budgetRows.reduce(
             (acc, row) => {
               const actual =
@@ -546,6 +492,7 @@ const ExpensesView = ({ activeSecondaryId, activeTime }: ExpensesViewProps) => {
               orderGuide: ["Electric", "Water", "Gas"],
             },
           ];
+
 
           const parseCurrency = (value: string) => {
             const numeric = Number(value.replace(/[^0-9.-]+/g, ""));
