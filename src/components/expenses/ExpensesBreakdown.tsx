@@ -720,11 +720,14 @@ const formatPercent = (value: number, total: number) => {
   return `${Math.round((value / total) * 100)}%`;
 };
 
-type ExpensesBreakdownProps = {
-  activeTime: string;
-};
+interface ExpensesBreakdownProps {
+  total: string;
+  categories: Record<string, string>;
+  percents: Record<string, string>;
+  activeTime?: string;
+}
 
-const ExpensesBreakdown = ({ activeTime }: ExpensesBreakdownProps) => {
+const ExpensesBreakdown = ({ activeTime = "Week" }: ExpensesBreakdownProps) => {
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const timeKey = (activeTime as TimeKey) in breakdownByTime ? (activeTime as TimeKey) : "Week";
 
