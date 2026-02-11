@@ -12,15 +12,13 @@ import FinancialsKpisView from "../components/financials/FinancialsKpisView";
 import ExpensesBreakdown from "../components/expenses/ExpensesBreakdown";
 import ExpensesBudgets from "../components/expenses/ExpensesBudgets";
 
-type PrimaryTab =
+type PrimaryTabKey =
   | "sales"
   | "expenses"
   | "financials"
   | "presence"
   | "settings"
   | "reporting";
-
-type SecondaryTab = { id: string; label: string };
 
 const timeOptions = [
   "Mon",
@@ -37,13 +35,23 @@ const timeOptions = [
 
 const budgetsTimeOptions = ["Week", "Month", "Quarter", "Year"];
 
-const isPrimaryTab = (value: string): value is PrimaryTab =>
+const isPrimaryTab = (value: string): value is PrimaryTabKey =>
   ["sales", "expenses", "financials", "presence", "settings", "reporting"].includes(
     value,
   );
 
 const AppShell = () => {
-  const secondaryTabs: Record<PrimaryTab, SecondaryTab[]> = secondaryTabsByPrimary;
+  const secondaryTabs: Record<
+    PrimaryTabKey,
+    { id: string; label: string }[]
+  > = {
+    sales: secondaryTabsByPrimary.sales,
+    expenses: secondaryTabsByPrimary.expenses,
+    financials: secondaryTabsByPrimary.financials,
+    presence: secondaryTabsByPrimary.presence,
+    settings: secondaryTabsByPrimary.settings,
+    reporting: secondaryTabsByPrimary.reporting,
+  };
   const primaryNavItems = useMemo(() => {
     const settingsTab = primaryTabs.find((tab) => tab.id === "settings");
     const baseTabs = primaryTabs.filter((tab) => tab.id !== "settings");
@@ -54,7 +62,7 @@ const AppShell = () => {
     ];
   }, []);
 
-  const [activePrimaryTab, setActivePrimaryTab] = useState<PrimaryTab>("sales");
+  const [activePrimaryTab, setActivePrimaryTab] = useState<PrimaryTabKey>("sales");
   const [activeSecondaryId, setActiveSecondaryId] = useState<string | null>(
     secondaryTabs.sales[0]?.id ?? null,
   );
