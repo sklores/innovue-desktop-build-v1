@@ -27,18 +27,18 @@ const timeOptions = [
 
 const budgetsTimeOptions = ["Week", "Month", "Quarter", "Year"];
 
+const secondaryTabs = {
+  sales: secondaryTabsByPrimary.sales,
+  expenses: secondaryTabsByPrimary.expenses,
+  financials: secondaryTabsByPrimary.financials,
+  presence: secondaryTabsByPrimary.presence,
+  settings: secondaryTabsByPrimary.settings,
+  reporting: secondaryTabsByPrimary.reporting,
+} as const;
+
+type PrimaryTabKey = keyof typeof secondaryTabs;
+
 const AppShell = () => {
-  const secondaryTabs = {
-    sales: secondaryTabsByPrimary.sales,
-    expenses: secondaryTabsByPrimary.expenses,
-    financials: secondaryTabsByPrimary.financials,
-    presence: secondaryTabsByPrimary.presence,
-    settings: secondaryTabsByPrimary.settings,
-    reporting: secondaryTabsByPrimary.reporting,
-  } as const;
-
-  type PrimaryTabKey = keyof typeof secondaryTabs;
-
   const isPrimaryTab = (value: string): value is PrimaryTabKey => value in secondaryTabs;
   const primaryNavItems: { id: PrimaryTabKey; label: string }[] = [
     { id: "sales", label: "Sales" },
@@ -591,10 +591,8 @@ const AppShell = () => {
         <PrimaryNav
           items={primaryNavItems}
           activeId={activePrimaryTab}
-          onChange={(id) => {
-            if (isPrimaryTab(id)) {
-              setActivePrimaryTab(id);
-            }
+          onChange={(id: PrimaryTabKey) => {
+            setActivePrimaryTab(id);
           }}
         />
 
