@@ -39,7 +39,6 @@ const secondaryTabs = {
 type PrimaryTabKey = keyof typeof secondaryTabs;
 
 const AppShell = () => {
-  const isPrimaryTab = (value: string): value is PrimaryTabKey => value in secondaryTabs;
   const primaryNavItems: { id: PrimaryTabKey; label: string }[] = [
     { id: "sales", label: "Sales" },
     { id: "expenses", label: "Expenses" },
@@ -591,8 +590,8 @@ const AppShell = () => {
         <PrimaryNav
           items={primaryNavItems}
           activeId={activePrimaryTab}
-          onChange={(id: PrimaryTabKey) => {
-            setActivePrimaryTab(id);
+          onChange={(id: string) => {
+            setActivePrimaryTab(id as PrimaryTabKey);
           }}
         />
 
