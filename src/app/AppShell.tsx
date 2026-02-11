@@ -1,3 +1,11 @@
+type PrimaryTabKey =
+  | "sales"
+  | "expenses"
+  | "financials"
+  | "presence"
+  | "settings"
+  | "reporting";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import PrimaryNav from "../navigation/PrimaryNav";
