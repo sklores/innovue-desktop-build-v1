@@ -20,14 +20,6 @@ import FinancialsKpisView from "../components/financials/FinancialsKpisView";
 import ExpensesBreakdown from "../components/expenses/ExpensesBreakdown";
 import ExpensesBudgets from "../components/expenses/ExpensesBudgets";
 
-type PrimaryTabKey =
-  | "sales"
-  | "expenses"
-  | "financials"
-  | "presence"
-  | "settings"
-  | "reporting";
-
 const timeOptions = [
   "Mon",
   "Tue",
